@@ -1,0 +1,62 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+unless ENV['AWS_ACCESS_KEY'] &&
+       ENV['AWS_SECRET_KEY']
+
+    print "The following environmental variables must be set before running this script:\n"
+    print "\tAWS_ACCESS_KEY\n"
+    print "\tAWS_SECRET_KEY\n"
+    exit
+end
+
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+    config.vm.box = "ubuntu/trusty64"
+    config.vm.synced_folder '.', '/vagrant', disabled: true
+    config.vm.synced_folder "../..",
+                            "/home/vagrant/webapps/demos-web-gui",
+                            create: true
+
+    config.vm.provider "virtualbox" do |vb|
+        vb.memory = 1024
+        vb.cpus = 2
+        vb.name = "DataStax Demo Provisioner"
+    end
+
+    config.vm.provider :aws do |aws, override|
+        override.vm.box = "aws-dummy"
+        override.ssh.username = "ubuntu"
+        override.vm.synced_folder "../..",
+                                  "/home/ubuntu/webapps/demos-web-gui",
+                                  type: "rsync"
+
+        aws.access_key_id = ENV['AWS_ACCESS_KEY']
+        aws.secret_access_key = ENV['AWS_SECRET_KEY']
+        aws.region = "us-east-1"
+        aws.keypair_name = "joaquin.rightscale.sales"
+        override.ssh.private_key_path = "~/.ssh/joaquin.rightscale.sales.key"
+
+        # ubuntu 14.04 20140927 release
+        aws.region_config "us-east-1" do |region|
+            region.ami = "ami-d0ba0cb8"
+        end
+
+        aws.instance_type = "m3.medium"
+        aws.security_groups = ["demos-webgui-launcher"]
+        aws.tags = {
+            'Name' => 'Demos Web Gui Launcher (Do NOT Terminate)',
+            'Provisioner' => 'demos-web-gui-launcher',
+            'Owner' => 'Joaquin Casares',
+            'Email' => 'joaquin@datastax.com'
+        }
+    end
+
+    config.ssh.username = "vagrant"
+    config.vm.provision :shell, path: "bootstrap.sh", privileged: false
+    config.vm.network :forwarded_port, host: 8888, guest: 8888
+    config.vm.box_check_update = true
+    config.vm.post_up_message = "Welcome to the DataStax Demo Provisioner!"
+end
