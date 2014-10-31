@@ -66,7 +66,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
         require 'time'
         aws.tags = {
-            'Name' => 'Demos Web Gui Machine',
+            'Name' => 'Demos User Machine',
             'Provisioner' => 'demos-web-gui-launcher',
             'Owner' => 'Joaquin Casares',
             'Email' => 'joaquin@datastax.com',
