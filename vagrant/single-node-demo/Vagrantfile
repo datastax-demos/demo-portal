@@ -31,9 +31,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.synced_folder "../..",
                             "/home/vagrant/webapps/demos-web-gui",
                             create: true
-    config.vm.synced_folder "../../../datastax-dockerfiles",
-                            "/home/vagrant/webapps/datastax-dockerfiles",
-                            create: true
 
     config.vm.provider "virtualbox" do |vb|
         vb.memory = 1024
@@ -47,9 +44,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         override.vm.synced_folder "../..",
                                   "/home/ubuntu/webapps/demos-web-gui",
                                   type: "rsync"
-        override.vm.synced_folder "../../../datastax-dockerfiles",
-                                  "/home/ubuntu/webapps/datastax-dockerfiles",
-                                  create: true
 
         aws.access_key_id = ENV['AWS_ACCESS_KEY']
         aws.secret_access_key = ENV['AWS_SECRET_KEY']
