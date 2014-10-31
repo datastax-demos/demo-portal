@@ -6,4 +6,5 @@ echo $HASH
 cp -r  ~/webapps/demos-web-gui/vagrant/single-node-demo/ ~/launched-clusters/${HASH}
 cd ~/launched-clusters/${HASH}
 DEMOS_WEB_GUI=~/webapps/demos-web-gui/ vagrant up --provider aws --destroy-on-error
+echo $HASH
 vagrant awsinfo -k public_ip
