@@ -82,7 +82,7 @@ def setup_globals():
         10000,  # Hive/Shark server port
 
         #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        8020,   # TODO: REMOVE: debugging weather sensors
+        8020,  # TODO: REMOVE: debugging weather sensors
     ]
     opscenter_ports = [
         # ## Public Facing Ports
@@ -174,7 +174,8 @@ def launch_dse(debug=False, localbuilds=False,
             return Response(container_id, ip)
 
 
-def launch_opscenter(debug=False, localbuilds=False, cluster_ip=False, link=False):
+def launch_opscenter(debug=False, localbuilds=False, cluster_ip=False,
+                     link=False):
     launch_command = []
     launch_command.append('docker run')
 
@@ -225,7 +226,7 @@ def configure_agents(container_id, stomp_address):
     run('docker exec %s service datastax-agent restart' % container_id)
 
 
-if __name__ == '__main__':
+def main():
     setup_globals()
     stop_all()
     dse_container = launch_dse(localbuilds=options.localbuilds,
@@ -233,11 +234,15 @@ if __name__ == '__main__':
                                spark=True, hadoop=True,
                                sharkserver=True, hiveserver=True)
 
-    print dse_container
+    logger.info(dse_container)
 
     opscenter_container = launch_opscenter(localbuilds=options.localbuilds,
                                            debug=options.debug,
                                            cluster_ip=dse_container.ip)
 
-    print opscenter_container
+    logger.info(opscenter_container)
     configure_agents(dse_container.container_id, opscenter_container.ip)
+
+
+if __name__ == '__main__':
+    print main()
