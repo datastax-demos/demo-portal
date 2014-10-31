@@ -1,6 +1,7 @@
 .vagrant/
 bower_components/
 *.key
+.dockercfg
 vagrant*.deb
 set_credentials.sh
 launch.log
