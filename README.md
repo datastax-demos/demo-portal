@@ -23,11 +23,11 @@ VM for development purposes. You cannot, however, launch VMs within a VM.
 ## Run web-gui Vagrantfile
 
     cd vagrant/web-gui
-    vagrant up [--provider=aws]
+    vagrant up [--provider=aws] --destroy-on-error
 
 ## Run single-node-demo Vagrantfile
 
     cd vagrant/single-node-demo
-    vagrant up [--provider=aws]
+    vagrant up [--provider=aws] --destroy-on-error
 
     # TODO: Automatically swap AZs.

@@ -9,12 +9,6 @@ cp webapps/demos-web-gui/vagrant/keys/* .ssh
 ssh-keyscan github.com >> .ssh/known_hosts
 chmod 600 .ssh/*
 
-# ensure the dockerfiles are up-to-date
-(
-    cd webapps/datastax-dockerfiles
-    git pull
-)
-
 # ensure credentials are set on each launch
 echo "source webapps/demos-web-gui/set_credentials.sh" >> .profile
 
