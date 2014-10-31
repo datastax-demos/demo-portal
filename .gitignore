@@ -3,3 +3,5 @@ bower_components/
 *.key
 vagrant*.deb
 set_credentials.sh
+launch.log
+

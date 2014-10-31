@@ -29,3 +29,5 @@ VM for development purposes. You cannot, however, launch VMs within a VM.
 
     cd vagrant/single-node-demo
     vagrant up [--provider=aws]
+
+    # TODO: Automatically swap AZs.

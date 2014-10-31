@@ -23,9 +23,9 @@ chmod 600 .ssh/*
 mkdir webapps/datastax-dockerfiles
 git clone git@datastax-dockerfiles:datastax-demos/datastax-dockerfiles.git webapps/datastax-dockerfiles
 
-# setup vagrant to use the vagrant-aws plugin
+# setup vagrant to use the vagrant-aws and vagrant-awsinfo plugins
 vagrant box add aws-dummy webapps/demos-web-gui/vagrant/vagrant-boxes/aws-dummy.box
-vagrant plugin install vagrant-aws
+vagrant plugin install vagrant-aws vagrant-awsinfo
 
 # ensure credentials are set on each launch
 echo "source webapps/demos-web-gui/set_credentials.sh" >> .profile
