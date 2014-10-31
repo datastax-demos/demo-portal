@@ -16,3 +16,5 @@ echo "source webapps/demos-web-gui/set_credentials.sh" >> .profile
 
 # preconfigure the ubuntu/datastax image, for dev purposes
 source webapps/demos-web-gui/set_credentials.sh
+
+ sudo webapps/demos-web-gui/vagrant/single-node-demo/launch
