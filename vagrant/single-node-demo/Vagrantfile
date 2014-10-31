@@ -78,7 +78,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.provision :shell, path: "install-docker.sh", privileged: true
     config.vm.provision :shell,
                         inline: "sudo webapps/demos-web-gui/vagrant/single-node-demo/launch",
-                        privileged: true
+                        privileged: false
 
     # public facing ports
     config.vm.network :forwarded_port, host: 4040, guest: 4040
