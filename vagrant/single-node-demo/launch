@@ -227,7 +227,8 @@ def configure_agents(container_id, stomp_address):
         '-e "s|stomp_interface:.*|stomp_interface: %s|g" '
         '/var/lib/datastax-agent/conf/address.yaml' % (
             container_id, stomp_address))
-    run('docker exec %s service datastax-agent restart' % container_id)
+    # run('docker exec %s service datastax-agent restart' % container_id)
+    run('docker exec %s supervisorctl restart datastax-agent' % container_id)
 
 
 def main():
