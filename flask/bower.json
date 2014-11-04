@@ -1,0 +1,21 @@
+{
+    "name": "demos-web-gui",
+    "version": "0.0.0",
+    "homepage": "https://github.com/datastax-demos/demos-web-gui",
+    "authors": [
+        "Joaquin Casares <joaquin@datastax.com>"
+    ],
+    "license": "MIT",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests"
+    ],
+    "dependencies": {
+        "bootstrap": "~3.2.0",
+        "bootstrapvalidator": "~0.5.2",
+        "jquery": "~2.1.1"
+    }
+}

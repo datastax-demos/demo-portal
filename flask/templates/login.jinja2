@@ -1,0 +1,46 @@
+{% extends "base.jinja2" %}
+
+{% block head %}
+    <link href="{{ url_for('static', filename='css/login.css') }}"
+          rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <div class="col-md-offset-4 col-md-4">
+        <h3>Please Sign In</h3>
+
+        <form role="form" action="login" method="post" id="login-form">
+            <div class="form-group">
+                <label for="inputEmail">Email address</label>
+                <input type="email" class="form-control" id="inputEmail"
+                       name="email" placeholder="Enter email">
+            </div>
+            <div class="form-group" id="password-group">
+                <label for="inputPassword">Password</label>
+                <input type="password" class="form-control"
+                       id="inputPassword" name="password"
+                       placeholder="Password">
+            </div>
+            <div class="btn-group btn-group-justified">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default active"
+                            id="login">Login
+                    </button>
+                </div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-default"
+                            id="request-password">Request Password
+                    </button>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-default btn-success"
+                    id="submit-button">
+                Submit
+            </button>
+        </form>
+    </div>
+{% endblock %}
+
+{% block tail %}
+    <script src="{{ url_for('static', filename='js/login.js') }}"></script>
+{% endblock %}
