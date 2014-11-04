@@ -18,6 +18,22 @@ def gui_enabled?
   !ENV.fetch('GUI', '').empty?
 end
 
+unless ENV['USER_EMAIL']
+    ENV['USER_EMAIL'] = "joaquin@datastax.com"
+end
+
+unless ENV['DEMO']
+    ENV['DEMO'] = "weather-sensors"
+end
+
+unless ENV['TTL']
+    ENV['TTL'] = 2
+end
+
+unless ENV['PORT']
+    ENV['PORT'] = 3000
+end
+
 unless ENV['AWS_AZ']
     ENV['AWS_AZ'] = "us-east-1a"
 end
@@ -66,18 +82,19 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
         require 'time'
         aws.tags = {
-            'Name' => 'Demos User Machine',
-            'Provisioner' => 'demos-web-gui-launcher',
-            'Owner' => 'Joaquin Casares',
-            'Email' => 'joaquin@datastax.com',
-            'Launch Time' => Time.now.httpdate
+            'name' => ENV['DEMO'],
+            'provisioner' => 'demos-web-gui-launcher',
+            'email' => ENV['USER_EMAIL'],
+            'launch_time' => Time.now.httpdate,
+            'ttl' => ENV['TTL'],
+            'app_port' => ENV['PORT'],
         }
     end
 
     config.vm.provision :shell, path: "bootstrap.sh", privileged: false
     config.vm.provision :shell, path: "install-docker.sh", privileged: true
     config.vm.provision :shell,
-                        inline: "sudo webapps/demos-web-gui/vagrant/single-node-demo/launch",
+                        inline: "sudo webapps/demos-web-gui/vagrant/single-node-demo/"+ENV['DEMO'],
                         privileged: false
 
     # public facing ports

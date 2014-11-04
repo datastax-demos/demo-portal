@@ -1,10 +1,21 @@
 #!/bin/sh
 
+# change into the directory that houses this file
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $DIR
+DEMO_WEB_GUI_ROOT="$( cd ../../ && pwd )"
+
 HASH=`date +%s.%N | md5sum | cut -f 1 -d ' '`
 echo $HASH
 
-cp -r  ~/webapps/demos-web-gui/vagrant/single-node-demo/ ~/launched-clusters/${HASH}
-cd ~/launched-clusters/${HASH}
-DEMOS_WEB_GUI=~/webapps/demos-web-gui/ vagrant up --provider aws --destroy-on-error
+# create the new directories for this launch
+mkdir -p $DEMO_WEB_GUI_ROOT/launched-clusters
+cp -r  $DEMO_WEB_GUI_ROOT/vagrant/single-node-demo/ $DEMO_WEB_GUI_ROOT/launched-clusters/${HASH}
+cd $DEMO_WEB_GUI_ROOT/launched-clusters/${HASH}
+
+# kick off the launch
+DEMOS_WEB_GUI=$DEMO_WEB_GUI_ROOT vagrant up --provider aws --destroy-on-error >> vagrant.log
+
+# log important data related to the launch
 echo $HASH
 vagrant awsinfo -k public_ip

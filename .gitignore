@@ -5,4 +5,5 @@ bower_components/
 vagrant*.deb
 set_credentials.sh
 launch.log
+launched-clusters
 

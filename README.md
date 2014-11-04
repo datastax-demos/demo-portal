@@ -20,6 +20,12 @@ VM for development purposes. You cannot, however, launch VMs within a VM.
 `provision`. More information can be found
 [here](https://github.com/mitchellh/vagrant-aws#synced-folders).
 
+### OSX
+
+You must install `md5sha1sum` using [brew](http://brew.sh/).
+
+    brew install md5sha1sum
+
 ## Run web-gui Vagrantfile
 
     cd vagrant/web-gui

@@ -37,7 +37,5 @@ vagrant plugin install vagrant-aws vagrant-awsinfo
     fi
 )
 
-mkdir launched-clusters
-
 # ensure credentials are set on each launch
 echo "source webapps/demos-web-gui/set_credentials.sh" >> .profile
