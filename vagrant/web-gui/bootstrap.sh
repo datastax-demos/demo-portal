@@ -2,7 +2,7 @@
 
 # install prerequisites
 sudo apt-get update
-sudo apt-get install -y ruby-dev build-essential git-core tree
+sudo apt-get install -y ruby-dev build-essential git-core tree python-pip python-dev
 
 # check if vagrant.deb has been downloaded before. if not, download now. install.
 if [ ! -f webapps/demos-web-gui/vagrant/vagrant-packages/vagrant_1.6.5_x86_64.deb ]; then
@@ -36,6 +36,12 @@ vagrant plugin install vagrant-aws vagrant-awsinfo
         git checkout vagrant/web-gui/Vagrantfile
     fi
 )
+
+sudo pip install -r ~/webapps/demos-web-gui/flask/requirements.txt
+if [ "$(whoami)" == "ubuntu" ]; then
+    sed -i -e "s|DEBUG = True|DEBUG = False|g" ~/webapps/demos-web-gui/flask/web-gui.cfg
+fi
+nohup python ~/webapps/demos-web-gui/flask/web-gui.py &
 
 # ensure credentials are set on each launch
 echo "source webapps/demos-web-gui/set_credentials.sh" >> .profile

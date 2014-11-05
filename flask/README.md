@@ -19,6 +19,12 @@ Install vagrant-aws plugin:
     vagrant plugin install vagrant-aws
     vagrant box add aws-dummy https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box
 
+### OSX
+
+You must install `md5sha1sum` using [brew](http://brew.sh/).
+
+    brew install md5sha1sum
+
 ## Start Webserver
 
     python web-gui.py

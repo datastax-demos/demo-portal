@@ -151,6 +151,7 @@ def logout():
 
 if __name__ == "__main__":
     if app.debug:
-        app.run(port=5002)
+        app.run(port=5000)
     else:
-        app.run(host='0.0.0.0')
+        app.run(host='0.0.0.0',
+                port=80)
