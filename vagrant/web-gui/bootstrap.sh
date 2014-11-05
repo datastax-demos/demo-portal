@@ -43,13 +43,14 @@ sudo pip install -r ~/webapps/demos-web-gui/flask/requirements.txt
 # set DEBUG mode to False when in ec2
 if [ "$(whoami)" == "ubuntu" ]; then
     sed -i -e "s|DEBUG = True|DEBUG = False|g" ~/webapps/demos-web-gui/flask/web-gui.cfg
+    sudo su
 fi
 
 # set the AWS credentials appropriately
 source ~/webapps/demos-web-gui/set_credentials.sh
 
 # kick off the web-gui
-nohup sudo python /home/ubuntu/webapps/demos-web-gui/flask/web-gui.py > out.log &
+nohup python /home/ubuntu/webapps/demos-web-gui/flask/web-gui.py > out.log &
 
 # ensure credentials are set on each launch
 echo "source webapps/demos-web-gui/set_credentials.sh" >> .profile
