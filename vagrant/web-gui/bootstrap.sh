@@ -37,10 +37,18 @@ vagrant plugin install vagrant-aws vagrant-awsinfo
     fi
 )
 
+# install web-gui requirements
 sudo pip install -r ~/webapps/demos-web-gui/flask/requirements.txt
+
+# set DEBUG mode to False when in ec2
 if [ "$(whoami)" == "ubuntu" ]; then
     sed -i -e "s|DEBUG = True|DEBUG = False|g" ~/webapps/demos-web-gui/flask/web-gui.cfg
 fi
+
+# set the AWS credentials appropriately
+source ~/webapps/demos-web-gui/set_credentials.sh
+
+# kick off the web-gui
 nohup sudo python ~/webapps/demos-web-gui/flask/web-gui.py &
 
 # ensure credentials are set on each launch

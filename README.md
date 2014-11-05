@@ -22,6 +22,9 @@ VM for development purposes. You cannot, however, launch VMs within a VM.
 
 ## Run web-gui Vagrantfile
 
+    # not needed for local runs, but variables must still be set
+    source ../../set_credentials.sh
+
     cd vagrant/web-gui
     vagrant up [--provider=aws] --destroy-on-error
 
