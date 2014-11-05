@@ -15,7 +15,6 @@ cd $DEMO_WEB_GUI_ROOT/launched-clusters/${HASH}
 echo $USER_EMAIL > user-email
 
 # kick off the launch
-source ../../set_credentials.sh
 DEMOS_WEB_GUI=$DEMO_WEB_GUI_ROOT vagrant up --provider aws --destroy-on-error >> vagrant.log
 
 # log important data related to the launch

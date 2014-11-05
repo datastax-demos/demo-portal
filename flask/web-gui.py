@@ -115,6 +115,10 @@ def launch():
     current_directory = os.path.dirname(
         os.path.dirname(os.path.realpath(__file__)))
     command = [
+        'DATASTAX_USER=%s' % os.environ['DATASTAX_USER'],
+        'DATASTAX_PASS=%s' % os.environ['DATASTAX_PASS'],
+        'AWS_ACCESS_KEY=%s' % os.environ['AWS_ACCESS_KEY'],
+        'AWS_SECRET_KEY=%s' % os.environ['AWS_SECRET_KEY'],
         'USER_EMAIL=%s' % session['email'],
         'DEMO=%s' % demo,
         'TTL=%s' % request.form['ttl'],
@@ -122,10 +126,10 @@ def launch():
         '%s/vagrant/single-node-demo/new-cluster' % current_directory,
         '&'
     ]
-    command = ' '.join(command)
 
-    flash('Executing: %s' % command)
-    os.system(command)
+    flash('Executing: %s' % ' '.join(command[4:]))
+    logger.info('Executing: %s' % ' '.join(command))
+    os.system(' '.join(command))
 
     return redirect(url_for('index'))
 
@@ -156,4 +160,4 @@ if __name__ == "__main__":
         app.run(port=5000)
     else:
         app.run(host='0.0.0.0',
-                port=80)
+                port=5000)
