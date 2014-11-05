@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # change into the directory that houses this file
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+DIR="$( cd "$( dirname "$0" )" && pwd )"
 cd $DIR
 DEMO_WEB_GUI_ROOT="$( cd ../../ && pwd )"
 
@@ -15,6 +15,7 @@ cd $DEMO_WEB_GUI_ROOT/launched-clusters/${HASH}
 echo $USER_EMAIL > user-email
 
 # kick off the launch
+source ../../set_credentials.sh
 DEMOS_WEB_GUI=$DEMO_WEB_GUI_ROOT vagrant up --provider aws --destroy-on-error >> vagrant.log
 
 # log important data related to the launch

@@ -112,12 +112,14 @@ def launch():
         return redirect(url_for('login'))
 
     demo = request.form['demoChoice'].lower().replace(' ', '_')
+    current_directory = os.path.dirname(
+        os.path.dirname(os.path.realpath(__file__)))
     command = [
         'USER_EMAIL=%s' % session['email'],
         'DEMO=%s' % demo,
         'TTL=%s' % request.form['ttl'],
         'PORT=%s' % APP_PORTS[demo],
-        '../vagrant/single-node-demo/new-cluster',
+        '%s/vagrant/single-node-demo/new-cluster' % current_directory,
         '&'
     ]
     command = ' '.join(command)

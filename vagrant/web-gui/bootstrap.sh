@@ -49,7 +49,7 @@ fi
 source ~/webapps/demos-web-gui/set_credentials.sh
 
 # kick off the web-gui
-nohup sudo python ~/webapps/demos-web-gui/flask/web-gui.py &
+nohup sudo python /home/ubuntu/webapps/demos-web-gui/flask/web-gui.py > out.log &
 
 # ensure credentials are set on each launch
 echo "source webapps/demos-web-gui/set_credentials.sh" >> .profile
