@@ -41,7 +41,7 @@ sudo pip install -r ~/webapps/demos-web-gui/flask/requirements.txt
 if [ "$(whoami)" == "ubuntu" ]; then
     sed -i -e "s|DEBUG = True|DEBUG = False|g" ~/webapps/demos-web-gui/flask/web-gui.cfg
 fi
-nohup python ~/webapps/demos-web-gui/flask/web-gui.py &
+nohup sudo python ~/webapps/demos-web-gui/flask/web-gui.py &
 
 # ensure credentials are set on each launch
 echo "source webapps/demos-web-gui/set_credentials.sh" >> .profile
