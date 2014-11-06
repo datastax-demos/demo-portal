@@ -1,1 +1,1 @@
-*/30 * * * * source /home/ubuntu/webapps/demos-web-gui/set_credentials.sh; /home/ubuntu/webapps/demos-web-gui/cron/cleanup
+*/30 * * * * source /home/ubuntu/webapps/demos-web-gui/set_credentials.sh; /home/ubuntu/webapps/demos-web-gui/cron/cleanup > /home/ubuntu/cron.log 2>&1
