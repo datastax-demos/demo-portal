@@ -6,7 +6,7 @@ cd $DIR
 DEMO_WEB_GUI_ROOT="$( cd ../../ && pwd )"
 
 HASH=`date +%s.%N | md5sum | cut -f 1 -d ' '`
-echo $USER_EMAIL $HASH
+echo $USER_EMAIL $DEMO $HASH
 
 # create the new directories for this launch
 mkdir -p $DEMO_WEB_GUI_ROOT/launched-clusters
