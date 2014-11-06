@@ -111,7 +111,7 @@ def launch():
     if not 'email' in session:
         return redirect(url_for('login'))
 
-    demo = request.form['demoChoice'].lower().replace(' ', '_')
+    demo = request.form['demoChoice'].lower().replace(' ', '-')
     current_directory = os.path.dirname(
         os.path.dirname(os.path.realpath(__file__)))
     command = [
