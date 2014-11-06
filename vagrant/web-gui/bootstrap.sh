@@ -54,4 +54,6 @@ nohup python ~/webapps/demos-web-gui/flask/web-gui.py > out.log 2>&1 &
 echo "source ~/webapps/demos-web-gui/set_credentials.sh" >> .profile
 
 # setup ec2 cleaning cron job
+sudo mkdir -p /mnt/logs
+sudo chown ubuntu:ubuntu /mnt/logs/
 sudo cp ~/webapps/demos-web-gui/cron/demos-web-gui.list /etc/cron.d/demoswebguicron

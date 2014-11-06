@@ -4,7 +4,7 @@ LOGGER_NAME = 'cleanup'
 
 logger = logging.getLogger(LOGGER_NAME)
 logger.setLevel(logging.DEBUG)
-fh = logging.FileHandler('%s.log' % LOGGER_NAME)
+fh = logging.FileHandler('/mnt/logs/%s.log' % LOGGER_NAME)
 fh.setLevel(logging.DEBUG)
 ch = logging.StreamHandler()
 ch.setLevel(logging.INFO)
