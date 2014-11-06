@@ -86,6 +86,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             'provisioner' => 'demos-web-gui-launcher',
             'email' => ENV['USER_EMAIL'],
             'launch_time' => Time.now.httpdate,
+            'unix_launch_time' => Time.now.to_i,
             'ttl' => ENV['TTL'],
             'app_port' => ENV['PORT'],
         }
