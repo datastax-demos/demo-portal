@@ -25,8 +25,8 @@ logger.addHandler(fh)
 logger.addHandler(ch)
 
 APP_PORTS = {
-    'connected_office': 3000,
-    'weather_sensors': 3000,
+    'connected-office': 3000,
+    'weather-sensors': 3000,
 }
 
 
