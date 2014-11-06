@@ -1,4 +1,4 @@
 #!/bin/sh
 
-source /home/ubuntu/webapps/demos-web-gui/set_credentials.sh
+. /home/ubuntu/webapps/demos-web-gui/set_credentials.sh
 /home/ubuntu/webapps/demos-web-gui/cron/cleanup >> /mnt/logs/cron.log 2>&1
