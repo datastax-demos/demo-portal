@@ -55,4 +55,11 @@ def configure_agents(container_id, stomp_address):
         '-e "s|stomp_interface:.*|stomp_interface: %s|g" '
         '/var/lib/datastax-agent/conf/address.yaml' % (
             container_id, stomp_address))
+
+    # this should work, but there exists a bug
     run('docker exec %s service datastax-agent restart' % container_id)
+
+    # workaround
+    run('docker exec %s pkill java' % container_id)
+    run('docker exec %s service dse start' % container_id)
+    run('docker exec %s service datastax-agent start' % container_id)
