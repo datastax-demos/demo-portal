@@ -47,7 +47,7 @@ def pem():
         return redirect(url_for('login'))
 
     pem_file = open(
-        '%/vagrant/keys/default-user.key' % top_level_directory).read()
+        '%s/vagrant/keys/default-user.key' % top_level_directory).read()
     return render_template('pem.jinja2',
                            pem_file=pem_file)
 
