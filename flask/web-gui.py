@@ -29,6 +29,9 @@ APP_PORTS = {
     'weather-sensors': 3000,
 }
 
+top_level_directory = os.path.dirname(
+    os.path.dirname(os.path.realpath(__file__)))
+
 
 @app.route('/')
 def index():
@@ -43,7 +46,10 @@ def pem():
     if not 'email' in session:
         return redirect(url_for('login'))
 
-    return render_template('pem.jinja2')
+    return render_template('pem.jinja2',
+                           pem_file=open(
+                               '%/vagrant/keys/default-user.key' %
+                               top_level_directory).read())
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -112,8 +118,6 @@ def launch():
         return redirect(url_for('login'))
 
     demo = request.form['demoChoice'].lower().replace(' ', '-')
-    current_directory = os.path.dirname(
-        os.path.dirname(os.path.realpath(__file__)))
     command = [
         'DATASTAX_USER=%s' % os.environ['DATASTAX_USER'],
         'DATASTAX_PASS=%s' % os.environ['DATASTAX_PASS'],
@@ -123,7 +127,7 @@ def launch():
         'DEMO=%s' % demo,
         'TTL=%s' % request.form['ttl'],
         'PORT=%s' % APP_PORTS[demo],
-        '%s/vagrant/single-node-demo/new-cluster' % current_directory,
+        '%s/vagrant/single-node-demo/new-cluster' % top_level_directory,
         '&'
     ]
 

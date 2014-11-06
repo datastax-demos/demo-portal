@@ -16,7 +16,6 @@ sudo dpkg -i webapps/demos-web-gui/vagrant/vagrant-packages/vagrant_1.6.5_x86_64
 # setup the ~/ssh keys. ssh-keyscan github.com before cloning. chmod 600 ~/.ssh.
 cp webapps/demos-web-gui/vagrant/keys/* .ssh
 ssh-keyscan github.com >> .ssh/known_hosts
-cat .ssh/default-user.key.pub >> .ssh/authorized_keys
 chmod 600 .ssh/*
 
 # needed to simulate a local dev environment
