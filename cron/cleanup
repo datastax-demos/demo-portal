@@ -48,9 +48,9 @@ def main(region='us-east-1'):
         raise Exception('$AWS_ACCESS_KEY and $AWS_ACCESS_KEY must be set')
 
     instances = overdue_instances(conn)
-    logger.info('Killing: ')
+    logger.info('Killing: %s...' % instances)
     kill_instances(conn, instances)
-    print instances
+    logger.info('Done.')
 
 
 if __name__ == '__main__':
