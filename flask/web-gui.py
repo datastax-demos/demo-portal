@@ -46,10 +46,10 @@ def pem():
     if not 'email' in session:
         return redirect(url_for('login'))
 
+    pem_file = open(
+        '%/vagrant/keys/default-user.key' % top_level_directory).read()
     return render_template('pem.jinja2',
-                           pem_file=open(
-                               '%/vagrant/keys/default-user.key' %
-                               top_level_directory).read())
+                           pem_file=pem_file)
 
 
 @app.route('/login', methods=['GET', 'POST'])
