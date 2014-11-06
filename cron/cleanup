@@ -1,0 +1,60 @@
+#!/usr/bin/env python
+
+import boto.ec2
+import os
+import time
+
+from datetime import datetime
+
+from create_logger import logger
+
+
+def overdue_instances(conn):
+    return_value = []
+    reservations = conn.get_all_reservations()
+    for reservation in reservations:
+        instances = reservation.instances
+        for instance in instances:
+            if 'provisioner' in instance.tags \
+                    and instance.tags['provisioner'] == \
+                            'demos-web-gui-launcher' \
+                    and instance.state != 'terminated':
+
+
+                launch_time = int(instance.tags['unix_launch_time'])
+                ttl = int(instance.tags['ttl'])
+
+                ttl = 0
+
+                if time.time() > launch_time + ttl * 60 * 60:
+                    return_value.append(instance.id)
+
+    return return_value
+
+
+def kill_instances(conn, instances):
+    if instances:
+        conn.terminate_instances(instance_ids=instances)
+
+
+def main(region='us-east-1'):
+    conn = boto.ec2.connect_to_region(region,
+                                      aws_access_key_id=os.environ[
+                                          'AWS_ACCESS_KEY'],
+                                      aws_secret_access_key=os.environ[
+                                          'AWS_SECRET_KEY'])
+
+    if not os.environ['AWS_ACCESS_KEY'] or not os.environ['AWS_ACCESS_KEY']:
+        raise Exception('$AWS_ACCESS_KEY and $AWS_ACCESS_KEY must be set')
+
+    instances = overdue_instances(conn)
+    logger.info('Killing: ')
+    kill_instances(conn, instances)
+    print instances
+
+
+if __name__ == '__main__':
+    try:
+        main()
+    except:
+        logger.exception('cron job failed.')
