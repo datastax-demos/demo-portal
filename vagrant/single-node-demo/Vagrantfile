@@ -23,15 +23,15 @@ unless ENV['USER_EMAIL']
 end
 
 unless ENV['DEMO']
-    ENV['DEMO'] = "weather-sensors"
+    ENV['DEMO'] = "weather_sensors"
 end
 
 unless ENV['TTL']
-    ENV['TTL'] = 2
+    ENV['TTL'] = "2"
 end
 
 unless ENV['PORT']
-    ENV['PORT'] = 3000
+    ENV['PORT'] = "3000"
 end
 
 unless ENV['AWS_AZ']
@@ -94,7 +94,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.provision :shell, path: "bootstrap.sh", privileged: false
     config.vm.provision :shell, path: "install-docker.sh", privileged: true
     config.vm.provision :shell,
-                        inline: "sudo webapps/demos-web-gui/vagrant/single-node-demo/"+ENV['DEMO'],
+                        inline: "sudo webapps/demos-web-gui/vagrant/single-node-demo/launch_demo --demo "+ENV['DEMO'],
                         privileged: false
 
     # public facing ports

@@ -11,4 +11,5 @@ web-gui.cfg
 bootstrap/
 bootstrapvalidator/
 jquery/
+launch_demo.log
 

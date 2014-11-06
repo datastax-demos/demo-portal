@@ -1,0 +1,52 @@
+#!/usr/bin/env python
+
+from launcher.create_logger import logger
+from launcher.docker import stop_all
+from launcher.parse_options import options
+from launcher.runner import run
+
+from launcher.containers.dse import launch_dse
+from launcher.containers.opscenter import launch_opscenter, configure_agents
+from launcher.containers.coffice import launch_connected_office
+from launcher.containers.weather import launch_weather_sensors
+
+
+def main():
+    stop_all()
+
+    dse_container = None
+    while True:
+        dse_container = launch_dse(localbuilds=options.localbuilds,
+                                   debug=options.debug,
+                                   spark=True, hadoop=True,
+                                   sharkserver=True, hiveserver=True)
+
+        try:
+            dse_container.ip
+            break
+        except:
+            existing_networking = dse_container.stderr.split('.')[0].split()[-1]
+            run('docker rm %s' % existing_networking)
+
+    logger.info(dse_container)
+
+    opscenter_container = launch_opscenter(localbuilds=options.localbuilds,
+                                           debug=options.debug,
+                                           cluster_ip=dse_container.ip)
+
+    logger.info(opscenter_container)
+    configure_agents(dse_container.container_id, opscenter_container.ip)
+
+    if options.demo == 'connected-office':
+        launch_connected_office(localbuilds=options.localbuilds,
+                                debug=options.debug,
+                                cluster_ip=dse_container.ip)
+
+    elif options.demo == 'weather-sensors':
+        launch_weather_sensors(localbuilds=options.localbuilds,
+                               debug=options.debug,
+                               cluster_ip=dse_container.ip)
+
+
+if __name__ == '__main__':
+    print main()
