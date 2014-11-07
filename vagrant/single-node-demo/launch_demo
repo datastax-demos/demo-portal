@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import time
 
 from launcher.create_logger import logger
 from launcher.docker import stop_all, wait_for_image
@@ -16,6 +17,10 @@ def main():
 
     if not options.localbuilds:
         pull_dse(options.localbuilds, wait=False)
+
+        # ensure dse has a head start to be first
+        time.sleep(5)
+
         pull_opscenter(options.localbuilds, wait=False)
 
         if options.demo == 'connected-office':
@@ -25,7 +30,6 @@ def main():
 
     dse_container = None
     while True:
-        wait_for_image('datastax-enterprise')
         dse_container = launch_dse(localbuilds=options.localbuilds,
                                    debug=options.debug,
                                    spark=True, hadoop=True,
@@ -41,7 +45,6 @@ def main():
 
     logger.info(dse_container)
 
-    wait_for_image('opscenter')
     opscenter_container = launch_opscenter(localbuilds=options.localbuilds,
                                            debug=options.debug,
                                            cluster_ip=dse_container.ip)
@@ -50,7 +53,6 @@ def main():
     configure_agents(dse_container.container_id, opscenter_container.ip)
 
     if options.demo == 'connected-office':
-        wait_for_image(options.demo)
         launch_connected_office(localbuilds=options.localbuilds,
                                 debug=options.debug,
                                 cluster_ip=dse_container.ip)
