@@ -13,4 +13,5 @@ bootstrap-confirmation/
 bootstrapvalidator/
 jquery/
 launch_demo.log
+*.pyc
 
