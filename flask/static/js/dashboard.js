@@ -51,14 +51,16 @@ function load_server_information() {
                             }))
                         );
                         $tr.appendTo('#launch-table');
-                        var $tr = $('<tr>').append(
-                            $('<td>'),
-                            $('<td>'),
-                            $('<td colspan="9">').text('ssh -i ~/.ssh/demo-launcher.pem' +
-                                ' -o StrictHostKeyChecking=no' +
-                                ' ubuntu@' + instance.ip_address)
-                        );
-                        $tr.appendTo('#launch-table');
+                        if (instance.ip_address) {
+                            var $tr = $('<tr>').append(
+                                $('<td>'),
+                                $('<td>'),
+                                $('<td colspan="9">').text('ssh -i ~/.ssh/demo-launcher.pem' +
+                                    ' -o StrictHostKeyChecking=no' +
+                                    ' ubuntu@' + instance.ip_address)
+                            );
+                            $tr.appendTo('#launch-table');
+                        }
 
                         // display confirmation messages when attempting to destroy machines
                         $('#confirmation_' + reservation).confirmation({
