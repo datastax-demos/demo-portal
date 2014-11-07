@@ -1,0 +1,30 @@
+{% extends "base.jinja2" %}
+
+{% block head %}
+    <link href="{{ url_for('static', filename='css/pem.css') }}"
+          rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <div class="col-md-offset-2 col-md-8">
+        <h3>TODO List</h3>
+        <ul>
+            <li>Display launch progress</li>
+            <li>Create administrator view</li>
+            <li><a href="https://datastax.jira.com/browse/OPSC-3834">OPSC-3834</a></li>
+            <li>Connected Office Improvements</li>
+            <ul>
+                <li>Update all replenishments</li>
+                <li>Fake wifi sensor data</li>
+                <li>Fake people tracking</li>
+            </ul>
+            <li>Weather Sensor Improvements</li>
+            <ul>
+                <li>Fix issues with cross node hive commands</li>
+            </ul>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block tail %}
+{% endblock %}
