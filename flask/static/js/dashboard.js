@@ -39,6 +39,8 @@ function load_server_information() {
                             })),
                             $('<td>').text(instance.ip_address),
                             $('<td>').html($('<a>', {
+                                id: 'confirmation_' + reservation,
+                                'data-toggle': 'confirmation',
                                 href: '/kill/' + reservation,
                                 text: 'X'
                             }))
@@ -51,6 +53,14 @@ function load_server_information() {
                                            ' ubuntu@' + instance.ip_address)
                         );
                         $tr.appendTo('#launch-table');
+
+                        // display confirmation messages when attempting to destroy machines
+                        $('#confirmation_' + reservation).confirmation({
+                            btnOkLabel: 'Destroy',
+                            placement: 'left',
+                            href: '/kill/' + reservation,
+                            title: 'Destroy cluster?'
+                        });
                     }
                 });
             });
@@ -71,5 +81,6 @@ $(document).ready(function () {
         }
     });
     load_server_information();
+
     setInterval(load_server_information, 10000);
 });

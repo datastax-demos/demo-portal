@@ -9,6 +9,7 @@ launched-clusters
 web-gui.py.log
 web-gui.cfg
 bootstrap/
+bootstrap-confirmation/
 bootstrapvalidator/
 jquery/
 launch_demo.log
