@@ -15,4 +15,5 @@ jquery/
 launch_demo.log
 *.pyc
 .idea/
+auth.conf
 
