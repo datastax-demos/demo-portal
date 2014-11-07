@@ -23,6 +23,9 @@ def main():
 
         pull_opscenter(options.localbuilds, wait=False)
 
+        # ensure opscenter has a head start before the demos
+        time.sleep(5)
+
         if options.demo == 'connected-office':
             pull_coffice(options.localbuilds, wait=False)
         elif options.demo == 'weather-sensors':
@@ -30,6 +33,7 @@ def main():
 
     dse_container = None
     while True:
+        wait_for_image('datastax-enterprise')
         dse_container = launch_dse(localbuilds=options.localbuilds,
                                    debug=options.debug,
                                    spark=True, hadoop=True,
@@ -45,6 +49,7 @@ def main():
 
     logger.info(dse_container)
 
+    wait_for_image('opscenter')
     opscenter_container = launch_opscenter(localbuilds=options.localbuilds,
                                            debug=options.debug,
                                            cluster_ip=dse_container.ip)
@@ -53,6 +58,7 @@ def main():
     configure_agents(dse_container.container_id, opscenter_container.ip)
 
     if options.demo == 'connected-office':
+        wait_for_image(options.demo)
         launch_connected_office(localbuilds=options.localbuilds,
                                 debug=options.debug,
                                 cluster_ip=dse_container.ip)
