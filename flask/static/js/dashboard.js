@@ -29,17 +29,28 @@ function load_server_information() {
                             $('<td>').text(instance.tags['name']),
                             $('<td>').text(instance.tags['ttl']),
                             $('<td>').text(instance.reservation_size),
-                            $('<td>').text(instance.state),
-                            $('<td>').html($('<a>', {
-                                href: 'http://' + app_address,
-                                text: app_address,
-                                target: '_blank'
-                            })),
-                            $('<td>').html($('<a>', {
-                                href: 'http://' + opscenter_address,
-                                text: opscenter_address,
-                                target: '_blank'
-                            })),
+                            $('<td>').text(instance.state)
+                        );
+                        if (instance.ip_address) {
+                            $tr.append(
+                                $('<td>').html($('<a>', {
+                                    href: 'http://' + app_address,
+                                    text: app_address,
+                                    target: '_blank'
+                                })),
+                                $('<td>').html($('<a>', {
+                                    href: 'http://' + opscenter_address,
+                                    text: opscenter_address,
+                                    target: '_blank'
+                                }))
+                            );
+                        } else {
+                            $tr.append(
+                                $('<td>'),
+                                $('<td>')
+                            );
+                        }
+                        $tr.append(
                             $('<td>').text(instance.ip_address),
                             $('<td>').text('$ ' + parseInt(instance.tags['ttl'])
                                 * 0.840 * instance.reservation_size),
