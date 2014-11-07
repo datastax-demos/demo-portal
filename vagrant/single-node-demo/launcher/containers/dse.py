@@ -5,12 +5,14 @@ from ..runner import run
 from ..create_logger import logger
 
 
+def pull_dse(localbuilds=False):
+    if not localbuilds:
+        run('docker pull datastaxdemos/datastax-enterprise &')
+
+
 def launch_dse(debug=False, localbuilds=False,
                spark=False, solr=False, hadoop=False,
                sharkserver=False, hiveserver=False):
-    if not localbuilds:
-        run('docker pull datastaxdemos/datastax-enterprise')
-
     launch_command = []
     launch_command.append('docker run')
 

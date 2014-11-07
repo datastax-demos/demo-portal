@@ -5,14 +5,23 @@ from launcher.docker import stop_all
 from launcher.parse_options import options
 from launcher.runner import run
 
-from launcher.containers.dse import launch_dse
-from launcher.containers.opscenter import launch_opscenter, configure_agents
-from launcher.containers.coffice import launch_connected_office
-from launcher.containers.weather import launch_weather_sensors
+from launcher.containers.dse import launch_dse, pull_dse
+from launcher.containers.opscenter import launch_opscenter, configure_agents, pull_opscenter
+from launcher.containers.coffice import launch_connected_office, pull_coffice
+from launcher.containers.weather import launch_weather_sensors, pull_weather
 
 
 def main():
     stop_all()
+
+    if not options.localbuilds:
+        pull_dse(options.localbuilds)
+        pull_opscenter(options.localbuilds)
+
+        if options.demo == 'connected-office':
+            pull_coffice(options.localbuilds)
+        elif options.demo == 'weather-sensors':
+            pull_weather(options.localbuilds)
 
     dse_container = None
     while True:

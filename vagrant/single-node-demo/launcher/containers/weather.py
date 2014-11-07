@@ -5,10 +5,12 @@ from ..runner import run
 from ..create_logger import logger
 
 
-def launch_weather_sensors(debug=False, localbuilds=False, cluster_ip=False):
+def pull_weather(localbuilds=False):
     if not localbuilds:
-        run('docker pull datastaxdemos/weather-sensors')
+        run('docker pull datastaxdemos/weather-sensors &')
 
+
+def launch_weather_sensors(debug=False, localbuilds=False, cluster_ip=False):
     launch_command = []
     launch_command.append('docker run')
 

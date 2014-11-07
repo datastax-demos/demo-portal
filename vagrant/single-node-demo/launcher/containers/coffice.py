@@ -5,10 +5,12 @@ from ..runner import run
 from ..create_logger import logger
 
 
-def launch_connected_office(debug=False, localbuilds=False, cluster_ip=False):
+def pull_coffice(localbuilds=False):
     if not localbuilds:
-        run('docker pull datastaxdemos/connected-office')
+        run('docker pull datastaxdemos/connected-office &')
 
+
+def launch_connected_office(debug=False, localbuilds=False, cluster_ip=False):
     launch_command = []
     launch_command.append('docker run')
 
