@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from launcher.create_logger import logger
-from launcher.docker import stop_all
+from launcher.docker import stop_all, wait_for_image
 from launcher.parse_options import options
 from launcher.runner import run
 
@@ -25,6 +25,7 @@ def main():
 
     dse_container = None
     while True:
+        wait_for_image('datastax-enterprise')
         dse_container = launch_dse(localbuilds=options.localbuilds,
                                    debug=options.debug,
                                    spark=True, hadoop=True,
@@ -39,6 +40,7 @@ def main():
 
     logger.info(dse_container)
 
+    wait_for_image('opscenter')
     opscenter_container = launch_opscenter(localbuilds=options.localbuilds,
                                            debug=options.debug,
                                            cluster_ip=dse_container.ip)
@@ -47,11 +49,13 @@ def main():
     configure_agents(dse_container.container_id, opscenter_container.ip)
 
     if options.demo == 'connected-office':
+        wait_for_image(options.demo)
         launch_connected_office(localbuilds=options.localbuilds,
                                 debug=options.debug,
                                 cluster_ip=dse_container.ip)
 
     elif options.demo == 'weather-sensors':
+        wait_for_image(options.demo)
         launch_weather_sensors(localbuilds=options.localbuilds,
                                debug=options.debug,
                                cluster_ip=dse_container.ip)

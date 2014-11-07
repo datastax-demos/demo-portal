@@ -7,7 +7,7 @@ from ..create_logger import logger
 
 def pull_opscenter(localbuilds=False):
     if not localbuilds:
-        run('docker pull datastaxdemos/opscenter')
+        run('docker pull datastaxdemos/opscenter &')
 
 
 def launch_opscenter(debug=False, localbuilds=False, cluster_ip=False):

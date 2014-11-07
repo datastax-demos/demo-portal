@@ -7,7 +7,7 @@ from ..create_logger import logger
 
 def pull_weather(localbuilds=False):
     if not localbuilds:
-        run('docker pull datastaxdemos/weather-sensors')
+        run('docker pull datastaxdemos/weather-sensors &')
 
 
 def launch_weather_sensors(debug=False, localbuilds=False, cluster_ip=False):
