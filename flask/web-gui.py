@@ -38,6 +38,9 @@ def index():
     if not 'email' in session:
         return redirect(url_for('login'))
 
+    # show all clusters if '?admin' present in url
+    session['admin'] = not request.args.get('admin', True)
+
     return render_template('dashboard.jinja2')
 
 
@@ -116,7 +119,8 @@ def server_information():
     if not 'email' in session:
         return redirect(url_for('login'))
 
-    instance_data = ec2.owned_instances(session['email'])
+    instance_data = ec2.owned_instances(session['email'],
+                                        admin=session['admin'])
     return jsonify(**instance_data)
 
 

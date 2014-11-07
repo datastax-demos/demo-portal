@@ -3,6 +3,7 @@ function load_server_information() {
     $.ajax('server-information')
         .done(function (reservations) {
             var $tr = $('<tr>').append(
+                $('<th>').text(''),
                 $('<th>').text('Launch Date'),
                 $('<th>').text('Demo'),
                 $('<th>').text('TTL'),
@@ -22,6 +23,7 @@ function load_server_information() {
                         opscenter_address = instance.ip_address + ':8888';
                         var $tr = $('<tr>').append(
 //                            $('<td>').text(instance.tags['launch_time']),
+                            $('<td>').text(instance.email),
                             $('<td>').text(instance.launch_time.replace('T', ' ')),
                             $('<td>').text(instance.tags['name']),
                             $('<td>').text(instance.tags['ttl']),
@@ -47,6 +49,7 @@ function load_server_information() {
                         );
                         $tr.appendTo('#launch-table');
                         var $tr = $('<tr>').append(
+                            $('<td>'),
                             $('<td>'),
                             $('<td colspan="8">').text('ssh -i ~/.ssh/demo-launcher.pem' +
                                            ' -o StrictHostKeyChecking=no' +
