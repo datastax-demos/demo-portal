@@ -5,9 +5,9 @@ from ..runner import run
 from ..create_logger import logger
 
 
-def pull_dse(localbuilds=False):
+def pull_dse(localbuilds=False, wait=True):
     if not localbuilds:
-        run('docker pull datastaxdemos/datastax-enterprise &')
+        run('docker pull datastaxdemos/datastax-enterprise', wait=wait)
 
 
 def launch_dse(debug=False, localbuilds=False,

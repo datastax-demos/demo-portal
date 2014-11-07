@@ -5,9 +5,9 @@ from ..runner import run
 from ..create_logger import logger
 
 
-def pull_coffice(localbuilds=False):
+def pull_coffice(localbuilds=False, wait=True):
     if not localbuilds:
-        run('docker pull datastaxdemos/connected-office &')
+        run('docker pull datastaxdemos/connected-office', wait=wait)
 
 
 def launch_connected_office(debug=False, localbuilds=False, cluster_ip=False):

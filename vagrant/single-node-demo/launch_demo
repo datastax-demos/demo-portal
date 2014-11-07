@@ -15,13 +15,13 @@ def main():
     stop_all()
 
     if not options.localbuilds:
-        pull_dse(options.localbuilds)
-        pull_opscenter(options.localbuilds)
+        pull_dse(options.localbuilds, wait=False)
+        pull_opscenter(options.localbuilds, wait=False)
 
         if options.demo == 'connected-office':
-            pull_coffice(options.localbuilds)
+            pull_coffice(options.localbuilds, wait=False)
         elif options.demo == 'weather-sensors':
-            pull_weather(options.localbuilds)
+            pull_weather(options.localbuilds, wait=False)
 
     dse_container = None
     while True:
@@ -32,6 +32,7 @@ def main():
                                    sharkserver=True, hiveserver=True)
 
         try:
+            # check if the response has the ip property
             dse_container.ip
             break
         except:

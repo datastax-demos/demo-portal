@@ -5,9 +5,9 @@ from ..runner import run
 from ..create_logger import logger
 
 
-def pull_opscenter(localbuilds=False):
+def pull_opscenter(localbuilds=False, wait=True):
     if not localbuilds:
-        run('docker pull datastaxdemos/opscenter &')
+        return run('docker pull datastaxdemos/opscenter', wait=wait)
 
 
 def launch_opscenter(debug=False, localbuilds=False, cluster_ip=False):
