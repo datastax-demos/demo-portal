@@ -44,6 +44,13 @@ function load_server_information() {
                             }))
                         );
                         $tr.appendTo('#launch-table');
+                        var $tr = $('<tr>').append(
+                            $('<td>'),
+                            $('<td>').text('ssh -i ~/.ssh/datastaxlauncher.pem' +
+                                           ' -o StrictHostKeyChecking=no' +
+                                           ' ubuntu@' + instance.ip_address)
+                        );
+                        $tr.appendTo('#launch-table');
                     }
                 });
             });
@@ -64,5 +71,5 @@ $(document).ready(function () {
         }
     });
     load_server_information();
-    setInterval( load_server_information, 10000 );
+    setInterval(load_server_information, 10000);
 });
