@@ -12,6 +12,7 @@ function load_server_information() {
                 $('<th>').text('Demo Addresses'),
                 $('<th>').text('OpsCenter'),
                 $('<th>').text('IP Addresses'),
+                $('<th>').text('Cost'),
                 $('<th>').text('')
             );
             $('#launch-table').html($tr);
@@ -40,6 +41,8 @@ function load_server_information() {
                                 target: '_blank'
                             })),
                             $('<td>').text(instance.ip_address),
+                            $('<td>').text('$ ' + parseInt(instance.tags['ttl'])
+                                * 0.840 * instance.reservation_size),
                             $('<td>').html($('<a>', {
                                 id: 'confirmation_' + reservation,
                                 'data-toggle': 'confirmation',
@@ -51,9 +54,9 @@ function load_server_information() {
                         var $tr = $('<tr>').append(
                             $('<td>'),
                             $('<td>'),
-                            $('<td colspan="8">').text('ssh -i ~/.ssh/demo-launcher.pem' +
-                                           ' -o StrictHostKeyChecking=no' +
-                                           ' ubuntu@' + instance.ip_address)
+                            $('<td colspan="9">').text('ssh -i ~/.ssh/demo-launcher.pem' +
+                                ' -o StrictHostKeyChecking=no' +
+                                ' ubuntu@' + instance.ip_address)
                         );
                         $tr.appendTo('#launch-table');
 

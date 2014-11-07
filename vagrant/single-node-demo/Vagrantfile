@@ -77,7 +77,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             region.ami = "ami-d0ba0cb8"
         end
 
-        aws.instance_type = "m3.xlarge"
+        aws.instance_type = "c3.4xlarge"
         aws.security_groups = ["demos-webgui-launcher", "dse", "demos-webapp"]
 
         require 'time'
