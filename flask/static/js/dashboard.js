@@ -46,7 +46,7 @@ function load_server_information() {
                         $tr.appendTo('#launch-table');
                         var $tr = $('<tr>').append(
                             $('<td>'),
-                            $('<td>').text('ssh -i ~/.ssh/datastaxlauncher.pem' +
+                            $('<td colspan="7">').text('ssh -i ~/.ssh/datastaxlauncher.pem' +
                                            ' -o StrictHostKeyChecking=no' +
                                            ' ubuntu@' + instance.ip_address)
                         );
