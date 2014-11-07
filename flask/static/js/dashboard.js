@@ -53,7 +53,7 @@ function load_server_information() {
                         $tr.append(
                             $('<td>').text(instance.ip_address),
                             $('<td>').text('$ ' + parseInt(instance.tags['ttl'])
-                                * 0.840 * instance.reservation_size),
+                                * instance.reservation_size * 0.420),
                             $('<td>').html($('<a>', {
                                 id: 'confirmation_' + reservation,
                                 'data-toggle': 'confirmation',
