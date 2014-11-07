@@ -48,7 +48,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             region.ami = "ami-d0ba0cb8"
         end
 
-        aws.instance_type = "m3.medium"
+        aws.instance_type = "m3.xlarge"
         aws.security_groups = ["demos-webgui-launcher"]
         aws.tags = {
             'Name' => 'Demos Web Gui Launcher (Do NOT Terminate)',
