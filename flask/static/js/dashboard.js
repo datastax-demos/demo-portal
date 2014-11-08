@@ -63,12 +63,10 @@ function load_server_information() {
                         );
                         $tr.appendTo('#launch-table');
 
-                        var $tr = $('<tr>').append(
-                            $('<td>'),
-                            $('<td colspan="2">').text(instance.tags['status'])
-                        );
                         if (instance.ip_address) {
-                            $tr.append(
+                            var $tr = $('<tr>').append(
+                                $('<td>'),
+                                $('<td colspan="2">').text(instance.tags['status']),
                                 $('<td colspan="8">').text('ssh -i ~/.ssh/demo-launcher.pem' +
                                     ' -o StrictHostKeyChecking=no' +
                                     ' ubuntu@' + instance.ip_address)
