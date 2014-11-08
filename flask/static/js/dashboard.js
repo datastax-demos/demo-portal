@@ -1,3 +1,12 @@
+function add_to_table(row, table, complete) {
+    if (complete) {
+        row.addClass('success');
+    } else {
+        row.addClass('warning');
+    }
+    row.appendTo(table);
+}
+
 function load_server_information() {
 
     $.ajax('server-information')
@@ -8,7 +17,7 @@ function load_server_information() {
                 $('<th>').text('Demo'),
                 $('<th>').text('TTL'),
                 $('<th>').text('Cluster Size'),
-                $('<th>').text('State'),
+//                $('<th>').text('State'),
                 $('<th>').text('Demo Addresses'),
                 $('<th>').text('OpsCenter'),
                 $('<th>').text('IP Addresses'),
@@ -28,8 +37,8 @@ function load_server_information() {
                             $('<td>').text(instance.launch_time.replace('T', ' ')),
                             $('<td>').text(instance.tags['name']),
                             $('<td>').text(instance.tags['ttl']),
-                            $('<td>').text(instance.reservation_size),
-                            $('<td>').text(instance.state)
+                            $('<td>').text(instance.reservation_size)
+//                            $('<td>').text(instance.state)
                         );
                         if (instance.ip_address) {
                             $tr.append(
@@ -61,18 +70,18 @@ function load_server_information() {
                                 text: 'X'
                             }))
                         );
-                        $tr.appendTo('#launch-table');
+                        add_to_table($tr, '#launch-table', instance.tags['status'] == 'Complete.');
 
                         if (instance.ip_address) {
                             var $tr = $('<tr>').append(
-                                $('<td class="info-row">'),
-                                $('<td class="info-row" colspan="2">').text(instance.tags['status']),
-                                $('<td class="info-row" colspan="8">').text('ssh -i ~/.ssh/demo-launcher.pem' +
+                                $('<td>').addClass('info-row'),
+                                $('<td colspan="2">').addClass('info-row').text(instance.tags['status']),
+                                $('<td colspan="8">').addClass('info-row').text('ssh -i ~/.ssh/demo-launcher.pem' +
                                     ' -o StrictHostKeyChecking=no' +
                                     ' ubuntu@' + instance.ip_address)
                             );
+                            add_to_table($tr, '#launch-table', instance.tags['status'] == 'Complete.');
                         }
-                        $tr.appendTo('#launch-table');
 
                         // display confirmation messages when attempting to destroy machines
                         $('#confirmation_' + reservation).confirmation({
