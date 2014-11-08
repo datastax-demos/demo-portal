@@ -67,6 +67,9 @@ def main():
                                            cluster_ip=dse_container.ip)
 
     logger.info(opscenter_container)
+
+    if instance_id:
+        tag(instance_id, 'status', 'configuring datastax-agents')
     configure_agents(dse_container.container_id, opscenter_container.ip)
 
     if options.demo == 'connected-office':
