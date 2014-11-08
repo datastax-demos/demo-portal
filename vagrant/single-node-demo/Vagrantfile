@@ -96,7 +96,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.provision :shell, path: "bootstrap.sh", privileged: false
     config.vm.provision :shell, path: "install-docker.sh", privileged: true
     config.vm.provision :shell,
-                        inline: "sudo webapps/demos-web-gui/vagrant/single-node-demo/launch_demo --demo "+ENV['DEMO'],
+                        inline: "AWS_ACCESS_KEY=" + ENV['AWS_ACCESS_KEY'] +
+                                " AWS_SECRET_KEY=" + ENV['AWS_SECRET_KEY'] +
+                                " sudo webapps/demos-web-gui/vagrant/single-node-demo/launch_demo --demo " +
+                                ENV['DEMO'],
                         privileged: false
 
     # public facing ports
