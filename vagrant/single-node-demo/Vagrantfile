@@ -89,7 +89,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             'unix_launch_time' => Time.now.to_i,
             'ttl' => ENV['TTL'],
             'app_port' => ENV['PORT'],
-            'status' => 'initializing',
+            'status' => 'Initializing...',
         }
     end
 
