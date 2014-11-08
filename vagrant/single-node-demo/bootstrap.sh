@@ -2,7 +2,8 @@
 
 # install prerequisites
 sudo apt-get update
-sudo apt-get install -y build-essential tree git-core
+sudo apt-get install -y build-essential tree git-core python-pip
+sudo pip install boto
 
 # setup the ~/ssh keys. ssh-keyscan github.com before cloning. chmod 600 ~/.ssh.
 cp webapps/demos-web-gui/vagrant/keys/* .ssh
