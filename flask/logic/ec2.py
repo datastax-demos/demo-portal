@@ -41,6 +41,18 @@ def owned_instances(email='joaquin@datastax.com', region='us-east-1',
     return dict(return_value)
 
 
+def tag(instance_id, key, value, region='us-east-1'):
+    conn = boto.ec2.connect_to_region(region,
+                                      aws_access_key_id=os.environ[
+                                          'AWS_ACCESS_KEY'],
+                                      aws_secret_access_key=os.environ[
+                                          'AWS_SECRET_KEY'])
+
+    reservations = conn.get_all_instances(instance_ids=[instance_id])
+    instance = reservations[0].instances[0]
+    instance.add_tag(key, value)
+
+
 def kill_reservation(reservationid, region='us-east-1'):
     conn = boto.ec2.connect_to_region(region,
                                       aws_access_key_id=os.environ[
@@ -51,6 +63,9 @@ def kill_reservation(reservationid, region='us-east-1'):
     reservation = \
         conn.get_all_instances(filters={'reservation-id': reservationid})[0]
     instances = [i.id for i in reservation.instances]
+
+    for instance in instances:
+        tag(instance, 'status', 'Terminating.')
 
     conn.terminate_instances(instance_ids=instances)
     return True

@@ -1,6 +1,8 @@
-function add_to_table(row, table, complete) {
+function add_to_table(row, table, complete, status) {
     if (complete) {
         row.addClass('success');
+    } else if (status == 'Terminating.') {
+        row.addClass('danger');
     } else {
         row.addClass('warning');
     }
@@ -71,7 +73,7 @@ function load_server_information() {
                                 text: 'X'
                             }))
                         );
-                        add_to_table($tr, '#launch-table', complete);
+                        add_to_table($tr, '#launch-table', complete, instance.tags['status']);
 
                         if (instance.ip_address) {
                             var $tr = $('<tr>').append(
@@ -81,7 +83,7 @@ function load_server_information() {
                                     ' -o StrictHostKeyChecking=no' +
                                     ' ubuntu@' + instance.ip_address)
                             );
-                            add_to_table($tr, '#launch-table', complete);
+                            add_to_table($tr, '#launch-table', complete, instance.tags['status']);
                         }
 
                         // display confirmation messages when attempting to destroy machines

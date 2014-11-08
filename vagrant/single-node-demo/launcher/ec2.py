@@ -1,7 +1,7 @@
 import boto.ec2
 import os
 
-from launcher.runner import run
+from runner import run
 
 
 def this_instance_id():
