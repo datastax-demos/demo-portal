@@ -1,3 +1,5 @@
+import os
+
 from optparse import OptionGroup, OptionParser
 
 
@@ -8,6 +10,10 @@ def read_options():
                         'Options for which demo to run.')
     group.add_option('--demo',
                      help='choose the Docker container to run')
+    group.add_option('--aws-access-key',
+                     help='set to allow instance tagging')
+    group.add_option('--aws-secret-key',
+                     help='set to allow instance tagging')
     parser.add_option_group(group)
 
     group = OptionGroup(parser, 'Node Type Options',
@@ -34,6 +40,10 @@ def read_options():
     parser.add_option_group(group)
 
     (options, args) = parser.parse_args()
+
+    # set for later use
+    os.environ['AWS_ACCESS_KEY'] = options.aws_access_key
+    os.environ['AWS_SECRET_KEY'] = options.aws_secret_key
 
     return options
 
