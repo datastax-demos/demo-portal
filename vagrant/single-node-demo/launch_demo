@@ -40,7 +40,7 @@ def main():
     while True:
         if instance_id:
             tag(instance_id, 'status',
-                'downloading datastax-enterprise container')
+                'Downloading Datastax Enterprise container...')
         wait_for_image('datastax-enterprise')
 
         dse_container = launch_dse(localbuilds=options.localbuilds,
@@ -59,7 +59,7 @@ def main():
     logger.info(dse_container)
 
     if instance_id:
-        tag(instance_id, 'status', 'downloading opscenter container')
+        tag(instance_id, 'status', 'Downloading OpsCenter container...')
     wait_for_image('opscenter')
 
     opscenter_container = launch_opscenter(localbuilds=options.localbuilds,
@@ -69,13 +69,13 @@ def main():
     logger.info(opscenter_container)
 
     if instance_id:
-        tag(instance_id, 'status', 'configuring datastax-agents')
+        tag(instance_id, 'status', 'Configuring Datastax Agents...')
     configure_agents(dse_container.container_id, opscenter_container.ip)
 
     if options.demo == 'connected-office':
         if instance_id:
             tag(instance_id, 'status',
-                'downloading %s container' % options.demo)
+                'Downloading "%s" container...' % options.demo)
         wait_for_image(options.demo)
 
         launch_connected_office(localbuilds=options.localbuilds,
@@ -85,7 +85,7 @@ def main():
     elif options.demo == 'weather-sensors':
         if instance_id:
             tag(instance_id, 'status',
-                'downloading %s container' % options.demo)
+                'Downloading "%s" container...' % options.demo)
         wait_for_image(options.demo)
 
         launch_weather_sensors(localbuilds=options.localbuilds,
@@ -93,7 +93,7 @@ def main():
                                cluster_ip=dse_container.ip)
 
     if instance_id:
-        tag(instance_id, 'status', 'waiting for cassandra to come online')
+        tag(instance_id, 'status', 'Waiting for Cassandra to come online...')
 
         while True:
             stdout = run('docker exec %s nodetool -h %s status' % (
@@ -101,9 +101,9 @@ def main():
             if 'UN' in stdout:
                 break
 
-        tag(instance_id, 'status', 'cassandra service active')
+        tag(instance_id, 'status', 'Cassandra service active...')
         time.sleep(10)
-        tag(instance_id, 'status', 'complete')
+        tag(instance_id, 'status', 'Complete.')
 
 
 if __name__ == '__main__':
