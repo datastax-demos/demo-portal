@@ -3,17 +3,22 @@ import time
 
 from launcher.create_logger import logger
 from launcher.docker import stop_all, wait_for_image
+from launcher.ec2 import this_instance_id, tag
 from launcher.parse_options import options
 from launcher.runner import run
 
 from launcher.containers.dse import launch_dse, pull_dse
-from launcher.containers.opscenter import launch_opscenter, configure_agents, pull_opscenter
+from launcher.containers.opscenter import launch_opscenter, configure_agents, \
+    pull_opscenter
 from launcher.containers.coffice import launch_connected_office, pull_coffice
 from launcher.containers.weather import launch_weather_sensors, pull_weather
 
 
 def main():
     stop_all()
+    instance_id = False
+    if not options.localbuilds:
+        instance_id = this_instance_id()
 
     if not options.localbuilds:
         pull_dse(options.localbuilds, wait=False)
@@ -33,7 +38,11 @@ def main():
 
     dse_container = None
     while True:
+        if instance_id:
+            tag(instance_id, 'status',
+                'downloading datastax-enterprise container')
         wait_for_image('datastax-enterprise')
+
         dse_container = launch_dse(localbuilds=options.localbuilds,
                                    debug=options.debug,
                                    spark=True, hadoop=True,
@@ -49,7 +58,10 @@ def main():
 
     logger.info(dse_container)
 
+    if instance_id:
+        tag(instance_id, 'status', 'downloading opscenter container')
     wait_for_image('opscenter')
+
     opscenter_container = launch_opscenter(localbuilds=options.localbuilds,
                                            debug=options.debug,
                                            cluster_ip=dse_container.ip)
@@ -58,16 +70,37 @@ def main():
     configure_agents(dse_container.container_id, opscenter_container.ip)
 
     if options.demo == 'connected-office':
+        if instance_id:
+            tag(instance_id, 'status',
+                'downloading %s container' % options.demo)
         wait_for_image(options.demo)
+
         launch_connected_office(localbuilds=options.localbuilds,
                                 debug=options.debug,
                                 cluster_ip=dse_container.ip)
 
     elif options.demo == 'weather-sensors':
+        if instance_id:
+            tag(instance_id, 'status',
+                'downloading %s container' % options.demo)
         wait_for_image(options.demo)
+
         launch_weather_sensors(localbuilds=options.localbuilds,
                                debug=options.debug,
                                cluster_ip=dse_container.ip)
+
+    if instance_id:
+        tag(instance_id, 'status', 'waiting for cassandra to come online')
+
+        while True:
+            stdout = run('docker exec %s nodetool -h %s status' % (
+                dse_container.container_id, dse_container.ip)).stdout
+            if 'UN' in stdout:
+                break
+
+        tag(instance_id, 'status', 'cassandra service active')
+        time.sleep(10)
+        tag(instance_id, 'status', 'complete')
 
 
 if __name__ == '__main__':
