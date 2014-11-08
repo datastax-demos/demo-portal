@@ -12,7 +12,7 @@ function load_server_information() {
                 $('<th>').text('Demo Addresses'),
                 $('<th>').text('OpsCenter'),
                 $('<th>').text('IP Addresses'),
-                $('<th>').text('Cost'),
+                $('<th>').text('Max Cost'),
                 $('<th>').text('')
             );
             $('#launch-table').html($tr);
@@ -65,9 +65,9 @@ function load_server_information() {
 
                         if (instance.ip_address) {
                             var $tr = $('<tr>').append(
-                                $('<td>'),
-                                $('<td colspan="2">').text(instance.tags['status']),
-                                $('<td colspan="8">').text('ssh -i ~/.ssh/demo-launcher.pem' +
+                                $('<td class="info-row">'),
+                                $('<td class="info-row" colspan="2">').text(instance.tags['status']),
+                                $('<td class="info-row" colspan="8">').text('ssh -i ~/.ssh/demo-launcher.pem' +
                                     ' -o StrictHostKeyChecking=no' +
                                     ' ubuntu@' + instance.ip_address)
                             );

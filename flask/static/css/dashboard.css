@@ -9,3 +9,7 @@
 #launch-table {
     margin-top: 25px;
 }
+
+.info-row {
+    border-top: 0 !important;
+}
