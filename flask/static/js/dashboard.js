@@ -29,6 +29,7 @@ function load_server_information() {
             $.each(reservations, function (reservation, instances) {
                 $.each(instances, function (j, instance) {
                     if (j == 0) {
+                        complete = instance.tags['status'] == 'Complete.';
                         app_address = instance.ip_address + ':' + instance.tags['app_port'];
                         opscenter_address = instance.ip_address + ':8888';
                         var $tr = $('<tr>').append(
@@ -40,7 +41,7 @@ function load_server_information() {
                             $('<td>').text(instance.reservation_size)
 //                            $('<td>').text(instance.state)
                         );
-                        if (instance.ip_address) {
+                        if (instance.ip_address && complete) {
                             $tr.append(
                                 $('<td>').html($('<a>', {
                                     href: 'http://' + app_address,
@@ -70,7 +71,7 @@ function load_server_information() {
                                 text: 'X'
                             }))
                         );
-                        add_to_table($tr, '#launch-table', instance.tags['status'] == 'Complete.');
+                        add_to_table($tr, '#launch-table', complete);
 
                         if (instance.ip_address) {
                             var $tr = $('<tr>').append(
@@ -80,7 +81,7 @@ function load_server_information() {
                                     ' -o StrictHostKeyChecking=no' +
                                     ' ubuntu@' + instance.ip_address)
                             );
-                            add_to_table($tr, '#launch-table', instance.tags['status'] == 'Complete.');
+                            add_to_table($tr, '#launch-table', complete);
                         }
 
                         // display confirmation messages when attempting to destroy machines
