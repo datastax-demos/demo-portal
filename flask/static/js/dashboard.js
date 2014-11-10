@@ -39,7 +39,19 @@ function load_server_information() {
                             $('<td>').text(instance.email),
                             $('<td>').text(instance.launch_time.replace('T', ' ')),
                             $('<td>').text(instance.tags['name']),
-                            $('<td>').text(instance.tags['ttl']),
+                            $('<td>').html($('<span>', {
+                                text: instance.tags['ttl'],
+                                class: 'ttl',
+                                'title': 'Update TTL',
+                                'data-placement': 'top',
+                                'data-toggle': 'popover',
+                                'data-content': '<form action="ttl" method="post">' +
+                                    '<input type="hidden" name="reservation-id"' +
+                                    'value="' + reservation + '">' +
+                                    '<input type="number" class="ttl-input" name="ttl"' +
+                                           'value="' + instance.tags['ttl'] + '">' +
+                                    '<button>Update</button></form>'
+                            })),
                             $('<td>').text(instance.reservation_size)
 //                            $('<td>').text(instance.state)
                         );
@@ -95,6 +107,10 @@ function load_server_information() {
                         });
                     }
                 });
+            });
+
+            $('.ttl').popover({
+                html: true
             });
         })
         .fail(function (response) {

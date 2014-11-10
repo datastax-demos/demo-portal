@@ -7,13 +7,14 @@ import pprint
 from collections import defaultdict
 
 
-def owned_instances(email='joaquin@datastax.com', region='us-east-1',
-                    admin=False):
-    conn = boto.ec2.connect_to_region(region,
-                                      aws_access_key_id=os.environ[
-                                          'AWS_ACCESS_KEY'],
-                                      aws_secret_access_key=os.environ[
-                                          'AWS_SECRET_KEY'])
+def owned_instances(email='joaquin@datastax.com', conn=False,
+                    region='us-east-1', admin=False):
+    if not conn:
+        conn = boto.ec2.connect_to_region(region,
+                                          aws_access_key_id=os.environ[
+                                              'AWS_ACCESS_KEY'],
+                                          aws_secret_access_key=os.environ[
+                                              'AWS_SECRET_KEY'])
 
     return_value = defaultdict(dict)
     reservations = conn.get_all_reservations()
@@ -41,32 +42,60 @@ def owned_instances(email='joaquin@datastax.com', region='us-east-1',
     return dict(return_value)
 
 
-def tag(instance_id, key, value, region='us-east-1'):
-    conn = boto.ec2.connect_to_region(region,
-                                      aws_access_key_id=os.environ[
-                                          'AWS_ACCESS_KEY'],
-                                      aws_secret_access_key=os.environ[
-                                          'AWS_SECRET_KEY'])
+def tag(instance_id, key, value, conn=False, region='us-east-1'):
+    if not conn:
+        conn = boto.ec2.connect_to_region(region,
+                                          aws_access_key_id=os.environ[
+                                              'AWS_ACCESS_KEY'],
+                                          aws_secret_access_key=os.environ[
+                                              'AWS_SECRET_KEY'])
 
     reservations = conn.get_all_instances(instance_ids=[instance_id])
     instance = reservations[0].instances[0]
     instance.add_tag(key, value)
 
 
-def kill_reservation(reservationid, region='us-east-1'):
-    conn = boto.ec2.connect_to_region(region,
-                                      aws_access_key_id=os.environ[
-                                          'AWS_ACCESS_KEY'],
-                                      aws_secret_access_key=os.environ[
-                                          'AWS_SECRET_KEY'])
+def get_reservation(reservation_id, conn=False, region='us-east-1'):
+    if not conn:
+        conn = boto.ec2.connect_to_region(region,
+                                          aws_access_key_id=os.environ[
+                                              'AWS_ACCESS_KEY'],
+                                          aws_secret_access_key=os.environ[
+                                              'AWS_SECRET_KEY'])
 
     reservation = \
-        conn.get_all_instances(filters={'reservation-id': reservationid})[0]
+        conn.get_all_instances(filters={'reservation-id': reservation_id})[0]
     instances = [i.id for i in reservation.instances]
 
-    for instance in instances:
-        tag(instance, 'status', 'Terminating.')
+    return instances
 
+
+def tag_reservation(reservation_id, key, value, conn=False, region='us-east-1'):
+    if not conn:
+        conn = boto.ec2.connect_to_region(region,
+                                          aws_access_key_id=os.environ[
+                                              'AWS_ACCESS_KEY'],
+                                          aws_secret_access_key=os.environ[
+                                              'AWS_SECRET_KEY'])
+
+    instances = get_reservation(reservation_id, conn=conn, region=region)
+
+    for instance in instances:
+        tag(instance, key, value, conn=conn, region=region)
+
+
+def kill_reservation(reservation_id, conn=False, region='us-east-1'):
+    if not conn:
+        conn = boto.ec2.connect_to_region(region,
+                                          aws_access_key_id=os.environ[
+                                              'AWS_ACCESS_KEY'],
+                                          aws_secret_access_key=os.environ[
+                                              'AWS_SECRET_KEY'])
+
+    tag_reservation(reservation_id, 'status', 'Terminating.',
+                    conn=conn, region=region)
+
+    instances = get_reservation(reservation_id, conn=conn, region=region)
     conn.terminate_instances(instance_ids=instances)
     return True
 

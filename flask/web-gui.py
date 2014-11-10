@@ -44,6 +44,20 @@ def index():
     return render_template('dashboard.jinja2')
 
 
+@app.route('/ttl', methods=['POST'])
+def ttl():
+    if not 'email' in session:
+        return redirect(url_for('login'))
+
+    ttl = int(request.form['ttl'])
+    reservation_id = request.form['reservation-id']
+
+    ec2.tag_reservation(reservation_id, 'ttl', ttl)
+    flash('TTL updated to %s.' % ttl)
+
+    return redirect(url_for('index'))
+
+
 @app.route('/pem')
 def pem():
     if not 'email' in session:
@@ -151,7 +165,8 @@ def launch():
         '&'
     ]
 
-    flash('Executing: %s' % ' '.join(command[4:]))
+    # flash('Executing: %s' % ' '.join(command[4:]))
+    flash('Launching new demo: %s.' % demo)
     logger.info('Executing: %s' % ' '.join(command))
     os.system(' '.join(command))
 

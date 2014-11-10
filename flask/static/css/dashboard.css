@@ -13,3 +13,11 @@
 .info-row {
     border-top: 0 !important;
 }
+
+.ttl {
+    cursor: pointer;
+}
+
+.ttl-input {
+    width: 40px;
+}
