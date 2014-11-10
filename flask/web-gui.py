@@ -63,6 +63,14 @@ def todo():
     return render_template('todo.jinja2')
 
 
+@app.route('/ctool')
+def ctool():
+    if not 'email' in session:
+        return redirect(url_for('login'))
+
+    return render_template('ctool.jinja2')
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
