@@ -59,9 +59,8 @@ def configure_agents(container_id, stomp_address):
             container_id, stomp_address))
 
     # this should work, but there may exist a bug
-    run('docker exec %s service datastax-agent restart' % container_id)
+    # run('docker exec %s service datastax-agent restart' % container_id)
 
-    # possible workaround
-    # run('docker exec %s pkill java' % container_id)
-    # run('docker exec %s service dse start' % container_id)
-    # run('docker exec %s service datastax-agent start' % container_id)
+    #  workaround
+    run('docker exec %s kill -9 $(cat /var/run/datastax-agent/datastax-agent.pid)' % container_id)
+    run('docker exec %s service datastax-agent start' % container_id)
