@@ -82,3 +82,7 @@ input:-webkit-autofill:focus {
 #submit-button {
     width: 100%;
 }
+
+.datacenter-input {
+    width: 100%;
+}

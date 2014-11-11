@@ -62,6 +62,8 @@ def configure_agents(container_id, stomp_address):
     # run('docker exec %s service datastax-agent restart' % container_id)
 
     #  workaround
-    run('docker exec %s kill -15 $(cat /var/run/datastax-agent/datastax-agent.pid)' % container_id)
-    run('docker exec %s kill -15 $(cat /var/run/datastax-agent/datastax-agent-monitor.pid)' % container_id)
+    datastax_agent_pid = run('docker exec %s cat /var/run/datastax-agent/datastax-agent.pid' % container_id).stdout
+    datastax_agent_pid_monitor = run('docker exec %s cat /var/run/datastax-agent/datastax-agent-monitor.pid' % container_id).stdout
+
+    run('docker exec %s kill -9 %s %s)' % (container_id, datastax_agent_pid, datastax_agent_pid_monitor))
     run('docker exec %s service datastax-agent start' % container_id)
