@@ -84,5 +84,19 @@ input:-webkit-autofill:focus {
 }
 
 .datacenter-input {
-    width: 100%;
+    width: 95%;
+}
+
+.advanced-setup-table {
+    width: 95%;
+    table-layout: fixed;
+    text-align: left;
+}
+
+.service-image {
+    width: 15px;
+}
+
+.cassandra {
+    font-size: 15px;
 }
