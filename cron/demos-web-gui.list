@@ -1,1 +1,1 @@
-*/30 * * * * ubuntu /home/ubuntu/webapps/demos-web-gui/cron/kicker
+*/1 * * * * ubuntu /home/ubuntu/webapps/demos-web-gui/cron/kicker
