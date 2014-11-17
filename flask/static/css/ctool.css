@@ -71,6 +71,10 @@ input:-webkit-autofill:focus {
     width: 130px
 }
 
+.operating-system-input {
+    width: 90px
+}
+
 #clustername {
     max-width: 146px;
 }

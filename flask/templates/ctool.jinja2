@@ -29,6 +29,20 @@
         <option value="f1-micro">
         <option value="g1-small">
     </datalist>
+    <datalist id="operating-system-list">
+        <option value="ubuntu">
+        <option value="precise">
+        <option value="trusty">
+        <option value="debian">
+        <option value="wheezy">
+        <option value="centos">
+        <option value="centos62">
+        <option value="centos63">
+        <option value="centos64">
+        <option value="centos65">
+        <option value="rhel">
+        <option value="rhel65">
+    </datalist>
     <datalist id="ten-count">
         <option value=1>
         <option value=2>
@@ -204,6 +218,51 @@
 
             <div class="row form-row">
                 <div class="col-xs-4 form-col">
+                    <label>Cloud Provider</label>
+                        <span class="radio">
+                            <label>
+                                <input type="radio" name="cloud-options"
+                                       id="cloud-gce"
+                                       value="cloud-gce"
+                                       checked>
+                                GCE
+                            </label>
+                        </span>
+                        <span class="radio">
+                            <label id="ec2-label"
+                                   data-content="Please consider running in EC2 to save on costs."
+                                   data-toggle="popover"
+                                   data-trigger="hover"
+                                   data-placement="right"
+                                   data-container="body">
+                                <input type="radio" name="cloud-options"
+                                       id="cloud-ec2"
+                                       value="cloud-ec2">
+                                EC2
+                            </label>
+                        </span>
+                </div>
+                <div class="col-xs-4 form-col">
+                    <label for="machine-type">
+                        Machine Type</label>
+                    <input id="machine-type" name="machine-type"
+                           class="machine-type-input"
+                           type="text" list="machine-type-list"
+                           value="n1-standard-2"/>
+                    <a href="https://cloud.google.com/compute/docs/machine-types"
+                       target="_blank">?</a>
+                </div>
+                <div class="col-xs-2 form-col">
+                    <label for="operating-system">OS</label>
+                    <input id="operating-system" name="operating-system"
+                           class="operating-system-input"
+                           type="text" list="operating-system-list"
+                           value="ubuntu"/>
+                </div>
+            </div>
+
+            <div class="row form-row">
+                <div class="col-xs-4 form-col">
                     <label>TTL</label>
                         <span>
                             <label for="ttl-days" class="sr-only">TTL
@@ -223,16 +282,6 @@
                                    type="tel" list="ten-count"/>
                             hours
                         </span>
-                </div>
-                <div class="col-xs-4 form-col">
-                    <label for="machine-type">
-                        Machine Type</label>
-                    <input id="machine-type" name="machine-type"
-                           class="machine-type-input"
-                           type="text" list="machine-type-list"
-                           value="n1-standard-2"/>
-                    <a href="https://cloud.google.com/compute/docs/machine-types"
-                       target="_blank">?</a>
                 </div>
                 <div class="col-xs-2 form-col">
                     <label>Max Cost</label>
@@ -404,6 +453,7 @@
 {% block tail %}
     <script src="{{ url_for('static',
                     filename='bootstrapvalidator/dist/js/bootstrapValidator.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap/js/popover.js') }}"></script>
     <script src="{{ url_for('static', filename='bootstrap/js/tooltip.js') }}"></script>
     <script src="{{ url_for('static', filename='bootstrap-confirmation/bootstrap-confirmation.js') }}"></script>
     <script src="{{ url_for('static', filename='js/ctool.js') }}"></script>

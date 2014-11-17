@@ -107,4 +107,5 @@ $(document).ready(function () {
         }
         e.preventDefault();
     });
+    $('#ec2-label').popover();
 });
