@@ -131,7 +131,7 @@ def request_password():
             return render_template('login.jinja2')
 
         flash('Password emailed.', 'info')
-        return render_template('login.jinja2')
+        return redirect('%s?email=%s' % (url_for('login'), safe_email))
     else:
         return render_template('login.jinja2')
 
