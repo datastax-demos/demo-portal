@@ -116,6 +116,8 @@ function load_server_information() {
         .fail(function (response) {
             // alert('error');
             console.log(response);
+            alert('Ensure you\'ve run `source set_credentials.sh`.');
+            window.location.replace('/error');
         });
 }
 
