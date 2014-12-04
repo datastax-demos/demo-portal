@@ -4,6 +4,8 @@ import os
 from flask import Flask, request, render_template, session, redirect, url_for, \
     jsonify, flash
 from flask.ext.mail import Mail, Message
+import time
+import re
 
 from logic import auth, ec2
 
@@ -77,10 +79,83 @@ def todo():
     return render_template('todo.jinja2')
 
 
+alphanumeric_strip = re.compile('[\W]+')
 @app.route('/ctool', methods=['GET', 'POST'])
 def ctool():
     if not 'email' in session:
         return redirect(url_for('login'))
+
+    # only process form if form has been submitted
+    if request.form:
+        # make a mutable dict copy
+        postvars = request.form.copy().to_dict()
+
+        # ensure jQuery doesn't fail
+        if not postvars['clustername']:
+            flash('Clustername must be set', 'error')
+            return render_template('ctool.jinja2')
+
+        # format the cluster_name and email as ctool will see it
+        postvars['ctool_name'] = '%s_%s_%s' % (session['email'],
+                                               postvars['clustername'],
+                                               time.time())
+        postvars['ctool_name'] = re.sub(alphanumeric_strip, '', postvars['ctool_name'])
+        postvars['clean_email'] = re.sub(alphanumeric_strip, '', session['email'])
+
+        # calculate the number of nodes requested
+        postvars['num_nodes'] = int(postvars['cassandra-nodes']) + \
+                                int(postvars['hadoop-nodes']) + \
+                                int(postvars['search-nodes']) + \
+                                int(postvars['spark-nodes'])
+
+        # TODO: Handle advanced setup
+        # TODO: Handle TTLs
+
+        # ensure jQuery doesn't fail
+        if postvars['num_nodes'] < 1:
+            flash('Must launch at least one node', 'error')
+            return render_template('ctool.jinja2')
+
+        # TODO: Use automaton library, not command line
+        launch_command = 'ctool' \
+                         ' --log-dir automaton_logs/%(clean_email)s' \
+                         ' --log-file %(ctool_name)s.log' \
+                         ' --provider %(cloud-options)s' \
+                         ' launch' \
+                         ' --instance-type %(instance-type)s' \
+                         ' --platform %(platform)s' \
+                         ' %(ctool_name)s' \
+                         ' %(num_nodes)s'
+        launch_command = launch_command % postvars
+        flash(launch_command)
+
+        # calculate install values
+        postvars['percent_analytics'] = float(postvars['hadoop-nodes']) / postvars['num_nodes']
+        postvars['percent_search'] = float(postvars['search-nodes']) / postvars['num_nodes']
+        postvars['percent_spark'] = float(postvars['spark-nodes']) / postvars['num_nodes']
+        postvars['spark_hadoop'] = '--spark-hadoop' if 'spark-and-hadoop' in postvars else ''
+
+        # TODO: Use automaton library, not command line
+        install_command = 'ctool install' \
+                          ' --percent-analytics %(percent_analytics)s' \
+                          ' --percent-search %(percent_search)s' \
+                          ' --percent-hadoop %(percent_spark)s' \
+                          ' %(spark_hadoop)s' \
+                          ' --version_or_branch %(dse-version)s' \
+                          ' --num-tokens %(num-of-tokens)s' \
+                          ' %(ctool_name)s' \
+                          ' %(product-name)s'
+        install_command = install_command % postvars
+        flash(install_command)
+
+        if postvars['opscenter-install'] == 'yes':
+            # TODO: Use automaton library, not command line
+            install_command = 'ctool install' \
+                              ' --version_or_branch %(opscenter-version)s' \
+                              ' %(ctool_name)s' \
+                              ' opscenter'
+            install_command = install_command % postvars
+            flash(install_command)
 
     return render_template('ctool.jinja2')
 

@@ -12,7 +12,7 @@
     <div class="col-xs-offset-0 col-xs-12">
     <h3 class="col-xs-offset-1">Launch Ctool Clusters</h3>
 
-    <datalist id="machine-type-list">
+    <datalist id="instance-type-list">
         <option value="n1-standard-1">
         <option value="n1-standard-2">
         <option value="n1-standard-4">
@@ -29,7 +29,7 @@
         <option value="f1-micro">
         <option value="g1-small">
     </datalist>
-    <datalist id="operating-system-list">
+    <datalist id="platform-list">
         <option value="ubuntu">
         <option value="precise">
         <option value="trusty">
@@ -86,7 +86,7 @@
                     <label>Product</label>
             <span class="radio">
                 <label>
-                    <input type="radio" name="product-options"
+                    <input type="radio" name="product-name"
                            id="enterprise" value="enterprise"
                            checked>
                     Enterprise
@@ -94,7 +94,7 @@
             </span>
             <span class="radio">
                 <label>
-                    <input type="radio" name="product-options"
+                    <input type="radio" name="product-name"
                            id="cassandra" value="cassandra">
                     Cassandra
                 </label>
@@ -103,7 +103,7 @@
                 <div class="col-xs-3 form-col">
                     <label for="dse-version">DSE Version</label>
                     <input id="dse-version" name="dse-version"
-                           placeholder="master"
+                           value="4.6.0"
                            class="version-input"
                            type="text" list="dse-version-list"/>
                 </div>
@@ -142,7 +142,7 @@
 
             <div class="row form-row text-center">
                 <a href="#" class="configure-datacenters">-- configure data
-                    centers --</a>
+                    centers (not yet coded)--</a>
             </div>
 
             <div class="row form-row advanced-datacenters">
@@ -187,18 +187,18 @@
                     <label>Opscenter</label>
                         <span class="radio">
                             <label>
-                                <input type="radio" name="opscenter-options"
-                                       id="opscenter-install"
-                                       value="opscenter-install"
+                                <input type="radio" name="opscenter-install"
+                                       id="opscenter-yes"
+                                       value="yes"
                                        checked>
                                 Installed
                             </label>
                         </span>
                         <span class="radio">
                             <label>
-                                <input type="radio" name="opscenter-options"
-                                       id="opscenter-noinstall"
-                                       value="opscenter-noinstall">
+                                <input type="radio" name="opscenter-install"
+                                       id="opscenter-no"
+                                       value="no">
                                 Not Installed
                             </label>
                         </span>
@@ -209,7 +209,7 @@
                                 Version</label>
                             <input id="opscenter-version"
                                    name="opscenter-version"
-                                   placeholder="master"
+                                   value="5.0.2-1"
                                    class="version-input"
                                    type="text" list="opscenter-version-list"/>
                         </span>
@@ -222,8 +222,8 @@
                         <span class="radio">
                             <label>
                                 <input type="radio" name="cloud-options"
-                                       id="cloud-gce"
-                                       value="cloud-gce"
+                                       id="gce"
+                                       value="gce"
                                        checked>
                                 GCE
                             </label>
@@ -236,27 +236,27 @@
                                    data-placement="right"
                                    data-container="body">
                                 <input type="radio" name="cloud-options"
-                                       id="cloud-ec2"
-                                       value="cloud-ec2">
+                                       id="ec2"
+                                       value="ec2">
                                 EC2
                             </label>
                         </span>
                 </div>
                 <div class="col-xs-4 form-col">
-                    <label for="machine-type">
-                        Machine Type</label>
-                    <input id="machine-type" name="machine-type"
-                           class="machine-type-input"
-                           type="text" list="machine-type-list"
+                    <label for="instance-type">
+                        Instance Type</label>
+                    <input id="instance-type" name="instance-type"
+                           class="instance-type-input"
+                           type="text" list="instance-type-list"
                            value="n1-standard-2"/>
                     <a href="https://cloud.google.com/compute/docs/machine-types"
                        target="_blank">?</a>
                 </div>
-                <div class="col-xs-2 form-col">
-                    <label for="operating-system">OS</label>
-                    <input id="operating-system" name="operating-system"
-                           class="operating-system-input"
-                           type="text" list="operating-system-list"
+                <div class="col-xs-3 form-col">
+                    <label for="platform">Platform</label>
+                    <input id="platform" name="platform"
+                           class="platform-input"
+                           type="text" list="platform-list"
                            value="ubuntu"/>
                 </div>
             </div>
@@ -385,8 +385,8 @@
                     </span>
             </div>
             <div class="col-xs-4 form-col">
-                <label for="machine-type">
-                    Machine Type</label>
+                <label for="instance-type">
+                    Instance Type</label>
                 n1-standard-2
                 <a href="https://cloud.google.com/compute/docs/machine-types"
                    target="_blank">?</a>

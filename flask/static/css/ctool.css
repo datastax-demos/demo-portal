@@ -67,11 +67,11 @@ input:-webkit-autofill:focus {
     width: 70px;
 }
 
-.machine-type-input {
+.instance-type-input {
     width: 130px
 }
 
-.operating-system-input {
+.platform-input {
     width: 90px
 }
 
