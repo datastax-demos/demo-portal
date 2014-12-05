@@ -12,22 +12,80 @@
     <div class="col-xs-offset-0 col-xs-12">
     <h3 class="col-xs-offset-1">Launch Ctool Clusters</h3>
 
-    <datalist id="instance-type-list">
+    <datalist id="instance-type-list-gce">
         <option value="n1-standard-1">
         <option value="n1-standard-2">
         <option value="n1-standard-4">
         <option value="n1-standard-8">
         <option value="n1-standard-16">
+
         <option value="n1-highmem-2">
         <option value="n1-highmem-4">
         <option value="n1-highmem-8">
         <option value="n1-highmem-16">
+
         <option value="n1-highcpu-2">
         <option value="n1-highcpu-4">
         <option value="n1-highcpu-8">
         <option value="n1-highcpu-16">
+
         <option value="f1-micro">
         <option value="g1-small">
+    </datalist>
+    <datalist id="instance-type-list-ec2">
+        <option value="CURRENT GEN">
+
+        <option value="t2.micro">
+        <option value="t2.small">
+        <option value="t2.medium">
+
+        <option value="m3.medium">
+        <option value="m3.large">
+        <option value="m3.xlarge">
+        <option value="m3.2xlarge">
+
+        <option value="c3.large">
+        <option value="c3.xlarge">
+        <option value="c3.2xlarge">
+        <option value="c3.4xlarge">
+        <option value="c3.8xlarge">
+
+        <option value="g2.2xlarge">
+
+        <option value="r3.large">
+        <option value="r3.xlarge">
+        <option value="r3.2xlarge">
+        <option value="r3.4xlarge">
+        <option value="r3.8xlarge">
+
+        <option value="i2.xlarge">
+        <option value="i2.2xlarge">
+        <option value="i2.4xlarge">
+        <option value="i2.8xlarge">
+
+        <option value="hs1.8xlarge">
+
+        <option value="PREVIOUS GEN">
+
+        <option value="t1.micro">
+
+        <option value="m1.small">
+        <option value="m1.medium">
+        <option value="m1.large">
+        <option value="m1.xlarge">
+
+        <option value="c1.medium">
+        <option value="c1.xlarge">
+        <option value="cc2.8xlarge">
+
+        <option value="cg1.4xlarge">
+
+        <option value="m2.xlarge">
+        <option value="m2.2xlarge">
+        <option value="m2.4xlarge">
+        <option value="cr1.8xlarge">
+
+        <option value="hi1.4xlarge">
     </datalist>
     <datalist id="platform-list">
         <option value="ubuntu">
@@ -82,7 +140,7 @@
                            placeholder="cluster name"
                            type="text" class="form-control">
                 </div>
-                <div class="col-xs-4 form-col">
+                <div class="col-xs-5 form-col">
                     <label>Product</label>
             <span class="radio">
                 <label>
@@ -103,7 +161,7 @@
                 <div class="col-xs-3 form-col">
                     <label for="dse-version">DSE Version</label>
                     <input id="dse-version" name="dse-version"
-                           value="4.6.0"
+                           value="4.6.0-1"
                            class="version-input"
                            type="text" list="dse-version-list"/>
                 </div>
@@ -146,12 +204,12 @@
             </div>
 
             <div class="row form-row advanced-datacenters">
-                <div class="col-xs-2 form-col datacenter-1-div"></div>
-                <div class="col-xs-2 form-col datacenter-2-div"></div>
-                <div class="col-xs-2 form-col datacenter-3-div"></div>
-                <div class="col-xs-2 form-col datacenter-4-div"></div>
-                <div class="col-xs-2 form-col datacenter-5-div"></div>
-                <div class="col-xs-2 form-col datacenter-6-div"></div>
+                <div class="col-xs-2 form-col dc1-div"></div>
+                <div class="col-xs-2 form-col dc2-div"></div>
+                <div class="col-xs-2 form-col dc3-div"></div>
+                <div class="col-xs-2 form-col dc4-div"></div>
+                <div class="col-xs-2 form-col dc5-div"></div>
+                <div class="col-xs-2 form-col dc6-div"></div>
             </div>
 
             <div class="row form-row">
@@ -209,7 +267,7 @@
                                 Version</label>
                             <input id="opscenter-version"
                                    name="opscenter-version"
-                                   value="5.0.2-1"
+                                   value="5.0.2"
                                    class="version-input"
                                    type="text" list="opscenter-version-list"/>
                         </span>
@@ -219,7 +277,7 @@
             <div class="row form-row">
                 <div class="col-xs-4 form-col">
                     <label>Cloud Provider</label>
-                        <span class="radio">
+                        <span id="gce" class="radio">
                             <label>
                                 <input type="radio" name="cloud-options"
                                        id="gce"
@@ -228,11 +286,10 @@
                                 GCE
                             </label>
                         </span>
-                        <span class="radio">
+                        <span id="ec2" class="radio">
                             <label id="ec2-label"
-                                   data-content="Please consider running in EC2 to save on costs."
-                                   data-toggle="popover"
-                                   data-trigger="hover"
+                                   title="Please consider running in EC2 to save on costs."
+                                   data-toggle="tooltip"
                                    data-placement="right"
                                    data-container="body">
                                 <input type="radio" name="cloud-options"
@@ -242,14 +299,30 @@
                             </label>
                         </span>
                 </div>
-                <div class="col-xs-4 form-col">
+                <div class="col-xs-5 form-col">
                     <label for="instance-type">
                         Instance Type</label>
                     <input id="instance-type" name="instance-type"
                            class="instance-type-input"
-                           type="text" list="instance-type-list"
+                           type="text" list="instance-type-list-gce"
                            value="n1-standard-2"/>
-                    <a href="https://cloud.google.com/compute/docs/machine-types"
+                    <a class="instance-type-help"
+                       title="GCE machine types"
+                       data-toggle="tooltip"
+                       data-container="body"
+                       href="https://cloud.google.com/compute/docs/machine-types"
+                       target="_blank">?</a>
+                    <a class="instance-type-help"
+                       title="EC2 current gen instance types"
+                       data-toggle="tooltip"
+                       data-container="body"
+                       href="http://aws.amazon.com/ec2/instance-types/#instance-type-matrix"
+                       target="_blank">?</a>
+                    <a class="instance-type-help"
+                       title="EC2 previous gen instance types"
+                       data-toggle="tooltip"
+                       data-container="body"
+                       href="http://aws.amazon.com/ec2/previous-generation/#Previous_Generation_Instance_Details"
                        target="_blank">?</a>
                 </div>
                 <div class="col-xs-3 form-col">
@@ -278,7 +351,7 @@
                                 Hours</label>
                             <input id="ttl-hours" name="ttl-hours"
                                    class="number-input"
-                                   value=8
+                                   value=2
                                    type="tel" list="ten-count"/>
                             hours
                         </span>
