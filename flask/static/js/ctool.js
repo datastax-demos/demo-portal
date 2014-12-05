@@ -1,9 +1,9 @@
 function create_advanced_datacenter_options() {
     for (var i = 1; i < 7; i++) {
-        var thisDiv = $('.datacenter-' + i + '-div');
+        var thisDiv = $('.dc' + i + '-div');
         var input = $('<input>', {
-            'id': 'datacenter-' + i,
-            'name': 'datacenter-' + i,
+            'id': 'dc' + i + '-name',
+            'name': 'dc' + i + '-name',
             'value': 'DC' + i,
             'class': 'datacenter-input',
             'type': 'text'
@@ -35,7 +35,7 @@ function create_advanced_datacenter_options() {
             })
         ));
 
-        for (var j = 1; j < 10 + 1; j++) {
+        for (var j = 0; j < 10; j++) {
             table.append($('<tr>').append(
                 $('<td>').html($('<input>', {
                     'type': 'radio',
@@ -82,9 +82,9 @@ $(document).ready(function () {
         var openHeight = parent[0].scrollHeight + 'px';
 
         if (minHeight == currentHeight) {
-            parent.animate({"height": openHeight}, {duration: "slow" });
+            parent.animate({"height": openHeight}, {duration: "slow"});
         } else {
-            parent.animate({"height": minHeight}, {duration: "slow" });
+            parent.animate({"height": minHeight}, {duration: "slow"});
         }
         e.preventDefault();
     });
@@ -107,5 +107,12 @@ $(document).ready(function () {
         }
         e.preventDefault();
     });
-    $('#ec2-label').popover();
+    $('#ec2-label').tooltip();
+    $('.instance-type-help').tooltip();
+    $('#gce').click(function (e) {
+        $('#instance-type').attr('list', 'instance-type-list-gce').val('n1-standard-2');
+    });
+    $('#ec2').click(function (e) {
+        $('#instance-type').attr('list', 'instance-type-list-ec2').val('m1.large');
+    });
 });
