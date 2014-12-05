@@ -92,6 +92,13 @@ def kill_reservation(reservation_id, conn=False, region='us-east-1'):
                                           aws_secret_access_key=os.environ[
                                               'AWS_SECRET_KEY'])
 
+    # ugly hack since I hit the top limit of ec2's tags
+    instances = get_reservation(reservation_id, conn=conn, region=region)
+    for instance in instances:
+        reservations = conn.get_all_instances(instance_ids=[instance])
+        instance = reservations[0].instances[0]
+        instance.remove_tag('launch_time')
+
     tag_reservation(reservation_id, 'status', 'Terminating.',
                     conn=conn, region=region)
 
