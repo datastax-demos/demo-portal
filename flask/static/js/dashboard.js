@@ -16,7 +16,7 @@ function load_server_information() {
             var $tr = $('<tr>').append(
                 $('<th>').text(''),
                 $('<th>').text('Launch Date'),
-                $('<th>').text('Demo'),
+                $('<th>').text('Cluster Name'),
                 $('<th>').text('TTL'),
                 $('<th>').text('Cluster Size'),
 //                $('<th>').text('State'),
@@ -29,6 +29,10 @@ function load_server_information() {
             $('#launch-table').html($tr);
 
             $.each(reservations, function (reservation, instances) {
+                ip_addresses = [];
+                $.each(instances, function (j, instance) {
+                    ip_addresses.push(instance.ip_address);
+                });
                 $.each(instances, function (j, instance) {
                     if (j == 0) {
                         complete = instance.tags['status'] == 'Complete.';
@@ -38,7 +42,11 @@ function load_server_information() {
 //                            $('<td>').text(instance.tags['launch_time']),
                             $('<td>').text(instance.email),
                             $('<td>').text(instance.launch_time.replace('T', ' ')),
-                            $('<td>').text(instance.tags['name']),
+                            $('<td>').text(function(){
+                                if ('ctool_name' in instance.tags)
+                                    return instance.tags['ctool_name'];
+                                return instance.tags['name'];
+                            }),
                             $('<td>').html($('<span>', {
                                 text: instance.tags['ttl'],
                                 class: 'ttl',
@@ -61,23 +69,39 @@ function load_server_information() {
                                     href: 'http://' + app_address,
                                     text: app_address,
                                     target: '_blank'
-                                })),
-                                $('<td>').html($('<a>', {
-                                    href: 'http://' + opscenter_address,
-                                    text: opscenter_address,
-                                    target: '_blank'
                                 }))
                             );
                         } else {
                             $tr.append(
-                                $('<td>'),
                                 $('<td>')
                             );
                         }
+                        if (instance.ip_address &&
+                            (complete || 'ctool_name' in instance.tags)) {
+                                $tr.append(
+                                    $('<td>').html($('<a>', {
+                                        href: 'http://' + opscenter_address,
+                                        text: opscenter_address,
+                                        target: '_blank'
+                                    }))
+                                );
+                        } else {
+                            $tr.append(
+                                $('<td>')
+                            );
+                        }
+
                         $tr.append(
-                            $('<td>').text(instance.ip_address),
-                            $('<td>').text('$ ' + parseInt(instance.tags['ttl'])
-                                * instance.reservation_size * 0.420),
+                            $('<td>').html(ip_addresses.join('<br/>')),
+                            $('<td>').html($('<span>', {
+                                'text': '$ ' + parseInt(instance.tags['ttl'])
+                                        * instance.reservation_size * 0.420,
+                                'class': 'max-cost',
+                                'title': 'The cost of running this cluster for '
+                                         + instance.tags['ttl'] + ' hours',
+                                'data-toggle': 'tooltip',
+                                'data-placement': 'top'
+                            })),
                             $('<td>').html($('<a>', {
                                 id: 'confirmation_' + reservation,
                                 'data-toggle': 'confirmation',
@@ -88,13 +112,25 @@ function load_server_information() {
                         add_to_table($tr, '#launch-table', complete, instance.tags['status']);
 
                         if (instance.ip_address) {
-                            var $tr = $('<tr>').append(
-                                $('<td>').addClass('info-row'),
-                                $('<td colspan="2">').addClass('info-row').text(instance.tags['status']),
-                                $('<td colspan="8">').addClass('info-row').text('ssh -i ~/.ssh/demo-launcher.pem' +
-                                    ' -o StrictHostKeyChecking=no' +
-                                    ' ubuntu@' + instance.ip_address)
-                            );
+                            if ('ctool_name' in instance.tags){
+                                var $tr = $('<tr>').append(
+                                    $('<td>').addClass('info-row'),
+                                    $('<td colspan="2">').addClass('info-row').html('<b>Get Pem:</b> pemfile ' + instance.tags['Name']),
+                                    $('<td colspan="8">').addClass('info-row').html('<b>Connect:</b> ssh ' +
+                                        '-i ~/.datastax/demos/ctool/' + instance.tags['Name'] + '.pem' +
+                                        ' -o StrictHostKeyChecking=no' +
+                                        ' automaton@' + instance.ip_address)
+                                );
+                            } else {
+                                var $tr = $('<tr>').append(
+                                    $('<td>').addClass('info-row'),
+                                    $('<td colspan="2">').addClass('info-row').html('<b>Status:</b> ' + instance.tags['status']),
+                                    $('<td colspan="8">').addClass('info-row').html('<b>Connect:</b> ssh ' +
+                                        '-i ~/.ssh/demo-launcher.pem' +
+                                        ' -o StrictHostKeyChecking=no' +
+                                        ' ubuntu@' + instance.ip_address)
+                                );
+                            }
                             add_to_table($tr, '#launch-table', complete, instance.tags['status']);
                         }
 
@@ -112,6 +148,7 @@ function load_server_information() {
             $('.ttl').popover({
                 html: true
             });
+            $('.max-cost').tooltip();
         })
         .fail(function (response) {
             // alert('error');
