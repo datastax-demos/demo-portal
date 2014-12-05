@@ -21,8 +21,8 @@ def overdue_instances(conn):
                     and instance.state != 'terminated':
 
 
-                launch_time = int(instance.tags['unix_launch_time'])
-                ttl = float(instance.tags['ttl'])
+                launch_time = float(instance.tags['unix_launch_time'])
+                ttl = int(instance.tags['ttl'])
 
                 if time.time() > launch_time + ttl * 60 * 60 - 60:
                     return_value.append(instance.id)
