@@ -197,7 +197,7 @@ def start_opscenter(postvars):
                         ' --provider %(cloud-options)s' \
                         ' start' \
                         ' %(ctool_name)s' \
-                        ' %(product-name)s'
+                        ' opscenter'
         start_command = start_command % postvars
         flash(start_command)
 
