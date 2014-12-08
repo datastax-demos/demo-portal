@@ -17,3 +17,8 @@ Host bdp
     HostName github.com
     User git
     IdentityFile ~/.ssh/bdp.key
+
+Host automaton
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/automaton.key

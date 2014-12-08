@@ -18,6 +18,9 @@ cp webapps/demos-web-gui/vagrant/keys/* .ssh
 ssh-keyscan github.com >> .ssh/known_hosts
 chmod 600 .ssh/*
 
+# setup automaton.conf
+cp webapps/demos-web-gui/vagrant/keys/.automaton.conf ~
+
 # needed to simulate a local dev environment
 sudo chown -R ubuntu:ubuntu webapps
 
@@ -34,6 +37,12 @@ vagrant plugin install vagrant-aws vagrant-awsinfo
     if [ ! -f vagrant/web-gui/Vagrantfile ]; then
         git checkout vagrant/web-gui/Vagrantfile
     fi
+)
+
+(
+    cd ~
+    git checkout git@automaton:riptano/automaton.git
+    echo "export PYTHONPATH=~/automaton:${PYTHONPATH}" >> .profile
 )
 
 # install web-gui requirements
