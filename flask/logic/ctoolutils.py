@@ -82,7 +82,7 @@ def launch(postvars):
     launch_command = 'ctool' \
                      ' --log-dir automaton_logs/%(clean_email)s' \
                      ' --log-file %(ctool_name)s.log' \
-                     ' --provider %(cloud-options)s' \
+                     ' --provider %(cloud-option)s' \
                      ' launch' \
                      ' --instance-type %(instance-type)s' \
                      ' --platform %(platform)s' \
@@ -112,7 +112,7 @@ def install(postvars):
             if 'spark-and-hadoop' in postvars else ''
 
         install_command = 'ctool ' \
-                          ' --provider %(cloud-options)s' \
+                          ' --provider %(cloud-option)s' \
                           ' install' \
                           ' --repo staging' \
                           ' --percent-analytics %(percent_analytics)s' \
@@ -135,7 +135,7 @@ def install(postvars):
             f.flush()
 
             install_command = 'ctool' \
-                              ' --provider %(cloud-options)s' \
+                              ' --provider %(cloud-option)s' \
                               ' install' \
                               ' --repo staging' \
                               ' --config-file %(config_file)s' \
@@ -159,7 +159,7 @@ def install(postvars):
 def install_opscenter(postvars):
     if postvars['opscenter-install'] == 'yes':
         install_command = 'ctool' \
-                          ' --provider %(cloud-options)s' \
+                          ' --provider %(cloud-option)s' \
                           ' install' \
                           ' --repo staging' \
                           ' --version_or_branch %(opscenter-version)s' \
@@ -177,7 +177,7 @@ def install_opscenter(postvars):
 
 def start(postvars):
     start_command = 'ctool' \
-                    ' --provider %(cloud-options)s' \
+                    ' --provider %(cloud-option)s' \
                     ' start' \
                     ' %(ctool_name)s' \
                     ' %(product-name)s'
@@ -194,7 +194,7 @@ def start(postvars):
 def start_opscenter(postvars):
     if postvars['opscenter-install'] == 'yes':
         start_command = 'ctool' \
-                        ' --provider %(cloud-options)s' \
+                        ' --provider %(cloud-option)s' \
                         ' start' \
                         ' %(ctool_name)s' \
                         ' opscenter'
@@ -206,3 +206,33 @@ def start_opscenter(postvars):
 
         if response.stderr:
             return response
+
+
+def start_agent(postvars):
+    if postvars['opscenter-install'] == 'yes':
+        start_command = 'ctool' \
+                        ' --provider %(cloud-option)s' \
+                        ' run' \
+                        ' %(ctool_name)s' \
+                        ' all' \
+                        ' "sudo service datastax-agent start"'
+        start_command = start_command % postvars
+        flash(start_command)
+
+        logger.info('Executing: %s', start_command)
+        response = execute.run(start_command)
+
+        if response.stderr:
+            return response
+
+
+def pemfile(request):
+    run_command = 'ctool' \
+                    ' --provider %(cloud-option)s' \
+                    ' dump_key' \
+                    ' %(cluster-id)s'
+    run_command = run_command % request
+
+    logger.info('Executing: %s', run_command)
+    response = execute.run(run_command)
+    return response

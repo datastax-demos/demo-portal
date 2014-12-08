@@ -2,7 +2,7 @@ import logging
 import os
 
 from flask import Flask, request, render_template, session, redirect, url_for, \
-    jsonify, flash
+    jsonify, flash, make_response
 from flask.ext.mail import Mail, Message
 
 from logic import auth, ec2, execute, ctoolutils
@@ -130,7 +130,22 @@ def ctool():
             flash('Error seen on start: %s' % str(response), 'error')
             return render_template('ctool.jinja2')
 
+        response = ctoolutils.start_agent(postvars)
+        if response:
+            flash('Error seen on start: %s' % str(response), 'error')
+            return render_template('ctool.jinja2')
+
     return render_template('ctool.jinja2')
+
+
+@app.route('/pemfile', methods=['GET', 'POST'])
+def pemfile():
+    if request.method == 'GET':
+        return redirect('/')
+
+    pem_file = ctoolutils.pemfile(request.form)
+    response = make_response(pem_file.stdout)
+    return response
 
 
 @app.route('/login', methods=['GET', 'POST'])
