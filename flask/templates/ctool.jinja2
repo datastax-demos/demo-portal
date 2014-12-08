@@ -278,23 +278,28 @@
                 <div class="col-xs-4 form-col">
                     <label>Cloud Provider</label>
                         <span id="gce" class="radio">
-                            <label>
+                            <label title="Not currently implemented. Planned."
+                                   data-toggle="tooltip"
+                                   data-placement="left"
+                                   data-container="body">
                                 <input type="radio" name="cloud-options"
                                        id="gce"
                                        value="gce"
-                                       checked>
+                                       checked
+                                       disabled>
                                 GCE
                             </label>
                         </span>
                         <span id="ec2" class="radio">
                             <label id="ec2-label"
-                                   title="Please consider running in EC2 to save on costs."
+                                   title="Please consider running in GCE to save on costs."
                                    data-toggle="tooltip"
                                    data-placement="right"
                                    data-container="body">
                                 <input type="radio" name="cloud-options"
                                        id="ec2"
-                                       value="ec2">
+                                       value="ec2"
+                                       checked>
                                 EC2
                             </label>
                         </span>
@@ -304,8 +309,8 @@
                         Instance Type</label>
                     <input id="instance-type" name="instance-type"
                            class="instance-type-input"
-                           type="text" list="instance-type-list-gce"
-                           value="n1-standard-2"/>
+                           type="text" list="instance-type-list-ec2"
+                           value="m1.large"/>
                     <a class="instance-type-help"
                        title="GCE machine types"
                        data-toggle="tooltip"
