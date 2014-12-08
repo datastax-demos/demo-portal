@@ -41,8 +41,12 @@ vagrant plugin install vagrant-aws vagrant-awsinfo
 
 (
     cd ~
-    git checkout git@automaton:riptano/automaton.git
+    git clone automaton:riptano/automaton.git
     echo "export PYTHONPATH=~/automaton:${PYTHONPATH}" >> .profile
+    echo "export PATH=~/automaton/bin:${PATH}" >> .profile
+
+    cd automaton
+    git pull
 )
 
 # install web-gui requirements
