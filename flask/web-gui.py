@@ -98,8 +98,6 @@ def ctool():
 
         postvars = ctoolutils.process(postvars, session)
 
-        # TODO: Add status here
-
         # ensure jQuery doesn't fail
         if postvars['num_nodes'] < 1:
             flash('Must launch at least one node', 'error')

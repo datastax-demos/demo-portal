@@ -63,7 +63,7 @@ function load_server_information() {
                             $('<td>').text(instance.reservation_size)
 //                            $('<td>').text(instance.state)
                         );
-                        if (instance.ip_address && complete) {
+                        if (instance.tags['app_port'] && instance.ip_address && complete) {
                             $tr.append(
                                 $('<td>').html($('<a>', {
                                     href: 'http://' + app_address,
@@ -112,7 +112,7 @@ function load_server_information() {
                         add_to_table($tr, '#launch-table', complete, instance.tags['status']);
 
                         if (instance.ip_address) {
-                            var $tr = $('<tr>').append(
+                            var $tr = $('<tr>').addClass('info-row').append(
                                 $('<td>').addClass('info-row'),
                                 $('<td colspan="2">').addClass('info-row').html('<b>Status:</b> ' + instance.tags['status']));
                             if ('ctool_name' in instance.tags){
