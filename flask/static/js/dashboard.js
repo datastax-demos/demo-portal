@@ -117,7 +117,7 @@ function load_server_information() {
                                 $('<td colspan="2">').addClass('info-row').html('<b>Status:</b> ' + instance.tags['status']));
                             if ('ctool_name' in instance.tags){
                                 $tr.append($('<td colspan="8">').addClass('info-row').html(
-                                        '<b>Get Pem:</b> ' +
+                                        '<b>Get Pem Command:</b> ' +
                                         '<a href="/static/bin/demo-pem">demo-pem</a> ec2 ' +
                                         '<a href="/pemfile?cloud-option=ec2&cluster-id=' + instance.tags['Name'] + '">' +
                                             instance.tags['Name'] + '</a><br>' +
