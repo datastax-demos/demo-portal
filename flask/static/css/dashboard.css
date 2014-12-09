@@ -11,13 +11,17 @@
 }
 
 tr {
-    border-top: 2px;
     border-color: black;
-    border-top-style: solid;
+    border-style: solid none none none;
+}
+
+tr.info-row {
+    border-style: none none solid none;
 }
 
 .info-row {
     border-top: 0 !important;
+    border-top-style: none !important;
 }
 
 .ttl {

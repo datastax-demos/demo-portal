@@ -1,10 +1,10 @@
 function add_to_table(row, table, complete, status) {
     if (complete) {
-        row.addClass('success');
+        //row.addClass('success');
     } else if (status == 'Terminating.') {
         row.addClass('danger');
     } else {
-        row.addClass('warning');
+        //row.addClass('warning');
     }
     row.appendTo(table);
 }
@@ -113,8 +113,14 @@ function load_server_information() {
 
                         if (instance.ip_address) {
                             var $tr = $('<tr>').addClass('info-row').append(
-                                $('<td>').addClass('info-row'),
-                                $('<td colspan="2">').addClass('info-row').html('<b>Status:</b> ' + instance.tags['status']));
+                                $('<td>').addClass('info-row'));
+                            var $td = $('<td colspan="2">').addClass('info-row').html('<b>Status:</b> ' + instance.tags['status']);
+                            if (complete) {
+                                $td.addClass('success');
+                            } else {
+                                $td.addClass('warning');
+                            }
+                            $tr.append($td);
                             if ('ctool_name' in instance.tags){
                                 $tr.append($('<td colspan="8">').addClass('info-row').html(
                                         '<b>Get Pem Command:</b> ' +
