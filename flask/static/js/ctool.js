@@ -107,6 +107,12 @@ $(document).ready(function () {
         }
         e.preventDefault();
     });
+
+    $('#submit-button').click(function (e) {
+        $(this).attr('disabled', true);
+        $(this).text('ctool calls are being made. Please wait...');
+    });
+
     $('#ec2-label').tooltip();
     $('.instance-type-help').tooltip();
     $('#gce').click(function (e) {
