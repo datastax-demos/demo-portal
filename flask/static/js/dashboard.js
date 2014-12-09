@@ -28,7 +28,8 @@ function load_server_information() {
             );
             $('#launch-table').html($tr);
 
-            $.each(reservations, function (reservation, instances) {
+            $.each(reservations.sorted, function (timestamp, reservation) {
+                instances = reservations[reservation];
                 ip_addresses = [];
                 $.each(instances, function (j, instance) {
                     ip_addresses.push(instance.ip_address);
@@ -91,8 +92,13 @@ function load_server_information() {
                             );
                         }
 
+                        if (instance.ip_address) {
+                            $tr.append($('<td>').html(ip_addresses.join('<br/>')));
+                        } else {
+                            $tr.append($('<td>'));
+                        }
+
                         $tr.append(
-                            $('<td>').html(ip_addresses.join('<br/>')),
                             $('<td>').html($('<span>', {
                                 'text': '$ ' + parseInt(instance.tags['ttl'])
                                         * instance.reservation_size * 0.420,
@@ -123,14 +129,15 @@ function load_server_information() {
                             $tr.append($td);
                             if ('ctool_name' in instance.tags){
                                 $tr.append($('<td colspan="8">').addClass('info-row').html(
-                                        '<b>Get Pem Command:</b> ' +
-                                        '<a href="/static/bin/demo-pem">demo-pem</a> ec2 ' +
-                                        '<a href="/pemfile?cloud-option=ec2&cluster-id=' + instance.tags['Name'] + '">' +
-                                            instance.tags['Name'] + '</a><br>' +
-                                        '<b>Connect:</b> ssh ' +
+                                        '<b>Direct Download:</b> <a href="/pemfile?cloud-option=ec2&cluster-id=' + instance.tags['Name'] + '">' +
+                                            instance.tags['Name'] + '.pem</a><br>' +
+                                        '<b><a href="/static/bin/demo-pem">demo-pem</a> Command:</b> ' +
+                                        '<input class="command1" value="demo-pem ec2 ' +
+                                            instance.tags['Name'] + '" /><br>' +
+                                        '<b>Connect:</b> <input class="command2" value="ssh ' +
                                         '-i ~/.datastax/demos/ctool/' + instance.tags['Name'] + '.pem' +
                                         ' -o StrictHostKeyChecking=no' +
-                                        ' automaton@' + instance.ip_address)
+                                        ' automaton@' + instance.ip_address + '">')
                                 );
                             } else {
                                 $tr.append($('<td colspan="8">').addClass('info-row').html('<b>Connect:</b> ssh ' +
@@ -151,6 +158,14 @@ function load_server_information() {
                         });
                     }
                 });
+            });
+
+            $('.command1').click(function() {
+                $(this).select();
+            });
+
+            $('.command2').click(function() {
+                $(this).select();
             });
 
             $('.ttl').popover({

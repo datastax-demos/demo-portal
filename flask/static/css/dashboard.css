@@ -8,6 +8,9 @@
 
 #launch-table {
     margin-top: 25px;
+    border-bottom: 3px;
+    border-bottom-color: black;
+    border-bottom-style: solid;
 }
 
 tr {
@@ -31,6 +34,16 @@ tr.info-row {
 
 .ttl-input {
     width: 80px;
+}
+
+.command1 {
+    border: none;
+    width: 400px;
+}
+
+.command2 {
+    border: none;
+    width: 900px;
 }
 
 /* Overwrite bootstrap.css with vibrant colors */

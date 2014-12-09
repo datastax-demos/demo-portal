@@ -53,13 +53,13 @@ function create_advanced_datacenter_options() {
                     'type': 'radio',
                     'id': 'dc' + i + '-node' + j,
                     'name': 'dc' + i + '-node' + j,
-                    'value': 'solr'
+                    'value': 'search'
                 })),
                 $('<td>').html($('<input>', {
                     'type': 'radio',
                     'id': 'dc' + i + '-node' + j,
                     'name': 'dc' + i + '-node' + j,
-                    'value': 'hadoop'
+                    'value': 'analytics'
                 })),
                 $('<td>').html($('<input>', {
                     'type': 'radio',

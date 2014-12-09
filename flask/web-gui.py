@@ -220,6 +220,15 @@ def server_information():
 
     instance_data = ec2.owned_instances(session['email'],
                                         admin=session['admin'])
+
+    instance_data['sorted'] = {}
+    for key in instance_data:
+        try:
+            timestamp = instance_data[key]['0']['launch_time']
+            instance_data['sorted'][timestamp] = key
+        except:
+            continue
+
     return jsonify(**instance_data)
 
 

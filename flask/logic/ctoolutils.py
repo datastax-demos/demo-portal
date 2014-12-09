@@ -102,6 +102,10 @@ def launch(postvars):
 def install(postvars, reservation_id):
     ec2.tag_reservation(reservation_id, 'status',
                         'Installing %(product-name)s...' % postvars)
+
+    postvars['spark_hadoop'] = '--spark-hadoop' \
+        if 'spark-and-hadoop' in postvars else ''
+
     if len(postvars['advanced_nodes']['cluster']['nodes']) == 0:
         # calculate install values
         postvars['percent_analytics'] = float(postvars['hadoop-nodes']) / \
@@ -110,8 +114,6 @@ def install(postvars, reservation_id):
                                      postvars['num_nodes']
         postvars['percent_spark'] = float(postvars['spark-nodes']) / \
                                     postvars['num_nodes']
-        postvars['spark_hadoop'] = '--spark-hadoop' \
-            if 'spark-and-hadoop' in postvars else ''
 
         install_command = 'ctool ' \
                           ' --provider %(cloud-option)s' \
