@@ -28,7 +28,7 @@ def process(postvars, session):
 
     # create tags
     postvars['tags'] = {
-        'name': 'ctool cluster',
+        'status': 'Initializing...',
         'ctool_name': postvars['clustername'],
         'provisioner': 'demos-web-gui-launcher',
         'email': session['email'],

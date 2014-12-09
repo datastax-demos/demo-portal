@@ -112,23 +112,22 @@ function load_server_information() {
                         add_to_table($tr, '#launch-table', complete, instance.tags['status']);
 
                         if (instance.ip_address) {
+                            var $tr = $('<tr>').append(
+                                $('<td>').addClass('info-row'),
+                                $('<td colspan="2">').addClass('info-row').html('<b>Status:</b> ' + instance.tags['status']));
                             if ('ctool_name' in instance.tags){
-                                var $tr = $('<tr>').append(
-                                    $('<td>').addClass('info-row'),
-                                    $('<td colspan="2">').addClass('info-row').html('<b>Get Pem:</b> ' +
+                                $tr.append($('<td colspan="8">').addClass('info-row').html(
+                                        '<b>Get Pem:</b> ' +
                                         '<a href="/static/bin/demo-pem">demo-pem</a> ec2 ' +
                                         '<a href="/pemfile?cloud-option=ec2&cluster-id=' + instance.tags['Name'] + '">' +
-                                            instance.tags['Name'] + '</a>'),
-                                    $('<td colspan="8">').addClass('info-row').html('<b>Connect:</b> ssh ' +
+                                            instance.tags['Name'] + '</a><br>' +
+                                        '<b>Connect:</b> ssh ' +
                                         '-i ~/.datastax/demos/ctool/' + instance.tags['Name'] + '.pem' +
                                         ' -o StrictHostKeyChecking=no' +
                                         ' automaton@' + instance.ip_address)
                                 );
                             } else {
-                                var $tr = $('<tr>').append(
-                                    $('<td>').addClass('info-row'),
-                                    $('<td colspan="2">').addClass('info-row').html('<b>Status:</b> ' + instance.tags['status']),
-                                    $('<td colspan="8">').addClass('info-row').html('<b>Connect:</b> ssh ' +
+                                $tr.append($('<td colspan="8">').addClass('info-row').html('<b>Connect:</b> ssh ' +
                                         '-i ~/.ssh/demo-launcher.pem' +
                                         ' -o StrictHostKeyChecking=no' +
                                         ' ubuntu@' + instance.ip_address)
