@@ -14,6 +14,21 @@
             <br/>
             Protect the file using: chmod 600 ~/.ssh/demo-launcher.pem
         </p>
+        <h3>demo-pem</h3>
+        <p>
+            Complete the following instructions to properly setup the
+            <a href="/static/bin/demo-pem">demo-pem</a> tool:
+
+            <ol>
+                <li>
+                    chmod +x &lt;path-to-demo-pem-file&gt;
+                </li>
+                <li>
+                    add the following line to your `~/.profile` or `~/.bashrc`:<br>
+                    export PATH=&lt;path-to-directory-containing-demo-pem-file&gt;:$PATH
+                </li>
+            </ol>
+        </p>
     </div>
 {% endblock %}
 

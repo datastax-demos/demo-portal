@@ -140,11 +140,22 @@ def ctool():
 
 @app.route('/pemfile', methods=['GET', 'POST'])
 def pemfile():
-    if request.method == 'GET':
+    if request.method == 'POST':
+        vars = request.form
+    else:
+        vars = request.args
+
+    pem_file = ctoolutils.pemfile(vars)
+
+    if request.method == 'GET' and not pem_file.stdout \
+            or 'error' in pem_file.stdout:
+        flash('Key not found: %s' % str(pem_file), 'error')
         return redirect('/')
 
-    pem_file = ctoolutils.pemfile(request.form)
     response = make_response(pem_file.stdout)
+    response.headers[
+        "Content-Disposition"] = "attachment; filename=%s.pem" % vars[
+        'cluster-id']
     return response
 
 

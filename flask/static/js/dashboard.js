@@ -115,7 +115,10 @@ function load_server_information() {
                             if ('ctool_name' in instance.tags){
                                 var $tr = $('<tr>').append(
                                     $('<td>').addClass('info-row'),
-                                    $('<td colspan="2">').addClass('info-row').html('<b>Get Pem:</b> pemfile ' + instance.tags['Name']),
+                                    $('<td colspan="2">').addClass('info-row').html('<b>Get Pem:</b> ' +
+                                        '<a href="/static/bin/demo-pem">demo-pem</a> ec2 ' +
+                                        '<a href="/pemfile?cloud-option=ec2&cluster-id=' + instance.tags['Name'] + '">' +
+                                            instance.tags['Name'] + '</a>'),
                                     $('<td colspan="8">').addClass('info-row').html('<b>Connect:</b> ssh ' +
                                         '-i ~/.datastax/demos/ctool/' + instance.tags['Name'] + '.pem' +
                                         ' -o StrictHostKeyChecking=no' +
