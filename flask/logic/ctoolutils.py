@@ -6,7 +6,7 @@ import time
 from flask import flash
 import json
 
-import execute
+import execute, ec2
 
 logger = logging.getLogger(__name__)
 
@@ -99,7 +99,9 @@ def launch(postvars):
         return response
 
 
-def install(postvars):
+def install(postvars, reservation_id):
+    ec2.tag_reservation(reservation_id, 'status',
+                        'Installing %(product-name)s...' % postvars)
     if len(postvars['advanced_nodes']['cluster']['nodes']) == 0:
         # calculate install values
         postvars['percent_analytics'] = float(postvars['hadoop-nodes']) / \
@@ -127,6 +129,7 @@ def install(postvars):
 
         logger.info('Executing: %s', install_command)
         response = execute.run(install_command)
+        flash(install_command)
     else:
         with NamedTemporaryFile() as f:
             postvars['config_file'] = f.name
@@ -150,14 +153,16 @@ def install(postvars):
             logger.debug('With config-file: \n%s', f.read())
             response = execute.run(install_command)
 
-    flash(install_command)
+        flash(install_command)
+        flash('--config-file: %s' % json.dumps(postvars['advanced_nodes']))
 
     if response.stderr:
         return response
 
 
-def install_opscenter(postvars):
+def install_opscenter(postvars, reservation_id):
     if postvars['opscenter-install'] == 'yes':
+        ec2.tag_reservation(reservation_id, 'status', 'Installing OpsCenter...')
         install_command = 'ctool' \
                           ' --provider %(cloud-option)s' \
                           ' install' \
@@ -175,7 +180,9 @@ def install_opscenter(postvars):
             return response
 
 
-def start(postvars):
+def start(postvars, reservation_id):
+    ec2.tag_reservation(reservation_id, 'status',
+                        'Starting %(product-name)s...' % postvars)
     start_command = 'ctool' \
                     ' --provider %(cloud-option)s' \
                     ' start' \
@@ -191,8 +198,9 @@ def start(postvars):
         return response
 
 
-def start_opscenter(postvars):
+def start_opscenter(postvars, reservation_id):
     if postvars['opscenter-install'] == 'yes':
+        ec2.tag_reservation(reservation_id, 'status', 'Starting OpsCenter...')
         start_command = 'ctool' \
                         ' --provider %(cloud-option)s' \
                         ' start' \
@@ -208,8 +216,10 @@ def start_opscenter(postvars):
             return response
 
 
-def start_agent(postvars):
+def start_agent(postvars, reservation_id):
     if postvars['opscenter-install'] == 'yes':
+        ec2.tag_reservation(reservation_id, 'status',
+                            'Starting DataStax Agents...')
         start_command = 'ctool' \
                         ' --provider %(cloud-option)s' \
                         ' run' \
@@ -228,9 +238,9 @@ def start_agent(postvars):
 
 def pemfile(request):
     run_command = 'ctool' \
-                    ' --provider %(cloud-option)s' \
-                    ' dump_key' \
-                    ' %(cluster-id)s'
+                  ' --provider %(cloud-option)s' \
+                  ' dump_key' \
+                  ' %(cluster-id)s'
     run_command = run_command % request
 
     logger.info('Executing: %s', run_command)

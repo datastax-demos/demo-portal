@@ -55,7 +55,21 @@ def tag(instance_id, key, value, conn=False, region='us-east-1'):
     instance.add_tag(key, value)
 
 
-def get_reservation(reservation_id, conn=False, region='us-east-1'):
+def find_reservation_id_by_tag(key, value, conn=False, region='us-east-1'):
+    if not conn:
+        conn = boto.ec2.connect_to_region(region,
+                                          aws_access_key_id=os.environ[
+                                              'AWS_ACCESS_KEY'],
+                                          aws_secret_access_key=os.environ[
+                                              'AWS_SECRET_KEY'])
+
+    reservation = \
+        conn.get_all_instances(filters={'tag:%s' % key: value})[0]
+
+    return reservation.id
+
+
+def get_reservation_instances(reservation_id, conn=False, region='us-east-1'):
     if not conn:
         conn = boto.ec2.connect_to_region(region,
                                           aws_access_key_id=os.environ[
@@ -78,7 +92,7 @@ def tag_reservation(reservation_id, key, value, conn=False, region='us-east-1'):
                                           aws_secret_access_key=os.environ[
                                               'AWS_SECRET_KEY'])
 
-    instances = get_reservation(reservation_id, conn=conn, region=region)
+    instances = get_reservation_instances(reservation_id, conn=conn, region=region)
 
     for instance in instances:
         tag(instance, key, value, conn=conn, region=region)
@@ -92,17 +106,10 @@ def kill_reservation(reservation_id, conn=False, region='us-east-1'):
                                           aws_secret_access_key=os.environ[
                                               'AWS_SECRET_KEY'])
 
-    # ugly hack since I hit the top limit of ec2's tags
-    instances = get_reservation(reservation_id, conn=conn, region=region)
-    for instance in instances:
-        reservations = conn.get_all_instances(instance_ids=[instance])
-        instance = reservations[0].instances[0]
-        instance.remove_tag('launch_time')
-
     tag_reservation(reservation_id, 'status', 'Terminating.',
                     conn=conn, region=region)
 
-    instances = get_reservation(reservation_id, conn=conn, region=region)
+    instances = get_reservation_instances(reservation_id, conn=conn, region=region)
     conn.terminate_instances(instance_ids=instances)
     return True
 

@@ -109,8 +109,10 @@ $(document).ready(function () {
     });
 
     $('#submit-button').click(function (e) {
+        e.preventDefault();
         $(this).attr('disabled', true);
         $(this).text('ctool calls are being made. Please wait...');
+        $('#launch-form').submit();
     });
 
     $('#ec2-label').tooltip();
