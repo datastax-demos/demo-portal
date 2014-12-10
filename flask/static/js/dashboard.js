@@ -141,7 +141,7 @@ function load_server_information() {
                                 );
                             } else {
                                 $tr.append($('<td colspan="8">').addClass('info-row').html('<b>Connect:</b> ssh ' +
-                                        '-i ~/.ssh/demo-launcher.pem' +
+                                        '-i ~/.datastax/demos/demo-launcher.pem' +
                                         ' -o StrictHostKeyChecking=no' +
                                         ' ubuntu@' + instance.ip_address)
                                 );
