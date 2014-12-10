@@ -77,8 +77,21 @@ function load_server_information() {
                                 $('<td>')
                             );
                         }
-                        if (instance.ip_address &&
-                            (complete || 'ctool_name' in instance.tags)) {
+                        if (instance.ip_address && complete) {
+                            if ('ctool_name' in instance.tags) {
+                                $tr.append(
+                                    $('<td>').html($('<a>', {
+                                        'class': 'tooltip-gen',
+                                        'href': 'http://' + opscenter_address,
+                                        'text': opscenter_address,
+                                        'title': 'Affected by TESTINF-937. Possibly affected by TESTINF-943.' +
+                                                 ' See /todo for more information.',
+                                        'data-toggle': 'tooltip',
+                                        'data-placement': 'top',
+                                        'target': '_blank'
+                                    }))
+                                );
+                            } else {
                                 $tr.append(
                                     $('<td>').html($('<a>', {
                                         href: 'http://' + opscenter_address,
@@ -86,6 +99,7 @@ function load_server_information() {
                                         target: '_blank'
                                     }))
                                 );
+                            }
                         } else {
                             $tr.append(
                                 $('<td>')
@@ -172,6 +186,7 @@ function load_server_information() {
                 html: true
             });
             $('.max-cost').tooltip();
+            $('.tooltip-gen').tooltip();
         })
         .fail(function (response) {
             // alert('error');

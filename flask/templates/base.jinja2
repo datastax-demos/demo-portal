@@ -33,10 +33,12 @@
                     <li><a href="/">Dashboard</a></li>
                     <li><a href="/ctool">ctool</a></li>
                     <li><a href="/pem">PEM Key</a></li>
-                    <li><a href="/todo">TODO</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if session.email %}
+                        <li><a href="/overview">Overview</a></li>
+                        <li><a href="/roadmap">Roadmap</a></li>
+                        <li><a href="/todo">Todo</a></li>
                         <li class="navbar-text">Signed in as {{ session.email }}.</li>
                         <li><a href="/logout">Logout</a></li>
                     {% endif %}

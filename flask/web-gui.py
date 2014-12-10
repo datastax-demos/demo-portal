@@ -69,6 +69,22 @@ def pem():
                            pem_file=pem_file)
 
 
+@app.route('/overview')
+def overview():
+    if not 'email' in session:
+        return redirect(url_for('login'))
+
+    return render_template('overview.jinja2')
+
+
+@app.route('/roadmap')
+def roadmap():
+    if not 'email' in session:
+        return redirect(url_for('login'))
+
+    return render_template('roadmap.jinja2')
+
+
 @app.route('/todo')
 def todo():
     if not 'email' in session:
