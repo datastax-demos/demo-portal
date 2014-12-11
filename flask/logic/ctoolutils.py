@@ -21,6 +21,8 @@ def process(postvars, session):
     postvars['ctool_name'] = re.sub(alphanumeric_strip, '',
                                     postvars['ctool_name'])
     postvars['clean_email'] = re.sub(alphanumeric_strip, '', session['email'])
+    postvars['log_file'] = '%s_%s.log' % (time.time(),
+                                          postvars['clustername'])
 
     # calculate ttl
     postvars['ttl'] = (int(postvars['ttl-days']) * 24 +
@@ -81,7 +83,7 @@ def launch(postvars):
     # relatable fashion
     launch_command = 'ctool' \
                      ' --log-dir automaton_logs/%(clean_email)s' \
-                     ' --log-file %(ctool_name)s.log' \
+                     ' --log-file %(log_file)s' \
                      ' --provider %(cloud-option)s' \
                      ' launch' \
                      ' --instance-type %(instance-type)s' \
