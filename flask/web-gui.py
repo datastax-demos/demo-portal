@@ -173,7 +173,7 @@ def pemfile():
 
     response = make_response(pem_file.stdout)
     response.headers[
-        "Content-Disposition"] = "attachment; filename=%s.pem" % vars[
+        'Content-Disposition'] = 'attachment; filename=%s.pem' % vars[
         'cluster-id']
     return response
 
@@ -209,10 +209,13 @@ def request_password():
             return render_template('login.jinja2')
 
         password = auth.create(safe_email, app.secret_key)
-        msg = Message(subject="DataStax Demo Launcher Authentication",
+        body = 'Your email and password is: {0} / {1}\n\n' \
+               'Feel free to bookmark this personalized address: ' \
+               'http://54.173.168.134:5000/login?email={0}'
+        body = body.format(safe_email, password)
+        msg = Message(subject='DataStax Demo Launcher Authentication',
                       recipients=[safe_email],
-                      body="Your email and password is: %s / %s" % (
-                          safe_email, password))
+                      body=body)
         try:
             mail.send(msg)
         except:
@@ -296,7 +299,7 @@ def logout():
     return redirect(url_for('index'))
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     if app.debug:
         app.run(port=5000,
                 use_reloader=True,
