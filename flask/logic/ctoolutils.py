@@ -165,7 +165,7 @@ def install(postvars, reservation_id):
 
 def install_opscenter(postvars, reservation_id):
     if postvars['opscenter-install'] == 'yes':
-        ec2.tag_reservation(reservation_id, 'status', 'Installing OpsCenter...')
+        ec2.tag_reservation(reservation_id, 'status', 'Installing opscenter...')
         install_command = 'ctool' \
                           ' --provider %(cloud-option)s' \
                           ' install' \
@@ -203,7 +203,7 @@ def start(postvars, reservation_id):
 
 def start_opscenter(postvars, reservation_id):
     if postvars['opscenter-install'] == 'yes':
-        ec2.tag_reservation(reservation_id, 'status', 'Starting OpsCenter...')
+        ec2.tag_reservation(reservation_id, 'status', 'Starting opscenter...')
         start_command = 'ctool' \
                         ' --provider %(cloud-option)s' \
                         ' start' \
