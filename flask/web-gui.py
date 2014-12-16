@@ -268,15 +268,15 @@ def launch():
 
     demo = request.form['demoChoice'].lower().replace(' ', '-')
     command = [
-        'DATASTAX_USER=%s' % os.environ['DATASTAX_USER'],
-        'DATASTAX_PASS=%s' % os.environ['DATASTAX_PASS'],
         'AWS_ACCESS_KEY=%s' % os.environ['AWS_ACCESS_KEY'],
         'AWS_SECRET_KEY=%s' % os.environ['AWS_SECRET_KEY'],
         'USER_EMAIL=%s' % session['email'],
         'DEMO=%s' % demo,
         'TTL=%s' % request.form['ttl'],
         'PORT=%s' % APP_PORTS[demo],
-        '%s/vagrant/single-node-demo/new-cluster' % top_level_directory,
+        'SIZE=%s' % request.form['clustersize'],
+        'MODE=-k',
+        '%s/vagrant/multi-node-demo/new-cluster' % top_level_directory,
         '&'
     ]
 

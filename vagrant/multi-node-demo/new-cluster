@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# change into the directory that houses this file
+DIR="$( cd "$( dirname "$0" )" && pwd )"
+cd $DIR
+DEMO_WEB_GUI_ROOT="$( cd ../../ && pwd )"
+
+#HASH=`date +%s.%N | md5sum | cut -f 1 -d ' '`
+echo $USER_EMAIL `date` $DEMO
+
+# create the new directories for this launch
+TIMESTAMP=`date +%s`
+CLEAN_EMAIL=`echo $USER_EMAIL | tr -cd [:alnum:]`
+CLEAN_DEMO=`echo $DEMO | tr -cd [:alnum:]`
+DIRECTORY=${TIMESTAMP}-${CLEAN_EMAIL}-${CLEAN_DEMO}
+mkdir -p $DEMO_WEB_GUI_ROOT/launched-clusters
+cp -r  $DEMO_WEB_GUI_ROOT/vagrant/multi-node-demo/ $DEMO_WEB_GUI_ROOT/launched-clusters/${DIRECTORY}
+cd $DEMO_WEB_GUI_ROOT/launched-clusters/${DIRECTORY}
+rm -rf .vagrant
+
+echo $USER_EMAIL > user-email
+echo $DIRECTORY
+
+# kick off the launch
+DEMOS_WEB_GUI=$DEMO_WEB_GUI_ROOT ./launch_demo --demo ${DEMO} --ttl ${TTL} --size ${SIZE} ${MODE} >> vagrant.log
+

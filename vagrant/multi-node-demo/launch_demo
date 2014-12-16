@@ -1,0 +1,149 @@
+#!/usr/bin/env python
+import json
+import os
+import time
+
+from collections import namedtuple
+
+from launcher.create_logger import logger
+from launcher.ec2 import tag
+from launcher.parse_options import options
+from launcher.runner import run
+from launcher.ports import PORTS
+
+
+def process_futures(futures):
+    for i, future in enumerate(futures):
+        response = future.process.communicate()
+        stdout = 'stdout:\n%s\n' % response[0] if response[0] else ''
+        stderr = 'stderr:\n%s\n\n' % response[1] if response[1] else ''
+        logger.info('[%s of %s] %s:\n%s%s',
+                    i, len(futures),
+                    future.command, stdout, stderr)
+
+
+def start_machines(env):
+    logger.info('Starting vagrant machines and grabbing docker containers...')
+
+    futures = []
+    for i in range(options.size):
+        futures.append(run('vagrant up --provider aws dse%s' % i,
+                           wait=False,
+                           env=env))
+
+    futures.append(run('vagrant up --provider aws opscenter',
+                       wait=False,
+                       env=env))
+
+    futures.append(run('vagrant up --provider aws %s' % options.demo,
+                       wait=False,
+                       env=env))
+
+    logger.info('Waiting for vagrant machines...')
+    process_futures(futures)
+
+
+def start_containers(env, dse_ips, opscenter_stomp):
+    logger.info('Starting docker containers...')
+
+    futures = []
+    env['CMD'] = '--seeds %s --opscenter-stomp %s --spark' % (dse_ips,
+                                                              opscenter_stomp)
+    for i in range(options.size):
+        futures.append(run('vagrant provision dse%s' % i, wait=False, env=env))
+
+    env['CMD'] = dse_ips
+    futures.append(run('vagrant provision opscenter', wait=False, env=env))
+    futures.append(run('vagrant provision %s' % options.demo,
+                       wait=False,
+                       env=env))
+
+    logger.info('Waiting for docker containers...')
+    process_futures(futures)
+
+
+def get_instance_data():
+    logger.info('Grabbing instance data...')
+    instance_metadata = {}
+
+    for i in range(options.size):
+        instance_metadata['dse%s' % i] = run('vagrant awsinfo -m dse%s' % i,
+                                             wait=False)
+
+    instance_metadata['opscenter'] = run('vagrant awsinfo -m opscenter',
+                                         wait=False)
+
+    instance_metadata[options.demo] = run(
+        'vagrant awsinfo -m %s' % options.demo,
+        wait=False)
+
+    for key in instance_metadata.keys():
+        response = instance_metadata[key].process.communicate()
+        instance_metadata[key] = json.loads(response[0])
+
+    dse_ips = []
+    for i in range(options.size):
+        dse_ips.append(instance_metadata['dse%s' % i]['private_ip'])
+    dse_ips = ','.join(dse_ips)
+
+    return dse_ips, instance_metadata
+
+
+def tag_vagrant_instances(instance_metadata, key, value):
+    for machine_name in instance_metadata.keys():
+        instance_id = instance_metadata[machine_name]['instance_id']
+        tag(instance_id, key, value)
+
+
+def tag_vagrant_products(instance_metadata):
+    for i in range(options.size):
+        tag(instance_metadata['dse%s' % i]['instance_id'],
+            'product', 'enterprise')
+
+    tag(instance_metadata['opscenter']['instance_id'], 'product', 'opscenter')
+
+    tag(instance_metadata[options.demo]['instance_id'], 'product', 'demo')
+
+
+def main():
+    # change the working directory for this file
+    abspath = os.path.abspath(__file__)
+    dname = os.path.dirname(abspath)
+    os.chdir(dname)
+
+    env = dict(os.environ.copy())
+    env['DEMO'] = options.demo
+    env['TTL'] = str(options.ttl)
+    env['PORT'] = str(PORTS[options.demo])
+    env['TIME'] = str(int(time.time()))
+    if 'CMD' in env:
+        del env['CMD']
+
+    # start vagrant machines without full provisioning
+    start_machines(env)
+
+    # grab required metadata
+    dse_ips, instance_metadata = get_instance_data()
+    opscenter_stomp = instance_metadata['opscenter']['private_ip']
+    opscenter_public_ip = instance_metadata['opscenter']['public_ip']
+    demo_public_ip = instance_metadata[options.demo]['public_ip']
+
+    # tag instances appropriately
+    tag_vagrant_products(instance_metadata)
+    tag_vagrant_instances(instance_metadata, 'status',
+                          'Starting Docker containers...')
+
+    # start docker containers
+    start_containers(env, dse_ips, opscenter_stomp)
+
+    # set completed tag
+    tag_vagrant_instances(instance_metadata, 'status', 'Complete.')
+
+    # output debugging response
+    Response = namedtuple('Response', 'opscenter_public_ip demo_public_ip')
+    return Response('http://%s:8888' % opscenter_public_ip,
+                    'http://%s:%s' % (demo_public_ip, env['PORT']))
+
+
+if __name__ == '__main__':
+    print main()
