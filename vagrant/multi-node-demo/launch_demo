@@ -3,8 +3,6 @@ import json
 import os
 import time
 
-from collections import namedtuple
-
 from launcher.create_logger import logger
 from launcher.ec2 import tag
 from launcher.parse_options import options
@@ -13,13 +11,19 @@ from launcher.ports import PORTS
 
 
 def process_futures(futures):
+    no_stderr = True
     for i, future in enumerate(futures):
         response = future.process.communicate()
+
         stdout = 'stdout:\n%s\n' % response[0] if response[0] else ''
         stderr = 'stderr:\n%s\n\n' % response[1] if response[1] else ''
+        no_stderr = False if response[1] else no_stderr
+
         logger.info('[%s of %s] %s:\n%s%s',
                     i, len(futures),
                     future.command, stdout, stderr)
+
+    return no_stderr
 
 
 def start_machines(env):
@@ -40,7 +44,7 @@ def start_machines(env):
                        env=env))
 
     logger.info('Waiting for vagrant machines...')
-    process_futures(futures)
+    return process_futures(futures)
 
 
 def start_containers(env, dse_ips, opscenter_stomp):
@@ -59,7 +63,7 @@ def start_containers(env, dse_ips, opscenter_stomp):
                        env=env))
 
     logger.info('Waiting for docker containers...')
-    process_futures(futures)
+    return process_futures(futures)
 
 
 def get_instance_data():
@@ -134,16 +138,13 @@ def main():
                           'Starting Docker containers...')
 
     # start docker containers
-    start_containers(env, dse_ips, opscenter_stomp)
-
-    # set completed tag
-    tag_vagrant_instances(instance_metadata, 'status', 'Complete.')
-
-    # output debugging response
-    Response = namedtuple('Response', 'opscenter_public_ip demo_public_ip')
-    return Response('http://%s:8888' % opscenter_public_ip,
-                    'http://%s:%s' % (demo_public_ip, env['PORT']))
+    if start_containers(env, dse_ips, opscenter_stomp):
+        # set completed tag
+        tag_vagrant_instances(instance_metadata, 'status', 'Complete.')
+    else:
+        tag_vagrant_instances(instance_metadata, 'status',
+                              'Failure seen on startup. Discard cluster.')
 
 
 if __name__ == '__main__':
-    print main()
+    main()

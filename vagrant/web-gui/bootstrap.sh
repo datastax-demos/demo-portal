@@ -18,6 +18,9 @@ cp webapps/demos-web-gui/vagrant/keys/* .ssh
 ssh-keyscan github.com >> .ssh/known_hosts
 chmod 600 .ssh/*
 
+# create logging directory
+mkdir -p automaton_logs/joaquindatastaxcom
+
 # setup automaton.conf
 cp webapps/demos-web-gui/vagrant/keys/.automaton.conf ~
 
