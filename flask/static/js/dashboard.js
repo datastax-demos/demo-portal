@@ -47,6 +47,7 @@ function load_server_information() {
 
                 var instance = cluster[0];
                 var complete = instance.tags['status'] == 'Complete.';
+                var failure = instance.tags['status'].toLowerCase().indexOf('fail') > -1;
                 var $tr = $('<tr>').append(
                     $('<td>').text(instance.email),
                     $('<td>').text(instance.launch_time.replace('T', ' ')),
@@ -143,6 +144,8 @@ function load_server_information() {
                     var $td = $('<td colspan="2">').addClass('info-row').html('<b>Status:</b> ' + instance.tags['status']);
                     if (complete) {
                         $td.addClass('success');
+                    } else if (failure) {
+                        $td.addClass('danger');
                     } else {
                         $td.addClass('warning');
                     }
