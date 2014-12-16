@@ -306,7 +306,8 @@ def kill(reservationids):
     if success:
         flash('One or more instances terminated successfully.', 'success')
     if failure:
-        flash('One or more instances termination may not have succeeded.', 'warn')
+        flash('One or more instances termination may not have succeeded.',
+              'warn')
 
     return redirect(url_for('index'))
 
