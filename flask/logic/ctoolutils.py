@@ -15,11 +15,11 @@ alphanumeric_strip = re.compile('[\W]+')
 
 def process(postvars, session):
     # format the cluster_name and email as ctool will see it
-    postvars['ctool_name'] = '%s_%s_%s' % (session['email'],
-                                           postvars['clustername'],
-                                           time.time())
-    postvars['ctool_name'] = re.sub(alphanumeric_strip, '',
-                                    postvars['ctool_name'])
+    postvars['full_name'] = '%s_%s_%s' % (session['email'],
+                                          postvars['clustername'],
+                                          time.time())
+    postvars['full_name'] = re.sub(alphanumeric_strip, '',
+                                   postvars['full_name'])
     postvars['clean_email'] = re.sub(alphanumeric_strip, '', session['email'])
     postvars['log_file'] = '%s_%s.log' % (time.time(),
                                           postvars['clustername'])
@@ -34,8 +34,7 @@ def process(postvars, session):
         'ctool_name': postvars['clustername'],
         'provisioner': 'demos-web-gui-launcher',
         'email': session['email'],
-        'launch_time': datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT'),
-        'unix_launch_time': int(time.time()),
+        'launch_time': int(time.time()),
         'ttl': postvars['ttl']
     }
     postvars['tags'] = json.dumps(postvars['tags'])
@@ -89,7 +88,7 @@ def launch(postvars):
                      ' --instance-type %(instance-type)s' \
                      ' --platform %(platform)s' \
                      ' --tags \'%(tags)s\'' \
-                     ' %(ctool_name)s' \
+                     ' %(full_name)s' \
                      ' %(num_nodes)s'
     launch_command = launch_command % postvars
     flash(launch_command)
@@ -127,7 +126,7 @@ def install(postvars, reservation_id):
                           ' %(spark_hadoop)s' \
                           ' --version_or_branch %(dse-version)s' \
                           ' --num-tokens %(num-of-tokens)s' \
-                          ' %(ctool_name)s' \
+                          ' %(full_name)s' \
                           ' %(product-name)s'
         install_command = install_command % postvars
 
@@ -149,7 +148,7 @@ def install(postvars, reservation_id):
                               ' %(spark_hadoop)s' \
                               ' --version_or_branch %(dse-version)s' \
                               ' --num-tokens %(num-of-tokens)s' \
-                              ' %(ctool_name)s' \
+                              ' %(full_name)s' \
                               ' %(product-name)s'
             install_command = install_command % postvars
 
@@ -172,7 +171,7 @@ def install_opscenter(postvars, reservation_id):
                           ' install' \
                           ' --repo staging' \
                           ' --version_or_branch %(opscenter-version)s' \
-                          ' %(ctool_name)s' \
+                          ' %(full_name)s' \
                           ' opscenter'
         install_command = install_command % postvars
         flash(install_command)
@@ -190,7 +189,7 @@ def start(postvars, reservation_id):
     start_command = 'ctool' \
                     ' --provider %(cloud-option)s' \
                     ' start' \
-                    ' %(ctool_name)s' \
+                    ' %(full_name)s' \
                     ' %(product-name)s'
     start_command = start_command % postvars
     flash(start_command)
@@ -208,7 +207,7 @@ def start_opscenter(postvars, reservation_id):
         start_command = 'ctool' \
                         ' --provider %(cloud-option)s' \
                         ' start' \
-                        ' %(ctool_name)s' \
+                        ' %(full_name)s' \
                         ' opscenter'
         start_command = start_command % postvars
         flash(start_command)
@@ -227,7 +226,7 @@ def start_agent(postvars, reservation_id):
         start_command = 'ctool' \
                         ' --provider %(cloud-option)s' \
                         ' run' \
-                        ' %(ctool_name)s' \
+                        ' %(full_name)s' \
                         ' all' \
                         ' "sudo service datastax-agent start"'
         start_command = start_command % postvars
