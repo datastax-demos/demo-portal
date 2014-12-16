@@ -124,13 +124,20 @@ def main():
         del env['CMD']
 
     # start vagrant machines without full provisioning
-    start_machines(env)
+    failed_start = False
+    if not start_machines(env):
+        failed_start = True
 
     # grab required metadata
     dse_ips, instance_metadata = get_instance_data()
     opscenter_stomp = instance_metadata['opscenter']['private_ip']
     opscenter_public_ip = instance_metadata['opscenter']['public_ip']
     demo_public_ip = instance_metadata[options.demo]['public_ip']
+
+    if failed_start:
+        tag_vagrant_instances(instance_metadata, 'status',
+                              'Failure seen on startup. Discard cluster.')
+        return
 
     # tag instances appropriately
     tag_vagrant_products(instance_metadata)

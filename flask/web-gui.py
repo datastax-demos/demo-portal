@@ -158,6 +158,7 @@ def ctool():
             ec2.tag_reservation(reservation_id, 'status', 'Complete.')
             return redirect('/')
         except:
+            logger.exception('Exception seen on /ctool:')
             reservation_id = ec2.find_reservation_id_by_tag('cluster_name',
                                                             postvars[
                                                                 'full_name'])
