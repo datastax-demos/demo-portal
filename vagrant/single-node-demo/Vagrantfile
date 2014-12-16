@@ -1,14 +1,10 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-unless ENV['DATASTAX_USER'] &&
-       ENV['DATASTAX_PASS'] &&
-       ENV['AWS_ACCESS_KEY'] &&
+unless ENV['AWS_ACCESS_KEY'] &&
        ENV['AWS_SECRET_KEY']
 
-    print "The following environmental variables must be set before running this script:\n"
-    print "\tDATASTAX_USER\n"
-    print "\tDATASTAX_PASS\n"
+    print "The following environment variables must be set before running this script:\n"
     print "\tAWS_ACCESS_KEY\n"
     print "\tAWS_SECRET_KEY\n"
     exit

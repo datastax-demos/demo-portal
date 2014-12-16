@@ -4,7 +4,7 @@
 unless ENV['AWS_ACCESS_KEY'] &&
        ENV['AWS_SECRET_KEY']
 
-    print "The following environmental variables must be set before running this script:\n"
+    print "The following environment variables must be set before running this script:\n"
     print "\tAWS_ACCESS_KEY\n"
     print "\tAWS_SECRET_KEY\n"
     exit
