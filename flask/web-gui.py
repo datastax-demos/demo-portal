@@ -123,8 +123,8 @@ def ctool():
         try:
             response = ctoolutils.launch(postvars)
             if response:
-                flash('Error seen on launch: %s' % str(response), 'error')
-                return render_template('ctool.jinja2')
+                return render_template(
+                    ctoolutils.error_handling(response, postvars, 'launch'))
 
             reservation_id = ec2.find_reservation_id_by_tag('cluster_name',
                                                             postvars[
@@ -132,38 +132,36 @@ def ctool():
 
             response = ctoolutils.install(postvars, reservation_id)
             if response:
-                flash('Error seen on install: %s' % str(response), 'error')
-                return render_template('ctool.jinja2')
+                return render_template(
+                    ctoolutils.error_handling(response, postvars, 'install'))
 
             response = ctoolutils.install_opscenter(postvars, reservation_id)
             if response:
-                flash('Error seen on install: %s' % str(response), 'error')
-                return render_template('ctool.jinja2')
+                return render_template(
+                    ctoolutils.error_handling(response, postvars, 'install'))
 
             response = ctoolutils.start(postvars, reservation_id)
             if response:
-                flash('Error seen on start: %s' % str(response), 'error')
-                return render_template('ctool.jinja2')
+                return render_template(
+                    ctoolutils.error_handling(response, postvars, 'start'))
 
             response = ctoolutils.start_opscenter(postvars, reservation_id)
             if response:
-                flash('Error seen on start: %s' % str(response), 'error')
-                return render_template('ctool.jinja2')
+                return render_template(
+                    ctoolutils.error_handling(response, postvars, 'start'))
 
             response = ctoolutils.start_agent(postvars, reservation_id)
             if response:
-                flash('Error seen on start: %s' % str(response), 'error')
-                return render_template('ctool.jinja2')
+                return render_template(
+                    ctoolutils.error_handling(response, postvars, 'start'))
 
             ec2.tag_reservation(reservation_id, 'status', 'Complete.')
             return redirect('/')
         except:
             logger.exception('Exception seen on /ctool:')
-            reservation_id = ec2.find_reservation_id_by_tag('cluster_name',
-                                                            postvars[
-                                                                'full_name'])
-            ec2.tag_reservation(reservation_id, 'status',
-                                'Failure seen on startup. Discard cluster.')
+            return render_template(
+                ctoolutils.error_handling('Logic exception.',
+                                          postvars, '/ctool'))
 
     return render_template('ctool.jinja2')
 

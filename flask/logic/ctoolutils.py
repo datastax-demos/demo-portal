@@ -13,6 +13,17 @@ logger = logging.getLogger(__name__)
 alphanumeric_strip = re.compile('[\W]+')
 
 
+def error_handling(response, postvars, state):
+    # tag the instances appropriately
+    reservation_id = ec2.find_reservation_id_by_tag('cluster_name',
+                                                    postvars['full_name'])
+    ec2.tag_reservation(reservation_id, 'status',
+                        'Failure seen on startup. Discard cluster.')
+
+    # alert the user by flash message
+    flash('Error seen on %s: %s' % (state, str(response)), 'error')
+    return 'ctool.jinja2'
+
 def process(postvars, session):
     # format the cluster_name and email as ctool will see it
     postvars['full_name'] = '%s_%s_%s' % (session['email'],
