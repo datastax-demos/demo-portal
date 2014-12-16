@@ -240,15 +240,25 @@ def server_information():
     instance_data = ec2.owned_instances(session['email'],
                                         admin=session['admin'])
 
-    instance_data['sorted'] = {}
-    for key in instance_data:
-        try:
-            timestamp = instance_data[key]['0']['launch_time']
-            instance_data['sorted'][timestamp] = key
-        except:
-            continue
+    # create new ordering in the form of "timestamp_clustername": instance_data
+    processed_data = {}
+    for reservation in instance_data:
+        for instance in instance_data[reservation]:
+            try:
+                launch_time = instance_data[reservation][instance]['tags'] \
+                    ['launch_time']
+                name = instance_data[reservation][instance]['tags']['Name']
 
-    return jsonify(**instance_data)
+                cluster_key = '%s_%s' % (launch_time, name)
+                if not cluster_key in processed_data:
+                    processed_data[cluster_key] = []
+
+                processed_data[cluster_key].append(
+                    instance_data[reservation][instance])
+            except:
+                continue
+
+    return jsonify(**processed_data)
 
 
 @app.route('/launch', methods=['POST'])
