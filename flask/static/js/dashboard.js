@@ -41,8 +41,8 @@ function load_server_information() {
                         opscenter_address = instance.ip_address + ':8888';
                     } else {
                         ip_addresses.push(instance.ip_address);
-                        reservation_ids.push(instance.reservation_id);
                     }
+                    reservation_ids.push(instance.reservation_id);
                 });
 
                 var instance = cluster[0];

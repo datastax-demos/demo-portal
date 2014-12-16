@@ -50,11 +50,12 @@ def ttl():
         return redirect(url_for('login'))
 
     ttl = int(request.form['ttl'])
-    reservation_id = request.form['reservation-id']
+    reservation_ids = request.form['reservation-ids']
 
-    ec2.tag_reservation(reservation_id, 'ttl', ttl)
+    for reservation_id in reservation_ids.split(','):
+        ec2.tag_reservation(reservation_id, 'ttl', ttl)
+
     flash('TTL updated to %s.' % ttl)
-
     return redirect(url_for('index'))
 
 
