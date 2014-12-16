@@ -278,17 +278,25 @@ def launch():
     return redirect(url_for('index'))
 
 
-@app.route('/kill/<reservationid>')
-def kill(reservationid):
+@app.route('/kill/<reservationids>')
+def kill(reservationids):
     if not 'email' in session:
         return redirect(url_for('login'))
 
-    result = ec2.kill_reservation(reservationid)
+    success = False
+    failure = False
+    for reservationid in reservationids.split(','):
+        result = ec2.kill_reservation(reservationid)
 
-    if result:
-        flash('Instance terminated successfully.', 'success')
-    else:
-        flash('Instance termination may not have succeeded.', 'warn')
+        if result:
+            success = True
+        else:
+            failure = True
+
+    if success:
+        flash('One or more instances terminated successfully.', 'success')
+    if failure:
+        flash('One or more instances termination may not have succeeded.', 'warn')
 
     return redirect(url_for('index'))
 

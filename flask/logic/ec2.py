@@ -42,7 +42,7 @@ def owned_instances(email='joaquin@datastax.com', conn=False,
     return dict(return_value)
 
 
-def tag(instance_id, key, value, conn=False, region='us-east-1'):
+def tag(instance_ids, key, value, conn=False, region='us-east-1'):
     if not conn:
         conn = boto.ec2.connect_to_region(region,
                                           aws_access_key_id=os.environ[
@@ -50,7 +50,8 @@ def tag(instance_id, key, value, conn=False, region='us-east-1'):
                                           aws_secret_access_key=os.environ[
                                               'AWS_SECRET_KEY'])
 
-    reservations = conn.get_all_instances(instance_ids=[instance_id])
+    instance_ids = instance_ids.split(',')
+    reservations = conn.get_all_instances(instance_ids=instance_ids)
     instance = reservations[0].instances[0]
     instance.add_tag(key, value)
 
