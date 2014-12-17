@@ -72,4 +72,4 @@ echo "source ~/webapps/demo-portal/set_credentials.sh" >> .profile
 # setup ec2 cleaning cron job
 sudo mkdir -p /mnt/logs
 sudo chown ubuntu:ubuntu /mnt/logs/
-sudo cp ~/webapps/demo-portal/cron/demo-portal.list /etc/cron.d/demoswebguicron
+sudo cp ~/webapps/demo-portal/cron/demo-portal.list /etc/cron.d/demoportal
