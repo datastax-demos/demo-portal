@@ -23,7 +23,7 @@ def owned_instances(email='joaquin@datastax.com', conn=False,
         for instance in instances:
             if 'provisioner' in instance.tags \
                     and instance.tags['provisioner'] == \
-                            'demos-web-gui-launcher' \
+                            'demo-portal-launcher' \
                     and instance.state != 'terminated' \
                     and instance.state != 'shutting-down':
                 if admin or instance.tags['email'] == email:

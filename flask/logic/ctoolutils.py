@@ -43,7 +43,7 @@ def process(postvars, session):
     postvars['tags'] = {
         'status': 'Initializing...',
         'ctool_name': postvars['clustername'],
-        'provisioner': 'demos-web-gui-launcher',
+        'provisioner': 'demo-portal-launcher',
         'email': session['email'],
         'launch_time': int(time.time()),
         'ttl': postvars['ttl']

@@ -1,7 +1,7 @@
 {
-    "name": "demos-web-gui",
+    "name": "demo-portal",
     "version": "0.0.0",
-    "homepage": "https://github.com/datastax-demos/demos-web-gui",
+    "homepage": "https://github.com/datastax-demos/demo-portal",
     "authors": [
         "Joaquin Casares <joaquin@datastax.com>"
     ],

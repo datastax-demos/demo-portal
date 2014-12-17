@@ -17,7 +17,7 @@ def overdue_instances(conn):
         for instance in instances:
             if 'provisioner' in instance.tags \
                     and instance.tags['provisioner'] == \
-                            'demos-web-gui-launcher' \
+                            'demo-portal-launcher' \
                     and instance.state != 'terminated':
 
 

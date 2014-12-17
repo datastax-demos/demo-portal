@@ -17,7 +17,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.box = "ubuntu/trusty64"
     config.vm.synced_folder '.', '/vagrant', disabled: true
     config.vm.synced_folder "../..",
-                            "/home/vagrant/webapps/demos-web-gui",
+                            "/home/vagrant/webapps/demo-portal",
                             create: true,
                             rsync__exclude: ["launched-clusters/",
                                              "flask/web-gui.py.log"]
@@ -32,7 +32,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         override.vm.box = "aws-dummy"
         override.ssh.username = "ubuntu"
         override.vm.synced_folder "../..",
-                                  "/home/ubuntu/webapps/demos-web-gui",
+                                  "/home/ubuntu/webapps/demo-portal",
                                   type: "rsync",
                                   rsync__exclude: ["launched-clusters/",
                                                    "flask/web-gui.py.log"]
@@ -49,10 +49,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         end
 
         aws.instance_type = "m3.medium"
-        aws.security_groups = ["demos-webgui-launcher"]
+        aws.security_groups = ["demo-portal-launcher"]
         aws.tags = {
             'Name' => 'Demos Web Gui Launcher (Do NOT Terminate)',
-            'Provisioner' => 'demos-web-gui-launcher',
+            'Provisioner' => 'demo-portal-launcher',
             'Owner' => 'Joaquin Casares',
             'Email' => 'joaquin@datastax.com'
         }
