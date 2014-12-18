@@ -78,22 +78,6 @@ def overview():
     return render_template('overview.jinja2')
 
 
-@app.route('/roadmap')
-def roadmap():
-    if not 'email' in session:
-        return redirect(url_for('login'))
-
-    return render_template('roadmap.jinja2')
-
-
-@app.route('/todo')
-def todo():
-    if not 'email' in session:
-        return redirect(url_for('login'))
-
-    return render_template('todo.jinja2')
-
-
 @app.route('/ctool', methods=['GET', 'POST'])
 def ctool():
     if not 'email' in session:
@@ -220,7 +204,7 @@ def request_password():
         password = auth.create(safe_email, app.secret_key)
         body = 'Your email and password is: {0} / {1}\n\n' \
                'Feel free to bookmark this personalized address: ' \
-               'http://54.173.168.134:5000/login?email={0}'
+               'http://demos.datastax.com:5000/login?email={0}'
         body = body.format(safe_email, password)
         msg = Message(subject='DataStax Demo Launcher Authentication',
                       recipients=[safe_email],
