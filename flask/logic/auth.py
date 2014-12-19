@@ -7,9 +7,9 @@ def validate(email, password, seed):
     return create(email, seed) == password
 
 def create(email, seed):
-    # rotate the hash once a week
+    # rotate the hash once a month
     date = datetime.date.today()
-    date = date.isocalendar()[0] + date.isocalendar()[1]
+    date = date.year + date.month
 
     generated_hash = hashlib.md5(seed[:8] +
                                  email.encode('utf-8') +
