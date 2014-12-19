@@ -112,6 +112,7 @@ def launch(postvars):
 
 
 def install(postvars, reservation_id):
+    ec2.tag_reservation(reservation_id, 'user', remove=True)
     ec2.tag_reservation(reservation_id, 'status',
                         'Installing %(product-name)s...' % postvars)
 
