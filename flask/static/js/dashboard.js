@@ -39,6 +39,9 @@ function load_server_information() {
                         app_address = instance.ip_address + ':' + instance.tags['app_port'];
                     } else if (instance.tags.product == 'opscenter') {
                         opscenter_address = instance.ip_address + ':8888';
+                    } else if ('automaton-opscenter' in instance.tags) {
+                        opscenter_address = instance.ip_address + ':8888';
+                        ip_addresses.push(instance.ip_address);
                     } else {
                         ip_addresses.push(instance.ip_address);
                     }
@@ -91,8 +94,7 @@ function load_server_information() {
                                 'class': 'tooltip-gen',
                                 'href': 'http://' + opscenter_address,
                                 'text': opscenter_address,
-                                'title': 'Affected by TESTINF-937. Possibly affected by TESTINF-943.' +
-                                         ' See /todo for more information.',
+                                'title': 'Affected by DEMO-31. Manual cluster entry required.',
                                 'data-toggle': 'tooltip',
                                 'data-placement': 'top',
                                 'target': '_blank'
