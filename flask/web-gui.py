@@ -1,28 +1,16 @@
-import logging
 import os
 
 from flask import Flask, request, render_template, session, redirect, url_for, \
     jsonify, flash, make_response
 from flask.ext.mail import Mail, Message
 
-from logic import auth, ec2, execute, ctoolutils
+from logic import auth, ec2, ctoolutils
+from logic.logger import logger
 
 app = Flask(__name__)
 app.config.from_pyfile('web-gui.cfg')
 mail = Mail(app)
 
-logger = logging.getLogger(__file__)
-logger.setLevel(logging.DEBUG)
-fh = logging.FileHandler('%s.log' % __file__)
-fh.setLevel(logging.DEBUG)
-ch = logging.StreamHandler()
-ch.setLevel(logging.ERROR)
-formatter = logging.Formatter(
-    '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-fh.setFormatter(formatter)
-ch.setFormatter(formatter)
-logger.addHandler(fh)
-logger.addHandler(ch)
 
 APP_PORTS = {
     'connected-office': 3000,

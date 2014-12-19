@@ -1,5 +1,3 @@
-from datetime import datetime
-import logging
 import re
 from tempfile import NamedTemporaryFile
 import time
@@ -7,10 +5,10 @@ from flask import flash
 import json
 
 import execute, ec2
+from logger import logger
 
-logger = logging.getLogger(__name__)
-
-alphanumeric_strip = re.compile('[\W]+')
+whitespace_strip = re.compile('\s')
+alphanumeric_strip = re.compile('\W+')
 
 
 def error_handling(response, postvars, state):
@@ -26,6 +24,10 @@ def error_handling(response, postvars, state):
 
 def process(postvars, session):
     # format the cluster_name and email as ctool will see it
+    postvars['clustername'] = re.sub(whitespace_strip, '_',
+                                     postvars['clustername'])
+    postvars['clustername'] = re.sub(alphanumeric_strip, '',
+                                     postvars['clustername'])
     postvars['full_name'] = '%s_%s_%s' % (session['email'],
                                           postvars['clustername'],
                                           time.time())
