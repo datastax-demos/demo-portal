@@ -20,3 +20,5 @@ launch.log
 launch_demo.log
 launched-clusters
 web-gui.py.log
+flask/demo-portal.log
+
