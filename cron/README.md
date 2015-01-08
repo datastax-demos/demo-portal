@@ -1,6 +1,6 @@
 This directory houses our cloud cleanup scripts.
 
-This is setup using /vagrant/web-gui on the
+This is setup using `/vagrant/web-gui` on the
 DataStax Demo Portal.
 
 ## demo-portal.list
