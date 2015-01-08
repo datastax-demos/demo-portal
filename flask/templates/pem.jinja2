@@ -8,26 +8,34 @@
 {% block body %}
     <div class="col-md-offset-3 col-md-6">
         <h3>PEM Key</h3>
+        <p>
+            Download <a href="defaultpem">demo-launcher.pem</a> to
+            ~/.datastax/demos/demo-launcher.pem
+            <br>
+            or manually create the file using the following text:
+        </p>
         <div class="well" id="pem-file">{{ pem_file }}</div>
         <p>
-            Copy this file into: ~/.datastax/demos/demo-launcher.pem
-            <br/>
-            Protect the file using: chmod 600 ~/.datastax/demos/demo-launcher.pem
+            Protect the file by running:
         </p>
+        <div class="well">
+            chmod 600 ~/.datastax/demos/demo-launcher.pem
+        </div>
         <h3>demo-pem</h3>
         <p>
-            Complete the following instructions to properly setup the
-            <a href="/static/bin/demo-pem">demo-pem</a> tool:
+            Download <a href="/static/bin/demo-pem">demo-pem</a> to
+            ~/.datastax/demos/demo-pem.
+        </p>
+        <p>
+            Run:
+            <div class="well">
+                chmod +x ~/.datastax/demos/demo-pem
+            </div>
 
-            <ol>
-                <li>
-                    chmod +x &lt;path-to-demo-pem-file&gt;
-                </li>
-                <li>
-                    add the following line to your `~/.profile` or `~/.bashrc`:<br>
-                    export PATH=&lt;path-to-directory-containing-demo-pem-file&gt;:$PATH
-                </li>
-            </ol>
+            Add the following line to your `~/.profile` and/or `~/.bashrc`:
+            <div class="well">
+                export PATH=~/.datastax/demos/:$PATH
+            </div>
         </p>
     </div>
 {% endblock %}

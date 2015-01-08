@@ -11,7 +11,6 @@ app = Flask(__name__)
 app.config.from_pyfile('web-gui.cfg')
 mail = Mail(app)
 
-
 APP_PORTS = {
     'connected-office': 3000,
     'weather-sensors': 3000,
@@ -56,6 +55,20 @@ def pem():
         '%s/vagrant/keys/default-user.key' % top_level_directory).read()
     return render_template('pem.jinja2',
                            pem_file=pem_file)
+
+
+@app.route('/defaultpem')
+def defaultpem():
+    if not 'email' in session:
+        return redirect(url_for('login'))
+
+    pem_file = open(
+        '%s/vagrant/keys/default-user.key' % top_level_directory).read()
+
+    response = make_response(pem_file)
+    response.headers['Content-Disposition'] = 'attachment; ' \
+                                              'filename=demo-launcher.pem'
+    return response
 
 
 @app.route('/overview')
@@ -153,9 +166,8 @@ def pemfile():
         return redirect('/')
 
     response = make_response(pem_file.stdout)
-    response.headers[
-        'Content-Disposition'] = 'attachment; filename=%s.pem' % vars[
-        'cluster-id']
+    response.headers['Content-Disposition'] = 'attachment; filename=%s.pem' % \
+                                              vars['cluster-id']
     return response
 
 
