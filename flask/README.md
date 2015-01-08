@@ -31,7 +31,9 @@ You must install `md5sha1sum` using [brew](http://brew.sh/).
     source ../set_credentials.sh
     python web-gui.py
 
-Then navigate to: http://localhost:5000.
+Then navigate to:
+
+    http://localhost:5000.
 
 # Run in AWS
 
@@ -60,14 +62,14 @@ VM for development purposes. You cannot, however, launch VMs within a VM.
 `provision`. More information can be found
 [here](https://github.com/mitchellh/vagrant-aws#synced-folders).
     
-# Find server IP address
+### Find server IP address
 
     vagrant awsinfo -k public_ip
 
-# Visit the web interface
+### Visit the web interface
 
     http://<ip>:5000
 
-# Access server
+### Access server
 
     vagrant ssh
