@@ -32,4 +32,8 @@ $( document ).ready(function() {
 
     $('#inputEmail').val(getQueryParams().email);
 
+    if (getQueryParams().email) {
+        $('#login').click();
+    }
+
 });
