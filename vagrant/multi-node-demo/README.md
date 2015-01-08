@@ -5,11 +5,11 @@ DataStax Demo Portal.
 
 ## new-cluster
 
-`new-cluster` is called from our `/flask` server and copies this directory into 
+`new-cluster` is called from our `/flask/` server and copies this directory into 
 `$DEMO_WEB_GUI_ROOT/launched-clusters/${TIMESTAMP}-${CLEAN_EMAIL}-${CLEAN_DEMO}`
 . It then starts the `launch_demo` script.
 
-This copying is done since a `.vagrant` directory is added to the current
+This copying is done since a `.vagrant/` directory is added to the current
 working directory and multi-tenancy would not be available if all tenants used
 the same directory.
 
