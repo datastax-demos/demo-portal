@@ -2,7 +2,7 @@
 
 # install prerequisites
 sudo apt-get update
-sudo apt-get install -y ruby-dev build-essential git-core tree python-pip python-dev
+sudo apt-get install -y ruby-dev build-essential git-core tree python-pip python-dev libev4 libev-dev python-snappy
 
 # check if vagrant.deb has been downloaded before. if not, download now. install.
 if [ ! -f webapps/demo-portal/vagrant/vagrant-packages/vagrant_1.6.5_x86_64.deb ]; then
