@@ -5,11 +5,14 @@ from flask import Flask, request, render_template, session, redirect, url_for, \
 from flask.ext.mail import Mail, Message
 
 from logic import auth, ec2, ctoolutils
+from logic.cassandracluster import CassandraCluster
 from logic.logger import logger
 
 app = Flask(__name__)
 app.config.from_pyfile('web-gui.cfg')
 mail = Mail(app)
+
+cluster = CassandraCluster(app)
 
 APP_PORTS = {
     'connected-office': 3000,
@@ -20,9 +23,15 @@ top_level_directory = os.path.dirname(
     os.path.dirname(os.path.realpath(__file__)))
 
 
+def msg(access_logger, message, level='info'):
+    if level != 'debug':
+        flash(message, level)
+    access_logger.update(message)
+
+
 @app.route('/')
 def index():
-    if not 'email' in session:
+    if 'email' not in session:
         return redirect(url_for('login'))
 
     # show all clusters if '?admin' present in url
@@ -33,23 +42,25 @@ def index():
 
 @app.route('/ttl', methods=['POST'])
 def ttl():
-    if not 'email' in session:
+    if 'email' not in session:
         return redirect(url_for('login'))
+    access_logger = cluster.get_access_logger(request, session['email'])
 
-    ttl = int(request.form['ttl'])
+    request_ttl = int(request.form['ttl'])
     reservation_ids = request.form['reservation-ids']
 
     for reservation_id in reservation_ids.split(','):
-        ec2.tag_reservation(reservation_id, 'ttl', ttl)
+        ec2.tag_reservation(reservation_id, 'ttl', request_ttl)
 
-    flash('TTL updated to %s.' % ttl)
+    msg(access_logger, 'TTL updated to %s.' % request_ttl)
     return redirect(url_for('index'))
 
 
 @app.route('/pem')
 def pem():
-    if not 'email' in session:
+    if 'email' not in session:
         return redirect(url_for('login'))
+    access_logger = cluster.get_access_logger(request, session['email'])
 
     pem_file = open(
         '%s/vagrant/keys/default-user.key' % top_level_directory).read()
@@ -59,8 +70,9 @@ def pem():
 
 @app.route('/defaultpem')
 def defaultpem():
-    if not 'email' in session:
+    if 'email' not in session:
         return redirect(url_for('login'))
+    access_logger = cluster.get_access_logger(request, session['email'])
 
     pem_file = open(
         '%s/vagrant/keys/default-user.key' % top_level_directory).read()
@@ -73,36 +85,34 @@ def defaultpem():
 
 @app.route('/overview')
 def overview():
-    if not 'email' in session:
+    if 'email' not in session:
         return redirect(url_for('login'))
+    access_logger = cluster.get_access_logger(request, session['email'])
 
     return render_template('overview.jinja2')
 
 
 @app.route('/ctool', methods=['GET', 'POST'])
 def ctool():
-    if not 'email' in session:
+    if 'email' not in session:
         return redirect(url_for('login'))
+    access_logger = cluster.get_access_logger(request, session['email'])
 
     # only process form if form has been submitted
     if request.form:
         # make a mutable dict copy
         postvars = request.form.copy().to_dict()
 
-        # for debug purposes
-        # flash(request.form)
-        # flash(postvars)
-
         # ensure jQuery doesn't fail
         if not postvars['clustername']:
-            flash('Clustername must be set', 'error')
+            msg(access_logger, 'Clustername must be set', 'error')
             return render_template('ctool.jinja2')
 
         postvars = ctoolutils.process(postvars, session)
 
         # ensure jQuery doesn't fail
         if postvars['num_nodes'] < 1:
-            flash('Must launch at least one node', 'error')
+            msg(access_logger, 'Must launch at least one node', 'error')
             return render_template('ctool.jinja2')
 
         try:
@@ -153,34 +163,38 @@ def ctool():
 
 @app.route('/pemfile', methods=['GET', 'POST'])
 def pemfile():
+    user = session['email'] if 'email' in session else 'Unauthenticated User'
+    access_logger = cluster.get_access_logger(request, user)
     if request.method == 'POST':
-        vars = request.form
+        request_vars = request.form
     else:
-        vars = request.args
+        request_vars = request.args
 
-    pem_file = ctoolutils.pemfile(vars)
+    pem_file = ctoolutils.pemfile(request_vars)
 
     if request.method == 'GET' and not pem_file.stdout \
             or 'error' in pem_file.stdout:
-        flash('Key not found: %s' % str(pem_file), 'error')
+        msg(access_logger, 'Key not found: %s' % str(pem_file), 'error')
         return redirect('/')
 
     response = make_response(pem_file.stdout)
     response.headers['Content-Disposition'] = 'attachment; filename=%s.pem' % \
-                                              vars['cluster-id']
+                                              request_vars['cluster-id']
     return response
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    access_logger = cluster.get_access_logger(request)
     if request.method == 'POST':
         if auth.validate(request.form['email'],
                          request.form['password'],
                          app.secret_key):
+            msg(access_logger, 'Login successful.', 'debug')
             session['email'] = request.form['email']
             return redirect(url_for('index'))
         else:
-            flash('Authentication failed.', 'error')
+            msg(access_logger, 'Authentication failed.', 'error')
             return render_template('login.jinja2')
     else:
         return render_template('login.jinja2')
@@ -188,6 +202,7 @@ def login():
 
 @app.route('/request-password', methods=['GET', 'POST'])
 def request_password():
+    access_logger = cluster.get_access_logger(request)
     if request.method == 'POST':
         safe_email = False
         try:
@@ -195,10 +210,8 @@ def request_password():
         except:
             pass
         if not safe_email:
-            flash(
-                'Error occurred when validating email address. Please contact '
-                'administrator.',
-                'error')
+            msg(access_logger, 'Error occurred when validating email address. '
+                               'Please contact administrator.', 'error')
             return render_template('login.jinja2')
 
         password = auth.create(safe_email, app.secret_key)
@@ -206,20 +219,18 @@ def request_password():
                'Feel free to bookmark this personalized address: ' \
                'http://demos.datastax.com:5000/login?email={0}'
         body = body.format(safe_email, password)
-        msg = Message(subject='DataStax Demo Launcher Authentication',
-                      recipients=[safe_email],
-                      body=body)
+        message = Message(subject='DataStax Demo Portal Authentication',
+                          recipients=[safe_email],
+                          body=body)
         try:
-            mail.send(msg)
+            mail.send(message)
         except:
             logger.exception('Error sending email.')
-            flash(
-                'Error occurred when sending email. Please contact '
-                'administrator.',
-                'error')
+            msg(access_logger, 'Error occurred when sending email. '
+                               'Please contact administrator.', 'error')
             return render_template('login.jinja2')
 
-        flash('Password emailed.', 'info')
+        msg(access_logger, 'Password emailed.')
         return redirect('%s?email=%s' % (url_for('login'), safe_email))
     else:
         return render_template('login.jinja2')
@@ -227,8 +238,9 @@ def request_password():
 
 @app.route('/server-information')
 def server_information():
-    if not 'email' in session:
+    if 'email' not in session:
         return redirect(url_for('login'))
+    access_logger = cluster.get_access_logger(request, session['email'])
 
     instance_data = ec2.owned_instances(session['email'],
                                         admin=session['admin'])
@@ -238,12 +250,12 @@ def server_information():
     for reservation in instance_data:
         for instance in instance_data[reservation]:
             try:
-                launch_time = instance_data[reservation][instance]['tags'] \
-                    ['launch_time']
+                launch_time = instance_data[reservation][instance]['tags'][
+                    'launch_time']
                 name = instance_data[reservation][instance]['tags']['Name']
 
                 cluster_key = '%s_%s' % (launch_time, name)
-                if not cluster_key in processed_data:
+                if cluster_key not in processed_data:
                     processed_data[cluster_key] = []
 
                 processed_data[cluster_key].append(
@@ -256,8 +268,9 @@ def server_information():
 
 @app.route('/launch', methods=['POST'])
 def launch():
-    if not 'email' in session:
+    if 'email' not in session:
         return redirect(url_for('login'))
+    access_logger = cluster.get_access_logger(request, session['email'])
 
     demo = request.form['demoChoice'].lower().replace(' ', '-')
     command = [
@@ -273,8 +286,8 @@ def launch():
         '&'
     ]
 
-    # flash('Executing: %s' % ' '.join(command[4:]))
-    flash('Launching new demo: %s.' % demo)
+    msg(access_logger, ' '.join(command[4:]), 'debug')
+    msg(access_logger, 'Launching new demo: %s.' % demo)
     logger.info('Executing: %s', ' '.join(command))
     os.system(' '.join(command))
 
@@ -283,8 +296,9 @@ def launch():
 
 @app.route('/kill/<reservationids>')
 def kill(reservationids):
-    if not 'email' in session:
+    if 'email' not in session:
         return redirect(url_for('login'))
+    access_logger = cluster.get_access_logger(request, session['email'])
 
     success = False
     failure = False
@@ -297,16 +311,21 @@ def kill(reservationids):
             failure = True
 
     if success:
-        flash('One or more instances terminated successfully.', 'success')
+        msg(access_logger, 'Instance(s) terminated successfully.',
+            'success')
     if failure:
-        flash('One or more instances termination may not have succeeded.',
-              'warn')
+        msg(access_logger, 'Instance termination(s) may not have succeeded.',
+            'warn')
 
     return redirect(url_for('index'))
 
 
 @app.route('/logout')
 def logout():
+    if 'email' not in session:
+        return redirect(url_for('login'))
+    access_logger = cluster.get_access_logger(request, session['email'])
+
     session.pop('email', None)
     return redirect(url_for('index'))
 
