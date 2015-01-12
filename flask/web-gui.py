@@ -97,6 +97,7 @@ def ctool():
     if 'email' not in session:
         return redirect(url_for('login'))
     access_logger = cluster.get_access_logger(request, session['email'])
+    access_logger.launch('ctool')
 
     # only process form if form has been submitted
     if request.form:
@@ -270,6 +271,7 @@ def launch():
     if 'email' not in session:
         return redirect(url_for('login'))
     access_logger = cluster.get_access_logger(request, session['email'])
+    access_logger.launch(request.form['demoChoice'])
 
     demo = request.form['demoChoice'].lower().replace(' ', '-')
     command = [

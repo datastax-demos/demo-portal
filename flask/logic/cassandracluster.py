@@ -1,4 +1,5 @@
-from datetime import datetime
+import datetime
+
 from uuid import UUID as pyUUID, getnode
 
 from cassandra.cluster import Cluster
@@ -10,9 +11,9 @@ def generate_timeuuid():
     """
     code modified from: http://goo.gl/czeA4P
     """
-    dt = datetime.now()
+    dt = datetime.datetime.now()
 
-    epoch = datetime(1970, 1, 1, tzinfo=dt.tzinfo)
+    epoch = datetime.datetime(1970, 1, 1, tzinfo=dt.tzinfo)
     offset = epoch.tzinfo.utcoffset(epoch).total_seconds() \
         if epoch.tzinfo else 0
     timestamp = (dt - epoch).total_seconds() - offset
@@ -62,15 +63,8 @@ class CassandraCluster():
             # ensure schema is created
             self.initialize_schema()
 
-            # prepare access insert statement
-            self.access_statement = self.session.prepare('''
-                INSERT INTO demo_portal.access_log
-                    (user, request, request_update,
-                    level, endpoint, method, form_variables, get_variables,
-                    message)
-                VALUES
-                    (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ''')
+            # prepare access insert statements
+            self.prepare_statements()
         except:
             logger.exception('Database objects not created!')
 
@@ -83,6 +77,22 @@ class CassandraCluster():
 
         self.session.execute('''
             CREATE TABLE IF NOT EXISTS demo_portal.access_log (
+                date timestamp,
+                request timeuuid,
+                request_update timeuuid,
+                user text,
+                level text,
+                endpoint text,
+                method text,
+                form_variables map<text, text>,
+                get_variables map<text, text>,
+                message text,
+                PRIMARY KEY ((date), request, request_update)
+            ) WITH CLUSTERING ORDER BY (request DESC, request_update ASC)
+        ''')
+
+        self.session.execute('''
+            CREATE TABLE IF NOT EXISTS demo_portal.user_access_log (
                 user text,
                 request timeuuid,
                 request_update timeuuid,
@@ -92,34 +102,126 @@ class CassandraCluster():
                 form_variables map<text, text>,
                 get_variables map<text, text>,
                 message text,
-                PRIMARY KEY (user, request, request_update)
+                PRIMARY KEY ((user), request, request_update)
             ) WITH CLUSTERING ORDER BY (request DESC, request_update ASC)
         ''')
 
-    class AccessLogger():
+        self.session.execute('''
+            CREATE TABLE IF NOT EXISTS demo_portal.launches (
+                date timestamp,
+                request timeuuid,
+                demo text,
+                form_variables map<text, text>,
+                PRIMARY KEY ((date), request)
+            ) WITH CLUSTERING ORDER BY (request DESC)
+        ''')
 
+        self.session.execute('''
+            CREATE TABLE IF NOT EXISTS demo_portal.demo_launches (
+                demo text,
+                request timeuuid,
+                user text,
+                form_variables map<text, text>,
+                PRIMARY KEY ((demo), request)
+            ) WITH CLUSTERING ORDER BY (request DESC)
+        ''')
+
+        self.session.execute('''
+            CREATE TABLE IF NOT EXISTS demo_portal.last_seen (
+                user text,
+                date timestamp,
+                PRIMARY KEY ((user))
+            )
+        ''')
+
+    def prepare_statements(self):
+        self.insert_access_statement = self.session.prepare('''
+            INSERT INTO demo_portal.access_log
+                (date, request, request_update,
+                user, level, endpoint, method, form_variables,
+                get_variables,
+                message)
+            VALUES
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''')
+
+        self.insert_user_access_statement = self.session.prepare('''
+            INSERT INTO demo_portal.user_access_log
+                (user, request, request_update,
+                level, endpoint, method, form_variables, get_variables,
+                message)
+            VALUES
+                (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''')
+
+        self.insert_launch_statement = self.session.prepare('''
+            INSERT INTO demo_portal.launches
+                (date, request, demo, form_variables)
+            VALUES
+                (?, ?, ?, ?)
+        ''')
+
+        self.insert_demo_launch_statement = self.session.prepare('''
+            INSERT INTO demo_portal.demo_launches
+                (demo, request, user, form_variables)
+            VALUES
+                (?, ?, ?, ?)
+        ''')
+
+        self.insert_last_seen_statement = self.session.prepare('''
+            INSERT INTO demo_portal.last_seen
+                (user, date)
+            VALUES
+                (?, ?)
+        ''')
+
+    class AccessLogger():
         def __init__(self, cassandra_cluster, user,
                      endpoint, method, form_variables, get_variables):
             self.cassandra_cluster = cassandra_cluster
             self.user = user
+
+            # https://datastax-oss.atlassian.net/browse/PYTHON-212
+            self.today = datetime.datetime.combine(datetime.date.today(),
+                                                   datetime.datetime.min.time())
             self.request_timeuuid = generate_timeuuid()
 
-            form_variables = _sanatize(form_variables)
-            get_variables = _sanatize(get_variables)
+            self.form_variables = _sanatize(form_variables)
+            self.get_variables = _sanatize(get_variables)
 
             # store first record of endpoint access
             try:
                 self.cassandra_cluster.session.execute(
-                    self.cassandra_cluster.access_statement.bind((
+                    self.cassandra_cluster.insert_access_statement.bind((
+                        self.today,
+                        self.request_timeuuid,
+                        self.request_timeuuid,
+                        user,
+                        'init',
+                        endpoint,
+                        method,
+                        self.form_variables,
+                        self.get_variables,
+                        None
+                    ))
+                )
+                self.cassandra_cluster.session.execute(
+                    self.cassandra_cluster.insert_user_access_statement.bind((
                         user,
                         self.request_timeuuid,
                         self.request_timeuuid,
                         'init',
                         endpoint,
                         method,
-                        form_variables,
-                        get_variables,
+                        self.form_variables,
+                        self.get_variables,
                         None
+                    ))
+                )
+                self.cassandra_cluster.session.execute(
+                    self.cassandra_cluster.insert_last_seen_statement.bind((
+                        user,
+                        datetime.datetime.now()
                     ))
                 )
             except:
@@ -140,7 +242,20 @@ class CassandraCluster():
             """
             try:
                 self.cassandra_cluster.session.execute(
-                    self.cassandra_cluster.access_statement.bind((
+                    self.cassandra_cluster.insert_access_statement.bind((
+                        self.today,
+                        self.request_timeuuid,
+                        generate_timeuuid(),
+                        self.user,
+                        level,
+                        None,
+                        None,
+                        None,
+                        message
+                    ))
+                )
+                self.cassandra_cluster.session.execute(
+                    self.cassandra_cluster.insert_user_access_statement.bind((
                         self.user,
                         self.request_timeuuid,
                         generate_timeuuid(),
@@ -152,7 +267,33 @@ class CassandraCluster():
                     ))
                 )
             except:
-                logger.exeception('Database inaccessible!')
+                logger.exception('Database inaccessible!')
+
+        def launch(self, demo):
+            """
+            Update records for demo launches
+            :param demo: name of the launched demo
+            :return:
+            """
+            try:
+                self.cassandra_cluster.session.execute(
+                    self.cassandra_cluster.insert_launch_statement.bind((
+                        self.today,
+                        self.request_timeuuid,
+                        demo,
+                        self.form_variables
+                    ))
+                )
+                self.cassandra_cluster.session.execute(
+                    self.cassandra_cluster.insert_demo_launch_statement.bind((
+                        demo,
+                        self.request_timeuuid,
+                        self.user,
+                        self.form_variables
+                    ))
+                )
+            except:
+                logger.exception('Database inaccessible!')
 
     def get_access_logger(self, request=None, user='Unauthenticated User'):
         """
