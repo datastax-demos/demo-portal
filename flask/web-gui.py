@@ -26,7 +26,7 @@ top_level_directory = os.path.dirname(
 def msg(access_logger, message, level='info'):
     if level != 'debug':
         flash(message, level)
-    access_logger.update(message)
+    access_logger.update(level, message)
 
 
 @app.route('/')
@@ -240,7 +240,6 @@ def request_password():
 def server_information():
     if 'email' not in session:
         return redirect(url_for('login'))
-    access_logger = cluster.get_access_logger(request, session['email'])
 
     instance_data = ec2.owned_instances(session['email'],
                                         admin=session['admin'])

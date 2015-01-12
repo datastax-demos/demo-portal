@@ -49,7 +49,7 @@ def _sanatize(input_dict):
         output = input_dict.copy()
         del output['password']
         return output
-    return input
+    return input_dict
 
 
 class CassandraCluster():
@@ -66,10 +66,10 @@ class CassandraCluster():
             self.access_statement = self.session.prepare('''
                 INSERT INTO demo_portal.access_log
                     (user, request, request_update,
-                    endpoint, method, form_variables, get_variables,
+                    level, endpoint, method, form_variables, get_variables,
                     message)
                 VALUES
-                    (?, ?, ?, ?, ?, ?, ?, ?)
+                    (?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''')
         except:
             logger.exception('Database objects not created!')
@@ -86,6 +86,7 @@ class CassandraCluster():
                 user text,
                 request timeuuid,
                 request_update timeuuid,
+                level text,
                 endpoint text,
                 method text,
                 form_variables map<text, text>,
@@ -101,7 +102,7 @@ class CassandraCluster():
                      endpoint, method, form_variables, get_variables):
             self.cassandra_cluster = cassandra_cluster
             self.user = user
-            self.request_timeuuid = self.cassandra_cluster.generate_timeuuid()
+            self.request_timeuuid = generate_timeuuid()
 
             form_variables = _sanatize(form_variables)
             get_variables = _sanatize(get_variables)
@@ -113,6 +114,7 @@ class CassandraCluster():
                         user,
                         self.request_timeuuid,
                         self.request_timeuuid,
+                        'init',
                         endpoint,
                         method,
                         form_variables,
@@ -121,7 +123,7 @@ class CassandraCluster():
                     ))
                 )
             except:
-                logger.exeception('Database inaccessible!')
+                logger.exception('Database inaccessible!')
 
         def get_request_timeuuid(self):
             """
@@ -130,7 +132,7 @@ class CassandraCluster():
             """
             return self.request_timeuuid
 
-        def update(self, message):
+        def update(self, level, message):
             """
             Update record with Flask flash messages
             :param message:
@@ -141,8 +143,8 @@ class CassandraCluster():
                     self.cassandra_cluster.access_statement.bind((
                         self.user,
                         self.request_timeuuid,
-                        self.cassandra_cluster.generate_timeuuid(),
-                        None,
+                        generate_timeuuid(),
+                        level,
                         None,
                         None,
                         None,
