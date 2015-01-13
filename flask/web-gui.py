@@ -333,9 +333,15 @@ def history():
                                               init_log=False)
 
     history = access_logger.get_user_access_log(session['email'])
+    headings = ['request', 'request_update',
+                'method', 'endpoint',
+                'level', 'message',
+                'form_variables', 'get_variables',
+    ]
 
     return render_template('history.jinja2',
                            title='User History',
+                           headings=headings,
                            history=history)
 
 
@@ -358,6 +364,7 @@ def admin_history(page=0):
     page_range = 9
     start_range = page - page_range / 2 if (page - page_range / 2) > 0 else 0
     paging = {
+        'date': datetime.date.today() + datetime.timedelta(days=-1 * page),
         'page': page,
         'start_range': start_range,
         'end_range': start_range + page_range,
@@ -365,10 +372,19 @@ def admin_history(page=0):
         'forward': page + 1
     }
 
+    history = access_logger.get_access_log(date)
+    headings = ['user',
+                'request', 'request_update',
+                'method', 'endpoint',
+                'level', 'message',
+                'form_variables', 'get_variables',
+    ]
+
     return render_template('history.jinja2',
                            title='Admin History',
                            paging=paging,
-                           history=access_logger.get_access_log(date))
+                           headings=headings,
+                           history=history)
 
 
 @app.route('/logout')
