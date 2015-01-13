@@ -212,7 +212,7 @@ class CassandraCluster():
                         self.today,
                         self.request_timeuuid,
                         self.request_timeuuid,
-                        user,
+                        self.user,
                         'init',
                         endpoint,
                         method,
@@ -223,7 +223,7 @@ class CassandraCluster():
                 )
                 self.cassandra_cluster.session.execute(
                     self.cassandra_cluster.insert_user_access_statement.bind((
-                        user,
+                        self.user,
                         self.request_timeuuid,
                         self.request_timeuuid,
                         'init',
@@ -236,7 +236,7 @@ class CassandraCluster():
                 )
                 self.cassandra_cluster.session.execute(
                     self.cassandra_cluster.insert_last_seen_statement.bind((
-                        user,
+                        self.user,
                         datetime.datetime.now()
                     ))
                 )
@@ -256,11 +256,14 @@ class CassandraCluster():
             :param date: date partition key
             :return:
             """
-            return self.cassandra_cluster.session.execute(
-                self.cassandra_cluster.query_access_log_statement.bind((
-                    date,
-                ))
-            )
+            all_rows = []
+            for row in self.cassandra_cluster.session.execute(
+                    self.cassandra_cluster.query_access_log_statement.bind((
+                            date,
+                    ))):
+                all_rows.append(row)
+
+            return all_rows
 
         def get_user_access_log(self, user):
             """
@@ -268,11 +271,15 @@ class CassandraCluster():
             :param user: user name
             :return:
             """
-            return self.cassandra_cluster.session.execute(
-                self.cassandra_cluster.query_user_access_log_statement.bind((
-                    user,
-                ))
-            )
+            all_rows = []
+            for row in self.cassandra_cluster.session.execute(
+                    self.cassandra_cluster.query_user_access_log_statement.bind(
+                            (
+                                    user,
+                            ))):
+                all_rows.append(row)
+
+            return all_rows
 
         def update(self, level, message):
             """
@@ -291,6 +298,7 @@ class CassandraCluster():
                         None,
                         None,
                         None,
+                        None,
                         message
                     ))
                 )
@@ -300,6 +308,7 @@ class CassandraCluster():
                         self.request_timeuuid,
                         generate_timeuuid(),
                         level,
+                        None,
                         None,
                         None,
                         None,

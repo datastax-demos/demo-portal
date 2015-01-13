@@ -1,3 +1,4 @@
+import datetime
 import os
 
 from flask import Flask, request, render_template, session, redirect, url_for, \
@@ -23,10 +24,11 @@ top_level_directory = os.path.dirname(
     os.path.dirname(os.path.realpath(__file__)))
 
 
-def msg(access_logger, message, level='info'):
+def msg(access_logger, message, level='info', log=True):
     if level != 'debug':
         flash(message, level)
-    access_logger.update(level, message)
+    if log:
+        access_logger.update(level, message)
 
 
 @app.route('/')
@@ -345,7 +347,9 @@ def admin_history(page=0):
     access_logger = cluster.get_access_logger(request, session['email'],
                                               init_log=False)
 
-    import datetime
+    msg(access_logger,
+        'This query is expensive. Please do not refresh more than needed.',
+        'warn', log=False)
 
     date = datetime.datetime.combine(datetime.date.today(),
                                      datetime.datetime.min.time())
