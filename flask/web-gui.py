@@ -101,10 +101,11 @@ def ctool():
     if 'email' not in session:
         return redirect(url_for('login'))
     access_logger = cluster.get_access_logger(request, session['email'])
-    access_logger.launch('ctool')
 
     # only process form if form has been submitted
     if request.form:
+        access_logger.launch('ctool')
+
         # make a mutable dict copy
         postvars = request.form.copy().to_dict()
 
