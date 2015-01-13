@@ -338,7 +338,8 @@ def history():
 
 
 @app.route('/admin-history')
-def admin_history():
+@app.route('/admin-history/<int:page>')
+def admin_history(page=0):
     if 'email' not in session:
         return redirect(url_for('login'))
     access_logger = cluster.get_access_logger(request, session['email'],
@@ -348,9 +349,21 @@ def admin_history():
 
     date = datetime.datetime.combine(datetime.date.today(),
                                      datetime.datetime.min.time())
+    date = date + datetime.timedelta(days=-1 * page)
+
+    page_range = 9
+    start_range = page - page_range / 2 if (page - page_range / 2) > 0 else 0
+    paging = {
+        'page': page,
+        'start_range': start_range,
+        'end_range': start_range + page_range,
+        'back': page - 1 if (page - 1) > 0 else 0,
+        'forward': page + 1
+    }
 
     return render_template('history.jinja2',
                            title='Admin History',
+                           paging=paging,
                            history=access_logger.get_access_log(date))
 
 
