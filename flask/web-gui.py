@@ -330,8 +330,28 @@ def history():
     access_logger = cluster.get_access_logger(request, session['email'],
                                               init_log=False)
 
+    history = access_logger.get_user_access_log(session['email'])
+
     return render_template('history.jinja2',
-                           history=access_logger.get_history(session['email']))
+                           title='User History',
+                           history=history)
+
+
+@app.route('/admin-history')
+def admin_history():
+    if 'email' not in session:
+        return redirect(url_for('login'))
+    access_logger = cluster.get_access_logger(request, session['email'],
+                                              init_log=False)
+
+    import datetime
+
+    date = datetime.datetime.combine(datetime.date.today(),
+                                     datetime.datetime.min.time())
+
+    return render_template('history.jinja2',
+                           title='Admin History',
+                           history=access_logger.get_access_log(date))
 
 
 @app.route('/logout')

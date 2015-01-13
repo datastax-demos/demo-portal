@@ -7,7 +7,7 @@
 
 {% block body %}
     <div class="col-md-offset-0 col-md-12">
-        <h3>User History</h3>
+        <h3>{{ title }}</h3>
 
         <table class="table table-hover">
             <tr>
@@ -19,9 +19,13 @@
                 <tr>
                     {% for key, value in row.iteritems() %}
                         {% if key in ["form_variables", "get_variables"] %}
-                            <td>{{ value | tojson | safe }}</td>
+                            {% if value %}
+                                <td>{{ value | tojson | safe }}</td>
+                            {% else %}
+                                <td></td>
+                            {% endif %}
                         {% else %}
-                            <td>{{ value }}</td>
+                            <td>{{ value or '' }}</td>
                         {% endif %}
                     {% endfor %}
                 </tr>

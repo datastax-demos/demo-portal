@@ -177,7 +177,12 @@ class CassandraCluster():
                 (?, ?)
         ''')
 
-        self.query_user_history_statement = self.session.prepare('''
+        self.query_access_log_statement = self.session.prepare('''
+            SELECT * FROM demo_portal.access_log
+            WHERE date=?
+        ''')
+
+        self.query_user_access_log_statement = self.session.prepare('''
             SELECT * FROM demo_portal.user_access_log
             WHERE user=?
         ''')
@@ -245,14 +250,26 @@ class CassandraCluster():
             """
             return self.request_timeuuid
 
-        def get_history(self, user):
+        def get_access_log(self, date):
+            """
+            return an admin's view of history
+            :param date: date partition key
+            :return:
+            """
+            return self.cassandra_cluster.session.execute(
+                self.cassandra_cluster.query_access_log_statement.bind((
+                    date,
+                ))
+            )
+
+        def get_user_access_log(self, user):
             """
             return a user's history
             :param user: user name
             :return:
             """
             return self.cassandra_cluster.session.execute(
-                self.cassandra_cluster.query_user_history_statement.bind((
+                self.cassandra_cluster.query_user_access_log_statement.bind((
                     user,
                 ))
             )
