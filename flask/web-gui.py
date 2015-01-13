@@ -60,7 +60,8 @@ def ttl():
 def pem():
     if 'email' not in session:
         return redirect(url_for('login'))
-    access_logger = cluster.get_access_logger(request, session['email'])
+    access_logger = cluster.get_access_logger(request, session['email'],
+                                              init_log=False)
 
     pem_file = open(
         '%s/vagrant/keys/default-user.key' % top_level_directory).read()
@@ -87,7 +88,8 @@ def defaultpem():
 def overview():
     if 'email' not in session:
         return redirect(url_for('login'))
-    access_logger = cluster.get_access_logger(request, session['email'])
+    access_logger = cluster.get_access_logger(request, session['email'],
+                                              init_log=False)
 
     return render_template('overview.jinja2')
 
@@ -319,6 +321,17 @@ def kill(reservationids):
             'warn')
 
     return redirect(url_for('index'))
+
+
+@app.route('/history')
+def history():
+    if 'email' not in session:
+        return redirect(url_for('login'))
+    access_logger = cluster.get_access_logger(request, session['email'],
+                                              init_log=False)
+
+    return render_template('history.jinja2',
+                           history=access_logger.get_history(session['email']))
 
 
 @app.route('/logout')
