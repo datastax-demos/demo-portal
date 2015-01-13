@@ -405,6 +405,66 @@ def last_seen():
                            history=history)
 
 
+@app.route('/launches')
+def launches():
+    if 'email' not in session:
+        return redirect(url_for('login'))
+    access_logger = cluster.get_access_logger(request, session['email'],
+                                              init_log=False)
+
+    msg(access_logger,
+        'This query is expensive. Please do not refresh more than needed.',
+        'warn', log=False)
+
+    history = access_logger.get_launches()
+    headings = ['date', 'demo']
+
+    if 'advanced' in request.args:
+        headings += ['form_variables', 'request']
+
+    description = '''
+    Views:
+    <a href="/launches">Simple</a> |
+    <a href="/launches?advanced">Advanced</a>
+    '''
+
+    return render_template('history.jinja2',
+                           title='Launch History (by Date)',
+                           description=description,
+                           headings=headings,
+                           history=history)
+
+
+@app.route('/demo-launches')
+def demo_launches():
+    if 'email' not in session:
+        return redirect(url_for('login'))
+    access_logger = cluster.get_access_logger(request, session['email'],
+                                              init_log=False)
+
+    msg(access_logger,
+        'This query is expensive. Please do not refresh more than needed.',
+        'warn', log=False)
+
+    history = access_logger.get_demo_launches()
+    headings = ['demo', 'user']
+
+    if 'advanced' in request.args:
+        headings += ['form_variables', 'request']
+
+    description = '''
+    Views:
+    <a href="/demo-launches">Simple</a> |
+    <a href="/demo-launches?advanced">Advanced</a>
+    '''
+
+    return render_template('history.jinja2',
+                           title='Launch History (by Demo)',
+                           description=description,
+                           headings=headings,
+                           history=history)
+
+
 @app.route('/logout')
 def logout():
     if 'email' not in session:

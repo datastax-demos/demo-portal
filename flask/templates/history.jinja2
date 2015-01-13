@@ -8,12 +8,18 @@
 {% block body %}
     <div class="col-md-offset-0 col-md-12">
         <h3>{{ title }}</h3>
+
+        {% if description %}
+            <p>{{ description }}</p>
+        {% endif %}
+
         {% if history_log %}
             <p>
                 All history sorted by DESCENDING requests and ASCENDING request
                 updates.
             </p>
         {% endif %}
+
         {% if paging %}
             <p>
                 Paging adds an offset of X days to the current view. 0 being

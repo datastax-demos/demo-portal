@@ -191,6 +191,14 @@ class CassandraCluster():
             SELECT * FROM demo_portal.last_seen
         ''')
 
+        self.query_launches_statement = self.session.prepare('''
+            SELECT * FROM demo_portal.launches
+        ''')
+
+        self.query_demo_launches_statement = self.session.prepare('''
+            SELECT * FROM demo_portal.demo_launches
+        ''')
+
     class AccessLogger():
         def __init__(self, cassandra_cluster, user,
                      endpoint, method, form_variables, get_variables,
@@ -293,6 +301,30 @@ class CassandraCluster():
             all_rows = []
             for row in self.cassandra_cluster.session.execute(
                     self.cassandra_cluster.query_last_seen_statement):
+                all_rows.append(row)
+
+            return all_rows
+
+        def get_launches(self):
+            """
+            return the "last seen" log
+            :return:
+            """
+            all_rows = []
+            for row in self.cassandra_cluster.session.execute(
+                    self.cassandra_cluster.query_launches_statement):
+                all_rows.append(row)
+
+            return all_rows
+
+        def get_demo_launches(self):
+            """
+            return the "last seen" log
+            :return:
+            """
+            all_rows = []
+            for row in self.cassandra_cluster.session.execute(
+                    self.cassandra_cluster.query_demo_launches_statement):
                 all_rows.append(row)
 
             return all_rows
