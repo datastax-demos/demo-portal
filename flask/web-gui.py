@@ -340,6 +340,7 @@ def history():
     ]
 
     return render_template('history.jinja2',
+                           history_log=True,
                            title='User History',
                            headings=headings,
                            history=history)
@@ -381,8 +382,25 @@ def admin_history(page=0):
     ]
 
     return render_template('history.jinja2',
+                           history_log=True,
                            title='Admin History',
                            paging=paging,
+                           headings=headings,
+                           history=history)
+
+
+@app.route('/last-seen')
+def last_seen():
+    if 'email' not in session:
+        return redirect(url_for('login'))
+    access_logger = cluster.get_access_logger(request, session['email'],
+                                              init_log=False)
+
+    history = access_logger.get_last_seen_log()
+    headings = ['user', 'date']
+
+    return render_template('history.jinja2',
+                           title='Last Seen',
                            headings=headings,
                            history=history)
 

@@ -187,6 +187,10 @@ class CassandraCluster():
             WHERE user=?
         ''')
 
+        self.query_last_seen_statement = self.session.prepare('''
+            SELECT * FROM demo_portal.last_seen
+        ''')
+
     class AccessLogger():
         def __init__(self, cassandra_cluster, user,
                      endpoint, method, form_variables, get_variables,
@@ -277,6 +281,18 @@ class CassandraCluster():
                             (
                                     user,
                             ))):
+                all_rows.append(row)
+
+            return all_rows
+
+        def get_last_seen_log(self):
+            """
+            return the "last seen" log
+            :return:
+            """
+            all_rows = []
+            for row in self.cassandra_cluster.session.execute(
+                    self.cassandra_cluster.query_last_seen_statement):
                 all_rows.append(row)
 
             return all_rows
