@@ -193,8 +193,8 @@ def login():
         user_record = cluster.get_user(request.form['email'])
         password_hash = auth.hash(request.form['password'], app.secret_key)
 
-        print 'login-full:', request.form['password']
-        print 'login-hash:', auth.hash(request.form['password'], app.secret_key)
+        logger.info('login-full:' + request.form['password'])
+        logger.info('login-hash:' + auth.hash(request.form['password'], app.secret_key))
 
         if user_record and user_record[0]['password_hash'] == password_hash:
             msg(access_logger, 'Login successful.', 'debug')
@@ -261,8 +261,8 @@ def request_password():
         password = auth.create_new_password()
         cluster.set_password(safe_email, auth.hash(password, app.secret_key))
 
-        print 'login-full:', password
-        print 'login-hash:', auth.hash(password, app.secret_key)
+        logger.info('login-full:' + password)
+        logger.info('login-hash:' + auth.hash(password, app.secret_key))
 
         body = 'Your email and password is: {0} / {1}\n\n' \
                'Feel free to bookmark this personalized address: ' \
