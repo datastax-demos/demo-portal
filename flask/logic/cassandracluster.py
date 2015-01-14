@@ -113,7 +113,9 @@ class CassandraCluster():
                 date timestamp,
                 request timeuuid,
                 demo text,
+                user text,
                 form_variables map<text, text>,
+                time timestamp,
                 PRIMARY KEY ((date), request)
             ) WITH CLUSTERING ORDER BY (request DESC)
         ''')
@@ -124,6 +126,7 @@ class CassandraCluster():
                 request timeuuid,
                 user text,
                 form_variables map<text, text>,
+                time timestamp,
                 PRIMARY KEY ((demo), request)
             ) WITH CLUSTERING ORDER BY (request DESC)
         ''')
@@ -158,16 +161,16 @@ class CassandraCluster():
 
         self.insert_launch_statement = self.session.prepare('''
             INSERT INTO demo_portal.launches
-                (date, request, demo, form_variables)
+                (date, request, demo, user, form_variables, time)
             VALUES
-                (?, ?, ?, ?)
+                (?, ?, ?, ?, ?, ?)
         ''')
 
         self.insert_demo_launch_statement = self.session.prepare('''
             INSERT INTO demo_portal.demo_launches
-                (demo, request, user, form_variables)
+                (demo, request, user, form_variables, time)
             VALUES
-                (?, ?, ?, ?)
+                (?, ?, ?, ?, ?)
         ''')
 
         self.insert_last_seen_statement = self.session.prepare('''
@@ -378,7 +381,9 @@ class CassandraCluster():
                         self.today,
                         self.request_timeuuid,
                         demo,
-                        self.form_variables
+                        self.user,
+                        self.form_variables,
+                        datetime.datetime.now()
                     ))
                 )
                 self.cassandra_cluster.session.execute(
@@ -386,7 +391,8 @@ class CassandraCluster():
                         demo,
                         self.request_timeuuid,
                         self.user,
-                        self.form_variables
+                        self.form_variables,
+                        datetime.datetime.now()
                     ))
                 )
             except:

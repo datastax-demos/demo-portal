@@ -429,10 +429,10 @@ def launches():
         'warn', log=False)
 
     history = access_logger.get_launches()
-    headings = ['date', 'demo']
+    headings = ['date', 'demo', 'user']
 
     if 'advanced' in request.args:
-        headings += ['form_variables', 'request']
+        headings += ['form_variables', 'request', 'time']
 
     description = '''
     Views:
@@ -459,7 +459,7 @@ def demo_launches():
         'warn', log=False)
 
     history = access_logger.get_demo_launches()
-    headings = ['demo', 'user']
+    headings = ['demo', 'user', 'time']
 
     if 'advanced' in request.args:
         headings += ['form_variables', 'request']
