@@ -190,11 +190,13 @@ def pemfile():
 def login():
     access_logger = cluster.get_access_logger(request)
     if request.method == 'POST':
-        if auth.validate(request.form['email'],
-                         request.form['password'],
-                         app.secret_key):
+        user_record = cluster.get_user(request.form['email'])
+        password_hash = auth.hash(request.form['password'], app.secret_key)
+
+        if user_record and user_record[0]['password_hash'] == password_hash:
             msg(access_logger, 'Login successful.', 'debug')
             session['email'] = request.form['email']
+            session['admin'] = user_record[0]['admin']
             return redirect(url_for('index'))
         else:
             msg(access_logger, 'Authentication failed.', 'error')
@@ -209,15 +211,24 @@ def request_password():
     if request.method == 'POST':
         safe_email = False
         try:
-            safe_email = auth.validdomain(request.form['email'], 'datastax.com')
+            safe_email = auth.is_valid_domain(request.form['email'],
+                                              'datastax.com')
+
+            if not safe_email:
+                user_record = cluster.get_user(request.form['email'])
+                if user_record and \
+                                user_record[0]['user'] == request.form['email']:
+                    safe_email = user_record[0]['user']
         except:
-            pass
+            logger.exception('Email deemed unsafe!')
         if not safe_email:
             msg(access_logger, 'Error occurred when validating email address. '
                                'Please contact administrator.', 'error')
             return render_template('login.jinja2')
 
-        password = auth.create(safe_email, app.secret_key)
+        password = auth.create_new_password()
+        cluster.set_password(safe_email, auth.hash(password, app.secret_key))
+
         body = 'Your email and password is: {0} / {1}\n\n' \
                'Feel free to bookmark this personalized address: ' \
                'http://demos.datastax.com:5000/login?email={0}'
@@ -360,6 +371,12 @@ def toggle_admin():
         return redirect(url_for('login'))
     access_logger = cluster.get_access_logger(request, session['email'])
 
+    user_record = cluster.get_user(session['email'])
+    if not user_record or not user_record[0]['admin']:
+        msg(access_logger, 'Admin privileges not enabled for this account.',
+            'error')
+        return redirect(request.referrer)
+
     if 'admin' not in session:
         session['admin'] = True
     else:
@@ -375,6 +392,10 @@ def admin_history(page=0):
         return redirect(url_for('login'))
     access_logger = cluster.get_access_logger(request, session['email'],
                                               init_log=False)
+
+    if 'admin' not in session:
+        msg(access_logger, 'Enable admin privileges first.', 'error')
+        return redirect(request.referrer)
 
     msg(access_logger,
         'This query is expensive. Please do not refresh more than needed.',
@@ -418,6 +439,10 @@ def last_seen():
     access_logger = cluster.get_access_logger(request, session['email'],
                                               init_log=False)
 
+    if 'admin' not in session:
+        msg(access_logger, 'Enable admin privileges first.', 'error')
+        return redirect(request.referrer)
+
     history = access_logger.get_last_seen_log()
     headings = ['user', 'date']
 
@@ -433,6 +458,10 @@ def launches():
         return redirect(url_for('login'))
     access_logger = cluster.get_access_logger(request, session['email'],
                                               init_log=False)
+
+    if 'admin' not in session:
+        msg(access_logger, 'Enable admin privileges first.', 'error')
+        return redirect(request.referrer)
 
     msg(access_logger,
         'This query is expensive. Please do not refresh more than needed.',
@@ -462,6 +491,10 @@ def demo_launches():
         return redirect(url_for('login'))
     access_logger = cluster.get_access_logger(request, session['email'],
                                               init_log=False)
+
+    if 'admin' not in session:
+        msg(access_logger, 'Enable admin privileges first.', 'error')
+        return redirect(request.referrer)
 
     msg(access_logger,
         'This query is expensive. Please do not refresh more than needed.',

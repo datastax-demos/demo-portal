@@ -139,6 +139,15 @@ class CassandraCluster():
             )
         ''')
 
+        self.session.execute('''
+            CREATE TABLE IF NOT EXISTS demo_portal.users (
+                user text,
+                admin boolean,
+                password_hash text,
+                PRIMARY KEY ((user))
+            )
+        ''')
+
     def prepare_statements(self):
         self.insert_access_statement = self.session.prepare('''
             INSERT INTO demo_portal.access_log
@@ -180,6 +189,13 @@ class CassandraCluster():
                 (?, ?)
         ''')
 
+        self.insert_password_statement = self.session.prepare('''
+            INSERT INTO demo_portal.users
+                (user, password_hash)
+            VALUES
+                (?, ?)
+        ''')
+
         self.query_access_log_statement = self.session.prepare('''
             SELECT * FROM demo_portal.access_log
             WHERE date=?
@@ -201,6 +217,29 @@ class CassandraCluster():
         self.query_demo_launches_statement = self.session.prepare('''
             SELECT * FROM demo_portal.demo_launches
         ''')
+
+        self.query_user_statement = self.session.prepare('''
+            SELECT * FROM demo_portal.users
+            WHERE user = ?
+        ''')
+
+    def set_password(self, user, password):
+        """
+        Set user password
+        :param user: email
+        :param password: hashed password
+        :return:
+        """
+        self.session.execute(
+            self.insert_password_statement.bind((user, password)))
+
+    def get_user(self, user):
+        """
+        Return the saved user record
+        :param user: email
+        :return:
+        """
+        return self.session.execute(self.query_user_statement.bind((user,)))
 
     class AccessLogger():
         def __init__(self, cassandra_cluster, user,

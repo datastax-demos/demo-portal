@@ -1,23 +1,19 @@
+import binascii
 import hashlib
+import os
 import re
-import datetime
 
 
-def validate(email, password, seed):
-    return create(email, seed) == password
+def hash(input_value, seed):
+    dk = hashlib.pbkdf2_hmac('sha256', input_value[:1024], seed, 100000)
+    return binascii.hexlify(dk)
 
-def create(email, seed):
-    # rotate the hash once a month
-    date = datetime.date.today()
-    date = date.year + date.month
 
-    generated_hash = hashlib.md5(seed[:8] +
-                                 email.encode('utf-8') +
-                                 seed[8:] +
-                                 str(date))
-    return generated_hash.hexdigest()[:6]
+def create_new_password():
+    return hashlib.md5(os.urandom(1000)).hexdigest()
 
-def validdomain(email, domain):
+
+def is_valid_domain(email, domain):
     pattern = re.compile(r'(\w*\.*\w*)@(%s)' % domain)
     found = pattern.findall(email)
     if found:
