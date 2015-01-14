@@ -49,6 +49,12 @@
                                 <li><a href="/launches">Launch History (by Date)</a></li>
                                 <li><a href="/demo-launches">Launch History (by Demo)</a></li>
                                 <li class="divider"></li>
+                                <li><a href="/toggle-admin">
+                                    Toggle Admin View
+                                    {% if session.admin %}
+                                        <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                                    {% endif %}
+                                </a></li>
                                 <li><a href="/last-seen">Last Seen User</a></li>
                                 <li><a href="/admin-history">Admin History</a></li>
                             </ul>

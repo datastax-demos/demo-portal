@@ -36,9 +36,6 @@ def index():
     if 'email' not in session:
         return redirect(url_for('login'))
 
-    # show all clusters if '?admin' present in url
-    session['admin'] = not request.args.get('admin', True)
-
     return render_template('dashboard.jinja2')
 
 
@@ -345,6 +342,20 @@ def history():
                            title='User History',
                            headings=headings,
                            history=history)
+
+
+@app.route('/toggle-admin')
+def toggle_admin():
+    if 'email' not in session:
+        return redirect(url_for('login'))
+    access_logger = cluster.get_access_logger(request, session['email'])
+
+    if 'admin' not in session:
+        session['admin'] = True
+    else:
+        del session['admin']
+
+    return redirect(request.referrer)
 
 
 @app.route('/admin-history')
