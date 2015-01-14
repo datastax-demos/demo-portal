@@ -17,6 +17,8 @@
         "bootstrap": "~3.2.0",
         "bootstrap-confirmation": "tavicu/bootstrap-confirmation",
         "bootstrapvalidator": "~0.5.2",
-        "jquery": "~2.1.1"
-    }
+        "jquery": "~2.1.1",
+        "pwstrength-bootstrap": "~1.2.3"
+    },
+    "private": true
 }

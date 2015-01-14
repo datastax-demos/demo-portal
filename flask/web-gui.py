@@ -205,6 +205,35 @@ def login():
         return render_template('login.jinja2')
 
 
+@app.route('/change-password', methods=['GET', 'POST'])
+def change_password():
+    if 'email' not in session:
+        return redirect(url_for('login'))
+    access_logger = cluster.get_access_logger(request, session['email'])
+
+    if request.method == 'POST':
+        if request.form['new-password'] != request.form['confirm-password']:
+            msg(access_logger, 'New passwords did not match.', 'error')
+            return render_template('change-password.jinja2')
+
+        user_record = cluster.get_user(session['email'])
+        password_hash = auth.hash(request.form['current-password'],
+                                  app.secret_key)
+
+        if user_record and user_record[0]['password_hash'] == password_hash:
+            cluster.set_password(session['email'],
+                                 auth.hash(request.form['new-password'],
+                                           app.secret_key))
+            msg(access_logger, 'Password has been updated.', 'success')
+            return render_template('change-password.jinja2')
+
+        else:
+            msg(access_logger, 'Current password did not match.', 'error')
+            return render_template('change-password.jinja2')
+
+    return render_template('change-password.jinja2')
+
+
 @app.route('/request-password', methods=['GET', 'POST'])
 def request_password():
     access_logger = cluster.get_access_logger(request)

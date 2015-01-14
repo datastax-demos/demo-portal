@@ -45,6 +45,7 @@
                             </a>
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="/history">User History</a></li>
+                                <li><a href="/change-password">Change Password</a></li>
                                 <li class="divider"></li>
                                 <li><a href="/toggle-admin">
                                     Toggle Admin View
@@ -53,6 +54,9 @@
                                     {% endif %}
                                 </a>
                                 {% if session.admin %}
+{#                                    <li class="divider"></li>#}
+{#                                    <li><a href="/add-admin">Add Admin User</a></li>#}
+{#                                    <li><a href="/add-external">Add External User</a></li>#}
                                     <li class="divider"></li>
                                     <li><a href="/last-seen">Last Seen User</a></li>
                                     <li><a href="/admin-history">Admin History</a></li>
