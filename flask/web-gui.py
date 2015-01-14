@@ -379,10 +379,11 @@ def toggle_admin():
 
     if 'admin' not in session:
         session['admin'] = True
+        return redirect(request.referrer)
     else:
         del session['admin']
 
-    return redirect(request.referrer)
+    return redirect(url_for('index'))
 
 
 @app.route('/admin-history')
