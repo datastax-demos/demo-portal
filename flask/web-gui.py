@@ -331,15 +331,23 @@ def history():
                                               init_log=False)
 
     history = access_logger.get_user_access_log(session['email'])
-    headings = ['request', 'request_update',
-                'method', 'endpoint',
+    headings = ['method', 'endpoint',
                 'level', 'message',
                 'form_variables', 'get_variables',
     ]
 
+    if 'advanced' in request.args:
+        headings += ['request', 'request_update', ]
+
+    description = '''Views:
+        <a href="{0}">Simple</a> |
+        <a href="{0}?advanced">Advanced</a>
+        '''.format(request.url_rule)
+
     return render_template('history.jinja2',
                            history_log=True,
                            title='User History',
+                           description=description,
                            headings=headings,
                            history=history)
 
@@ -434,11 +442,10 @@ def launches():
     if 'advanced' in request.args:
         headings += ['form_variables', 'request', 'time']
 
-    description = '''
-    Views:
-    <a href="/launches">Simple</a> |
-    <a href="/launches?advanced">Advanced</a>
-    '''
+    description = '''Views:
+        <a href="{0}">Simple</a> |
+        <a href="{0}?advanced">Advanced</a>
+        '''.format(request.url_rule)
 
     return render_template('history.jinja2',
                            title='Launch History (by Date)',
@@ -464,11 +471,10 @@ def demo_launches():
     if 'advanced' in request.args:
         headings += ['form_variables', 'request']
 
-    description = '''
-    Views:
-    <a href="/demo-launches">Simple</a> |
-    <a href="/demo-launches?advanced">Advanced</a>
-    '''
+    description = '''Views:
+        <a href="{0}">Simple</a> |
+        <a href="{0}?advanced">Advanced</a>
+        '''.format(request.url_rule)
 
     return render_template('history.jinja2',
                            title='Launch History (by Demo)',
