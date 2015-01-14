@@ -297,16 +297,18 @@ def launch():
     return redirect(url_for('index'))
 
 
-@app.route('/kill/<reservationids>')
-def kill(reservationids):
+@app.route('/kill')
+def kill():
     if 'email' not in session:
         return redirect(url_for('login'))
     access_logger = cluster.get_access_logger(request, session['email'])
 
+    reservation_ids = request.args['reservation_ids']
+
     success = False
     failure = False
-    for reservationid in reservationids.split(','):
-        result = ec2.kill_reservation(reservationid)
+    for reservation_id in reservation_ids.split(','):
+        result = ec2.kill_reservation(reservation_id)
 
         if result:
             success = True

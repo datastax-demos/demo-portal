@@ -134,7 +134,7 @@ function load_server_information() {
                     $('<td>').html($('<a>', {
                         id: 'confirmation_' + cluster_name,
                         'data-toggle': 'confirmation',
-                        href: '/kill/' + reservation_ids.join(','),
+                        href: '/kill?reservation_ids=' + reservation_ids.join(','),
                         text: 'X'
                     }))
                 );
@@ -179,7 +179,7 @@ function load_server_information() {
                 $('#confirmation_' + cluster_name).confirmation({
                     btnOkLabel: 'Destroy',
                     placement: 'left',
-                    href: '/kill/' + reservation_ids.join(','),
+                    href: '/kill?reservation_ids=' + reservation_ids.join(','),
                     title: 'Destroy cluster?'
                 });
             });
