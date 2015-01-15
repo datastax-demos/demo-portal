@@ -52,8 +52,23 @@ vagrant plugin install vagrant-aws vagrant-awsinfo
     git pull
 )
 
+# WORKAROUND FOR: Python 2.7.8+
+# install linux brew
+sudo apt-get install build-essential curl git m4 ruby texinfo libbz2-dev libcurl4-openssl-dev libexpat-dev libncurses-dev zlib1g-dev
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/linuxbrew/go/install)"
+
+echo "export PATH=$HOME/.linuxbrew/bin:$PATH" >> .profile
+echo "export MANPATH=$HOME/.linuxbrew/share/man:$MANPATH" >> .profile
+echo "export INFOPATH=$HOME/.linuxbrew/share/info:$INFOPATH" >> .profile
+
+source ~/.profile
+
+brew install python
+
+# END WORKAROUND
+
 # install web-gui requirements
-sudo pip install -r ~/webapps/demo-portal/flask/requirements.txt
+pip install -r ~/webapps/demo-portal/flask/requirements.txt
 
 # set DEBUG mode to False when in ec2
 if [ "$(whoami)" == "ubuntu" ]; then
