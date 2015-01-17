@@ -59,7 +59,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
         # set local ip address
         dev.vm.network 'private_network', ip: '192.168.133.7'
-        dev.vm.post_up_message = 'Visit the portal at: 192.168.133.7:5000'
+        dev.vm.post_up_message = "Start the portal using:\n"\
+            "\t python /portal/demo-portal/flask2.0/run \n"\
+            "then visit the portal at:\n"\
+            "\t http://192.168.133.7:5000"
 
         # set virtualbox size information
         dev.vm.provider 'virtualbox' do |vb|
