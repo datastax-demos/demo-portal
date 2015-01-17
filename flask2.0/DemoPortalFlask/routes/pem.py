@@ -11,7 +11,7 @@ pem_api = Blueprint('pem_api', __name__)
 @pem_api.route('/pem')
 def pem():
     if 'email' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('authentication_api.login'))
     access_logger = current_app.cluster.get_access_logger(request,
                                                           session['email'],
                                                           init_log=False)
@@ -25,7 +25,7 @@ def pem():
 @pem_api.route('/defaultpem')
 def defaultpem():
     if 'email' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('authentication_api.login'))
     access_logger = current_app.cluster.get_access_logger(request,
                                                           session['email'])
 

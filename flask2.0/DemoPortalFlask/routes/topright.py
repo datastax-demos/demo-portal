@@ -7,7 +7,7 @@ topright_api = Blueprint('topright_api', __name__)
 @topright_api.route('/overview')
 def overview():
     if 'email' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('authentication_api.login'))
     access_logger = current_app.cluster.get_access_logger(request,
                                                           session['email'],
                                                           init_log=False)
@@ -18,7 +18,7 @@ def overview():
 @topright_api.route('/history')
 def history():
     if 'email' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('authentication_api.login'))
     access_logger = current_app.cluster.get_access_logger(request,
                                                           session['email'],
                                                           init_log=False)

@@ -11,7 +11,7 @@ admin_api = Blueprint('admin_api', __name__)
 @admin_api.route('/toggle-admin')
 def toggle_admin():
     if 'email' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('authentication_api.login'))
     access_logger = current_app.cluster.get_access_logger(request,
                                                           session['email'])
 
@@ -34,7 +34,7 @@ def toggle_admin():
 @admin_api.route('/admin-history/<int:page>')
 def admin_history(page=0):
     if 'email' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('authentication_api.login'))
     access_logger = current_app.cluster.get_access_logger(request,
                                                           session['email'],
                                                           init_log=False)
@@ -81,7 +81,7 @@ def admin_history(page=0):
 @admin_api.route('/last-seen')
 def last_seen():
     if 'email' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('authentication_api.login'))
     access_logger = current_app.cluster.get_access_logger(request,
                                                           session['email'],
                                                           init_log=False)
@@ -102,7 +102,7 @@ def last_seen():
 @admin_api.route('/launches')
 def launches():
     if 'email' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('authentication_api.login'))
     access_logger = current_app.cluster.get_access_logger(request,
                                                           session['email'],
                                                           init_log=False)
@@ -136,7 +136,7 @@ def launches():
 @admin_api.route('/demo-launches')
 def demo_launches():
     if 'email' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('authentication_api.login'))
     access_logger = current_app.cluster.get_access_logger(request,
                                                           session['email'],
                                                           init_log=False)

@@ -36,7 +36,7 @@ def login():
 @authentication_api.route('/change-password', methods=['GET', 'POST'])
 def change_password():
     if 'email' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('authentication_api.login'))
     access_logger = current_app.cluster.get_access_logger(request,
                                                           session['email'])
 
@@ -110,7 +110,8 @@ def request_password():
             return render_template('login.jinja2')
 
         msg(access_logger, 'Password emailed.')
-        return redirect('%s?email=%s' % (url_for('login'), safe_email))
+        return redirect('%s?email=%s' % (url_for('authentication_api.login'),
+                                         safe_email))
     else:
         return render_template('login.jinja2')
 
@@ -118,7 +119,7 @@ def request_password():
 @authentication_api.route('/logout')
 def logout():
     if 'email' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('authentication_api.login'))
     access_logger = current_app.cluster.get_access_logger(request,
                                                           session['email'])
 

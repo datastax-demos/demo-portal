@@ -20,7 +20,7 @@ APP_PORTS = {
 @dashboard_api.route('/')
 def index():
     if 'email' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('authentication_api.login'))
 
     return render_template('dashboard.jinja2')
 
@@ -28,7 +28,7 @@ def index():
 @dashboard_api.route('/server-information')
 def server_information():
     if 'email' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('authentication_api.login'))
 
     instance_data = ec2.owned_instances(session['email'],
                                         admin=session['admin'])
@@ -57,7 +57,7 @@ def server_information():
 @dashboard_api.route('/launch', methods=['POST'])
 def launch():
     if 'email' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('authentication_api.login'))
     access_logger = current_app.cluster.get_access_logger(request,
                                                           session['email'])
     access_logger.launch(request.form['demoChoice'])
@@ -87,7 +87,7 @@ def launch():
 @dashboard_api.route('/ctool', methods=['GET', 'POST'])
 def ctool():
     if 'email' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('authentication_api.login'))
     access_logger = current_app.cluster.get_access_logger(request,
                                                           session['email'])
 
@@ -159,7 +159,7 @@ def ctool():
 @dashboard_api.route('/kill')
 def kill():
     if 'email' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('authentication_api.login'))
     access_logger = current_app.cluster.get_access_logger(request,
                                                           session['email'])
 
@@ -188,7 +188,7 @@ def kill():
 @dashboard_api.route('/ttl', methods=['POST'])
 def ttl():
     if 'email' not in session:
-        return redirect(url_for('login'))
+        return redirect(url_for('authentication_api.login'))
     access_logger = current_app.cluster.get_access_logger(request,
                                                           session['email'])
 

@@ -93,7 +93,7 @@ source /portal/demo-portal/set_credentials.sh
 echo "source /portal/demo-portal/set_credentials.sh" >> .profile
 
 # kick off the demo-portal
-nohup python /portal/demo-portal/flask2.0/run > out.log 2>&1 &
+# nohup python /portal/demo-portal/flask2.0/run > out.log 2>&1 &
 
 # setup ec2 cleaning cron job
 sudo mkdir -p /mnt/logs
