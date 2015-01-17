@@ -1,0 +1,161 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# Debian 7.7 Wheezy
+# https://wiki.debian.org/Cloud/AmazonEC2Image/Wheezy#A7.7
+ami_list = {
+    'ap-northeast-1' => 'ami-21f6c720',
+    'ap-southeast-1' => 'ami-24240576',
+    'ap-southeast-2' => 'ami-e386ebd9',
+    'eu-west-1' => 'ami-187fd06f',
+    'eu-central-1' => 'ami-4a2a1c57',
+    'sa-east-1' => 'ami-417eca5c',
+    'us-east-1' => 'ami-bc4af0d4',
+    'us-west-1' => 'ami-4b3e2b0e',
+    'us-west-2' => 'ami-ff7a35cf'
+}
+
+# https://atlas.hashicorp.com/chef/boxes/
+vmbox = 'chef/debian-7.7'
+ssh_username = 'root'
+
+# Do not override until DEMO-75
+# if !ENV['DEMO_AWS_REGION']
+#     ENV['DEMO_AWS_REGION'] = 'us-east-1'
+# end
+ENV['DEMO_AWS_REGION'] = 'us-east-1'
+
+if !ENV['DEMO_AWS_AZ']
+    ENV['DEMO_AWS_AZ'] = 'us-east-1a'
+end
+
+def check_aws_envars()
+    required_envars = ['DEMO_AWS_ACCESS_KEY', 'DEMO_AWS_SECRET_KEY',
+                       'DEMO_KEYPAIR_NAME', 'DEMO_KEYPAIR_LOCATION',
+                       'DEMO_USER', 'DEMO_EMAIL']
+
+    for envar in required_envars
+        if !ENV[envar]
+            print "\n$#{envar} must be set!\n"
+            print "If performing a specific you must specify a "
+            print "machine name. Example:\n"
+            print "\tvagrant ssh dev\n"
+            print "\tvagrant destroy dev\n\n"
+            exit
+        end
+    end
+end
+
+
+VAGRANTFILE_API_VERSION = '2'
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+    # disable default synced folder
+    config.vm.synced_folder '.', '/vagrant', disabled: true
+    
+    config.vm.define 'dev', primary: true do |dev|
+        # set vm image
+        dev.vm.box = vmbox
+
+        # set local ip address
+        dev.vm.network 'private_network', ip: '192.168.133.7'
+        dev.vm.post_up_message = 'Visit the portal at: 192.168.133.7:5000'
+
+        # set virtualbox size information
+        dev.vm.provider 'virtualbox' do |vb|
+            vb.memory = 1024
+            vb.cpus = 2
+            vb.name = 'DataStax Demo Portal'
+        end
+
+        # use synced folders for dev vm setup
+        dev.vm.synced_folder '../..',
+                             '/portal/demo-portal',
+                             create: true
+    end
+
+    # configure aws machines
+    config.vm.provider 'aws' do |aws, override|
+        # setup aws overrides
+        override.vm.box = 'aws-dummy'
+        override.ssh.username = ssh_username
+
+        # setup PRODUCTION envar
+        override.vm.provision :shell,
+            inline: "echo 'export PRODUCTION=1' >> ~/.profile"
+
+        # setup basic aws configurations
+        aws.access_key_id = ENV['DEMO_AWS_ACCESS_KEY']
+        aws.secret_access_key = ENV['DEMO_AWS_SECRET_KEY']
+        aws.region = ENV['DEMO_AWS_REGION']
+        aws.availability_zone = ENV['DEMO_AWS_AZ']
+        aws.ami = ami_list[aws.region]
+        aws.instance_type = 'm3.medium'
+
+        # setup keypair configuration
+        aws.keypair_name = ENV['DEMO_KEYPAIR_NAME']
+        override.ssh.private_key_path = ENV['DEMO_KEYPAIR_LOCATION']
+
+        # setup security groups
+        aws.security_groups = ['demo-portal-launcher']
+    end
+
+    config.vm.define 'production-A', autostart: false do |production_A|
+        production_A.vm.provider 'aws' do |aws|
+            check_aws_envars()
+
+            # setup AWS Tags
+            aws.tags = {
+                'Name' => 'Demos Portal A (Do NOT Terminate)',
+                'Provisioner' => 'demo-portal-launcher',
+                'Owner' => ENV['DEMO_USER'],
+                'Email' => ENV['DEMO_EMAIL']
+            }
+        end
+    end
+
+    config.vm.define 'production-B', autostart: false do |production_B|
+        production_B.vm.provider 'aws' do |aws|
+            check_aws_envars()
+
+            # setup AWS Tags
+            aws.tags = {
+                'Name' => 'Demos Portal B (Do NOT Terminate)',
+                'Provisioner' => 'demo-portal-launcher',
+                'Owner' => ENV['DEMO_USER'],
+                'Email' => ENV['DEMO_EMAIL']
+            }
+        end
+    end
+
+    config.vm.define 'staging', autostart: false do |staging|
+        staging.vm.provider 'aws' do |aws|
+            check_aws_envars()
+
+            # setup AWS Tags
+            aws.tags = {
+                'Name' => 'Demos Portal Staging (Do NOT Terminate)',
+                'Provisioner' => 'demo-portal-launcher',
+                'Owner' => ENV['DEMO_USER'],
+                'Email' => ENV['DEMO_EMAIL']
+            }
+        end
+    end
+
+    config.vm.define 'build', autostart: false do |build|
+        build.vm.provider 'aws' do |aws|
+            check_aws_envars()
+
+            # setup AWS Tags
+            aws.tags = {
+                'Name' => 'Demos Portal Build Test',
+                'Provisioner' => 'demo-portal-launcher',
+                'Owner' => ENV['DEMO_USER'],
+                'Email' => ENV['DEMO_EMAIL']
+            }
+        end
+    end
+
+    config.ssh.username = 'vagrant'
+    config.vm.provision :shell, path: 'bootstrap.sh', privileged: false
+end

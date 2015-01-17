@@ -3,6 +3,7 @@
 .dockercfg
 auth.conf
 set_credentials.sh
+application.cfg
 web-gui.cfg
 
 .idea/
@@ -21,5 +22,5 @@ launch.log
 launch_demo.log
 launched-clusters
 web-gui.py.log
-flask/demo-portal.log
+demo-portal.log
 

@@ -1,0 +1,44 @@
+{% extends "base.jinja2" %}
+
+{% block head %}
+    <link href="{{ url_for('static', filename='css/pem.css') }}"
+          rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <div class="col-md-offset-3 col-md-6">
+        <h3>PEM Key</h3>
+        <p>
+            Download <a href="defaultpem">demo-launcher.pem</a> to
+            ~/.datastax/demos/demo-launcher.pem
+            <br>
+            or manually create the file using the following text:
+        </p>
+        <div class="well" id="pem-file">{{ pem_file }}</div>
+        <p>
+            Protect the file by running:
+        </p>
+        <div class="well">
+            chmod 600 ~/.datastax/demos/demo-launcher.pem
+        </div>
+        <h3>demo-pem</h3>
+        <p>
+            Download <a href="/static/bin/demo-pem">demo-pem</a> to
+            ~/.datastax/demos/demo-pem.
+        </p>
+        <p>
+            Run:
+            <div class="well">
+                chmod +x ~/.datastax/demos/demo-pem
+            </div>
+
+            Add the following line to your `~/.profile` and/or `~/.bashrc`:
+            <div class="well">
+                export PATH=~/.datastax/demos/:$PATH
+            </div>
+        </p>
+    </div>
+{% endblock %}
+
+{% block tail %}
+{% endblock %}

@@ -101,7 +101,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     (0..MAX_NODES).each do |i|
         config.vm.define "dse#{i}" do |dse|
 
-            config.vm.provision 'docker',
+            dse.vm.provision 'docker',
                 images: ['datastaxdemos/datastax-enterprise']
 
             if !ENV['CMD'].empty?
@@ -130,7 +130,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     config.vm.define 'connected-office' do |coffice|
 
-        config.vm.provision 'docker',
+        coffice.vm.provision 'docker',
             images: ['datastaxdemos/connected-office']
 
         if !ENV['CMD'].empty?

@@ -1,0 +1,6 @@
+#!/usr/bin/env python
+
+import DemoPortalFlask.application
+
+DemoPortalFlask.application.start()
+

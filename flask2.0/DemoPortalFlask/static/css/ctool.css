@@ -1,0 +1,106 @@
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+span.radio {
+    display: initial;
+}
+
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 50px white inset;
+    -webkit-text-fill-color: #333;
+}
+
+input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 50px white inset;
+    -webkit-text-fill-color: #333;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.form-col {
+    padding: 0;
+}
+
+.form-border {
+    border: black;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 5px;
+    box-shadow: 1px 1px 1px #888888;
+    padding: 30px;
+    width: 850px;
+    margin-bottom: 30px;
+    overflow: hidden;
+}
+
+.launched-clusters {
+    height: 350px;
+    min-height: 350px;
+}
+
+.form-row {
+    margin-left: 0;
+    margin-right: 0;
+    padding-bottom: 30px;
+}
+
+.form-well {
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+}
+
+.padded-label {
+    padding-left: 30px !important;
+}
+
+.number-input {
+    width: 50px;
+}
+
+.version-input {
+    width: 70px;
+}
+
+.instance-type-input {
+    width: 130px
+}
+
+.platform-input {
+    width: 90px
+}
+
+#clustername {
+    max-width: 146px;
+}
+
+#clustername-col {
+    display: -webkit-inline-box;
+}
+
+#submit-button {
+    width: 100%;
+}
+
+.datacenter-input {
+    width: 95%;
+}
+
+.advanced-setup-table {
+    width: 95%;
+    table-layout: fixed;
+    text-align: left;
+}
+
+.service-image {
+    width: 15px;
+}
+
+.cassandra {
+    font-size: 15px;
+}

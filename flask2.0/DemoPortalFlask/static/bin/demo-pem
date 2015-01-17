@@ -1,0 +1,56 @@
+#!/usr/bin/env python
+
+from optparse import OptionParser
+import os
+
+import urllib
+import urllib2
+import sys
+
+SERVER = '54.173.168.134'
+PORT = 5000
+URL = 'http://%s:%s/pemfile' % (SERVER, PORT)
+
+PEM_LOCATION = os.path.expanduser('~/.datastax/demos/ctool/')
+
+
+def main():
+    parser = OptionParser()
+    (options, args) = parser.parse_args()
+
+    if len(args) < 2:
+        sys.stderr.write('Usage: demo-pem <cloud> <clustername>\n')
+        sys.exit(1)
+
+    data = {
+        'cloud-option': args[0],
+        'cluster-id': args[1],
+    }
+    data_enc = urllib.urlencode(data)
+    response = urllib2.urlopen(URL, data_enc)
+    stdout = response.read()
+
+    if not stdout or 'error' in stdout:
+        sys.stderr.write(
+            'Key not found! Double check cloud and/or cluster name.\n')
+        sys.stderr.write(
+            '\tA secondary cause could be that the server was knocked '
+            'offline.\n')
+        sys.stderr.write(
+            '\tIf the website is no longer available, please contact '
+            'demos@datastax.com.\n')
+        sys.exit(1)
+
+    if not os.path.exists(PEM_LOCATION):
+        os.makedirs(PEM_LOCATION)
+
+    pem_file = os.path.join(PEM_LOCATION, '%s.pem' % data['cluster-id'])
+    with open(pem_file, 'w') as f:
+        os.chmod(pem_file, 0600)
+        f.write(stdout)
+
+    print 'Pem file saved to: ', pem_file
+
+
+if __name__ == "__main__":
+    main()

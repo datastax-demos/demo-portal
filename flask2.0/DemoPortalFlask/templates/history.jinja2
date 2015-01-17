@@ -1,0 +1,77 @@
+{% extends "base.jinja2" %}
+
+{% block body %}
+    <div class="col-md-offset-0 col-md-12">
+        <h3>{{ title }}</h3>
+
+        {% if description %}
+            <p>{{ description }}</p>
+        {% endif %}
+
+        {% if history_log %}
+            <p>
+                All history sorted by DESCENDING requests and ASCENDING request
+                updates.
+            </p>
+        {% endif %}
+
+        {% if paging %}
+            <p>
+                Paging adds an offset of X days to the current view where 0 is
+                today and 1 is yesterday. The dates are split at midnight GMT.
+            </p>
+
+            <nav>
+                <ul class="pagination">
+                    <li>
+                        <a href="/admin-history/{{ paging.back }}"
+                           aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% for p in range(paging.start_range, paging.end_range) %}
+                        {% if p == paging.page %}
+                            <li class="active">
+                                <a href="/admin-history/{{ p }}">{{ p }}</a>
+                            </li>
+                        {% else %}
+                            <li>
+                                <a href="/admin-history/{{ p }}">{{ p }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                    <li>
+                        <a href="/admin-history/{{ paging.forward }}"
+                           aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <h4>{{ paging.date }}</h4>
+        {% endif %}
+
+        <table class="table table-hover">
+            <tr>
+                {% for header in headings %}
+                    <th>{{ header | replace("_", " ") | title }}</th>
+                {% endfor %}
+            </tr>
+            {% for row in history %}
+                <tr>
+                    {% for header in headings %}
+                        {% if header in ["form_variables", "get_variables"] %}
+                            {% if row[header] %}
+                                <td>{{ row[header] | tojson | safe }}</td>
+                            {% else %}
+                                <td></td>
+                            {% endif %}
+                        {% else %}
+                            <td>{{ row[header] or '' }}</td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

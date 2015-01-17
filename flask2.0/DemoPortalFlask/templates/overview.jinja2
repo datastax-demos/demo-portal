@@ -1,0 +1,145 @@
+{% extends "base.jinja2" %}
+
+{% block head %}
+    <link href="{{ url_for('static', filename='css/pem.css') }}"
+          rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+    <div class="col-md-offset-3 col-md-6">
+        <h3>Overview</h3>
+        <ul>
+            <li>Demo Portal</li>
+            <ul>
+                <li>Passwords reset once a week.</li>
+                <li>Access available to all @datastax.com email addresses.</li>
+                <li>Allows you to launch controlled clusters.</li>
+                <li>Provides simple pem key access.</li>
+                <li>Does not rely on data sources outside of the EC2 instances and hub.docker.com.</li>
+                <li>Active EC2 cleanup of TTL'd instances.</li>
+                <li>Simple source code for new Vagrant setup of Docker containers.</li>
+                <li>Clean source trees for easy navigation across GitHub repos.</li>
+                <li>Full backend logging per process/user for simple debugging.</li>
+                <li>'latest' and 'stable' automated Docker containers provided by hub.docker.com.</li>
+                <li>Active child-container building provided by hub.docker.com.</li>
+            </ul>
+            <li>Dashboard</li>
+            <ul>
+                <li>Intended audience:</li>
+                <ul>
+                    <li>Pre-Sales, Post-Sales, Sales, Marketing, Community</li>
+                    <li>Future: Partners, Vendors</li>
+                </ul>
+                <li>Purpose:</li>
+                <ul>
+                    <li>Showcase demo applications</li>
+                    <li>Showcase OpsCenter</li>
+                    <li>Showcase multi-node replication</li>
+                </ul>
+                <li>Simple SSH strings for easy copy-paste access.</li>
+                <li>Displays demo cost if left running for the maximum time.</li>
+                <li>Quick links for application and OpsCenter access.</li>
+                <li>Ability to extend TTL on running cluster.</li>
+                <li>Allow for early demo termination.</li>
+            </ul>
+            <li>Ctool</li>
+            <ul>
+                <li>Intended audience:</li>
+                <ul>
+                    <li>Pre-Sales, Post-Sales, Community</li>
+                    <li>Future: Partners, Vendors, POC Customers</li>
+                </ul>
+                <li>Purpose:</li>
+                <ul>
+                    <li>Simple cluster generation</li>
+                    <li>Issue replication</li>
+                    <li>Benchmarking clusters</li>
+                </ul>
+                <li>Provide a simple UI for our non-Engineering teams to demo clusters.</li>
+                <li>Allow all SE/SAs to easily and efficiently standup clusters.</li>
+                <li>Provide used ctool commands for a passive training experience.</li>
+                <li>Utilizes Test Engineering's Ctool.</li>
+                <li>No setup or knowledge required to use ctool.</li>
+                <li>`demo-pem` script allows for simple ssh key retrieval.</li>
+            </ul>
+        </ul>
+        <h3>JIRA Links</h3>
+        <ul>
+            <li>
+                <a href="https://datastax.jira.com/browse/DEMO" target="_blank">DEMO Jira Project</a>
+            </li>
+            <li>
+                <a href="https://datastax.jira.com/secure/RapidBoard.jspa?rapidView=105" target="_blank">Current Sprint</a>
+            </li>
+            <li>
+                <a href="https://datastax.jira.com/issues/?filter=20621" target="_blank">Q42014 New Features</a>
+            </li>
+            <li>
+                <a href="https://datastax.jira.com/issues/?filter=20620" target="_blank">Q42014 Roadmap</a>
+            </li>
+        </ul>
+        <ul>
+            <li>
+                <a href="https://datastax.jira.com/browse/DEMO-41" target="_blank">Existing Web App Demos [ADD MISSING DEMOS HERE]</a>
+            </li>
+            <li>
+                <a href="https://datastax.jira.com/browse/DEMO-42" target="_blank">Idea Pile [ADD SUGGESTIONS HERE]</a>
+            </li>
+            <li>
+                <a href="https://datastax.jira.com/browse/DEMO-43" target="_blank">Existing CLI-Only Demos</a>
+            </li>
+        </ul>
+        <h3>Code Repositories</h3>
+        <p>
+            For access to these repos, ask
+            <a href="mailto:helpdesk@datastax.com
+            ?subject=datastax-demos github repo access
+            &body=Hello IT,
+            %0D%0A%0D%0ACould you add me to the github.com/datastax-demos DataStax team?
+            %0D%0A%0D%0AThanks!">
+                helpdesk@datastax.com
+            </a>
+            to add you to the datastax-demos "DataStax" team.
+        </p>
+        <ul>
+            <li>
+                <a href="https://github.com/datastax-demos/contributing" target="_blank">github.com/datastax-demos/contributing</a> [Public]
+                <p>
+                    Repo for the getting started guide and sample files that introduce users to Docker and
+                    the format Dockerfiles must be in to be included in this Demo Portal.
+                </p>
+            </li>
+            <li>
+                <a href="https://github.com/datastax-demos/demo-portal" target="_blank">github.com/datastax-demos/demo-portal</a>
+                <p>
+                    Repo for this website as well as the vagrant scripts needed to reproduce this website
+                    and launch the demos.
+                </p>
+            </li>
+            <li>
+                <a href="https://github.com/datastax-demos/datastax-dockerfiles" target="_blank">github.com/datastax-demos/datastax-dockerfiles</a>
+                <p>
+                    Repo for <a href="http://hub.docker.com/datastax" target="_blank">hub.docker.com/datastax</a>
+                    docker images for DSE, OpsCenter, and the available demos.
+                </p>
+            </li>
+            <li>
+                <a href="https://github.com/riptano/automaton" target="_blank">github.com/riptano/automaton</a>
+                <p>
+                    Test Engineering's project that's utilized under the
+                    <a href="/ctool">ctool</a> page.
+                </p>
+            </li>
+            <li>
+                <a href="https://github.com/datastax-demos/conference-demos" target="_blank">github.com/datastax-demos/conference-demos</a>
+                <p>
+                    A standalone project aimed at conference demos, but available for
+                    local deployments of VirtualBox nodes accessible through a web browser.
+                </p>
+            </li>
+        </ul>
+    </div>
+{% endblock %}
+
+{% block tail %}
+{% endblock %}
