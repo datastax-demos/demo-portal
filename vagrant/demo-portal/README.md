@@ -24,8 +24,10 @@ down to 6.
 * The VM will always start up with the address: http://192.168.133.7:5000
 * The website is not automatically started, instead you must run:
 
-    vagrant ssh dev
-    python /portal/demo-portal/flask2.0/run
+```
+vagrant ssh dev
+python /portal/demo-portal/flask2.0/run
+```
 
 # Production A/B
 
