@@ -2,21 +2,22 @@
 # vi: set ft=ruby :
 
 # Debian 7.7 Wheezy
-# https://wiki.debian.org/Cloud/AmazonEC2Image/Wheezy#A7.7
+# http://cloud-images.ubuntu.com/locator/ec2/
+# "trusty instance-store amd64 aki"
 ami_list = {
-    'ap-northeast-1' => 'ami-21f6c720',
-    'ap-southeast-1' => 'ami-24240576',
-    'ap-southeast-2' => 'ami-e386ebd9',
-    'eu-west-1' => 'ami-187fd06f',
-    'eu-central-1' => 'ami-4a2a1c57',
-    'sa-east-1' => 'ami-417eca5c',
-    'us-east-1' => 'ami-bc4af0d4',
-    'us-west-1' => 'ami-4b3e2b0e',
-    'us-west-2' => 'ami-ff7a35cf'
+    'ap-northeast-1' => 'ami-40e1e641',
+    'ap-southeast-1' => 'ami-07597455',
+    'ap-southeast-2' => 'ami-39086103',
+    'eu-west-1' => 'ami-5a4bfb2d',
+    'eu-central-1' => 'ami-d21223cf',
+    'sa-east-1' => 'ami-798f3e64',
+    'us-east-1' => 'ami-92f569fa',
+    'us-west-1' => 'ami-71150534',
+    'us-west-2' => 'ami-8b84d0bb'
 }
 
-# https://atlas.hashicorp.com/chef/boxes/
-vmbox = 'chef/debian-7.7'
+# https://vagrantcloud.com/ubuntu
+vmbox = 'ubuntu/trusty64'
 ssh_username = 'root'
 
 # Do not override until DEMO-75
@@ -27,6 +28,10 @@ ENV['DEMO_AWS_REGION'] = 'us-east-1'
 
 if !ENV['DEMO_AWS_AZ']
     ENV['DEMO_AWS_AZ'] = 'us-east-1a'
+end
+
+if !ENV['DEMO_DEV_IP']
+    ENV['DEMO_DEV_IP'] = '192.168.133.7'
 end
 
 def check_aws_envars()
@@ -46,6 +51,44 @@ def check_aws_envars()
     end
 end
 
+def provision(config, production, stale)
+    if production
+        # export PRODUCTION=1
+        config.vm.provision :shell, path: 'src/production.sh', privileged: false
+    end
+
+    config.vm.provision :shell, path: 'src/bootstrap.sh', privileged: false
+
+    if stale
+        config.vm.provision :file, source: '../keys/demo-portal.key',
+                                   destination: '~/.ssh/demo-portal.key'
+        config.vm.provision :file, source: '../keys/config',
+                                   destination: '~/.ssh/config'
+        config.vm.provision :shell, path: 'src/stale_install.sh', privileged: false
+    end
+
+    config.vm.provision :shell, path: 'src/python.sh', privileged: false
+    config.vm.provision :shell, path: 'src/install.sh', privileged: false
+    config.vm.provision :shell, path: 'src/vagrant.sh', privileged: false
+
+    if !production
+        # start a Dockerized DSE instance
+
+        # use Vagrant to install Docker
+        config.vm.provision 'docker', images: ['scratch']
+
+        # setup Docker authentication
+        config.vm.provision :shell, path: 'src/docker.sh', privileged: false
+
+        # run Docker container
+        config.vm.provision 'docker' do |d|
+            d.run 'datastaxdemos/datastax-enterprise', args: '--net host'
+        end
+    end
+
+    config.vm.provision :shell, path: 'src/run.sh', privileged: false
+end
+
 
 VAGRANTFILE_API_VERSION = '2'
 
@@ -58,12 +101,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         dev.vm.box = vmbox
 
         # set local ip address
-        dev.vm.network 'private_network', ip: '192.168.133.7'
+        dev.vm.network 'private_network', ip: ENV['DEMO_DEV_IP']
         dev.vm.post_up_message = "Start the portal using:\n"\
             "\t vagrant ssh dev \n"\
             "\t python /portal/demo-portal/flask2.0/run \n"\
             "then visit the portal at:\n"\
-            "\t http://192.168.133.7:5000"
+            "\t http://#{ENV['DEMO_DEV_IP']}:5000"
 
         # set virtualbox size information
         dev.vm.provider 'virtualbox' do |vb|
@@ -79,6 +122,30 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         dev.vm.synced_folder '../cache',
                              '/cache',
                              create: true
+
+        provision(dev, false, false)
+    end
+
+    config.vm.define 'dev-stale', primary: true do |dev_stale|
+        # set vm image
+        dev_stale.vm.box = vmbox
+
+        # set local ip address
+        dev_stale.vm.network 'private_network', ip: ENV['DEMO_DEV_IP']
+        dev_stale.vm.post_up_message = "Start the portal using:\n"\
+            "\t vagrant ssh dev_stale \n"\
+            "\t python /portal/demo-portal/flask2.0/run \n"\
+            "then visit the portal at:\n"\
+            "\t http://#{ENV['DEMO_DEV_IP']}:5000"
+
+        # set virtualbox size information
+        dev_stale.vm.provider 'virtualbox' do |vb|
+            vb.memory = 1024
+            vb.cpus = 2
+            vb.name = 'DataStax Demo Portal (dev_stale)'
+        end
+
+        provision(dev, false, true)
     end
 
     # configure aws machines
@@ -164,9 +231,4 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
 
     config.ssh.username = 'vagrant'
-    config.vm.provision :shell, path: 'src/bootstrap.sh', privileged: false
-    config.vm.provision :shell, path: 'src/python.sh', privileged: false
-    config.vm.provision :shell, path: 'src/install.sh', privileged: false
-    config.vm.provision :shell, path: 'src/vagrant.sh', privileged: false
-    # config.vm.provision :shell, path: 'src/run.sh', privileged: false
 end

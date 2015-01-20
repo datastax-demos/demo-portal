@@ -31,8 +31,8 @@ python /portal/demo-portal/flask2.0/run
 
 # Production A/B
 
-    vagrant up production_A
-    vagrant up production_B
+    vagrant up production-A
+    vagrant up production-B
 
 # Staging
 
