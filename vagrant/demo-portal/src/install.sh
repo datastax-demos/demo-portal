@@ -1,0 +1,42 @@
+#!/bin/sh
+
+# get code!
+
+# setup the ~/ssh keys. ssh-keyscan github.com before cloning. chmod 600 ~/.ssh.
+cp /portal/demo-portal/vagrant/keys/* .ssh
+ssh-keyscan github.com >> .ssh/known_hosts
+chmod 600 .ssh/*
+
+# create logging directory
+mkdir -p /portal/demo-portal/automaton_logs/joaquindatastaxcom
+
+# setup automaton.conf
+cp /portal/demo-portal/vagrant/keys/.automaton.conf .
+
+# install demo-portal requirements
+pip install --download-cache /cache/pip -r /portal/demo-portal/flask2.0/DemoPortalFlask/requirements.txt
+
+# set DEBUG mode to False when in ec2
+if [ -n "$PRODUCTION" ]; then
+    sed -i -e "s|DEBUG.*|DEBUG = False|g" /portal/demo-portal/flask2.0/DemoPortalFlask/application.cfg
+fi
+
+# set the AWS credentials appropriately
+echo "source /portal/demo-portal/set_credentials.sh" >> .profile
+
+# setup ec2 cleaning cron job
+sudo mkdir -p /mnt/logs
+sudo chown $(whoami):$(whoami) /mnt/logs/
+sudo cp /portal/demo-portal/cron/demo-portal.list /etc/cron.d/demoportal
+
+# install automaton
+(
+    cd /portal/
+    sudo chown -R $(whoami):$(whoami) /portal
+    git clone automaton:riptano/automaton.git &&
+    echo "export PYTHONPATH=/portal/automaton:${PYTHONPATH}" >> ~/.profile &&
+    echo "export PATH=/portal/automaton/bin:${PATH}" >> ~/.profile
+
+    cd /portal/automaton
+    git pull
+)

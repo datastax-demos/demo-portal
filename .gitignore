@@ -9,6 +9,7 @@ web-gui.cfg
 .idea/
 .vagrant/
 tmp/
+cache/
 
 vagrant*.deb
 bootstrap/

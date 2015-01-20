@@ -60,6 +60,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         # set local ip address
         dev.vm.network 'private_network', ip: '192.168.133.7'
         dev.vm.post_up_message = "Start the portal using:\n"\
+            "\t vagrant ssh dev \n"\
             "\t python /portal/demo-portal/flask2.0/run \n"\
             "then visit the portal at:\n"\
             "\t http://192.168.133.7:5000"
@@ -68,12 +69,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         dev.vm.provider 'virtualbox' do |vb|
             vb.memory = 1024
             vb.cpus = 2
-            vb.name = 'DataStax Demo Portal'
+            vb.name = 'DataStax Demo Portal (dev)'
         end
 
         # use synced folders for dev vm setup
         dev.vm.synced_folder '../..',
                              '/portal/demo-portal',
+                             create: true
+        dev.vm.synced_folder '../cache',
+                             '/cache',
                              create: true
     end
 
@@ -160,5 +164,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     end
 
     config.ssh.username = 'vagrant'
-    config.vm.provision :shell, path: 'bootstrap.sh', privileged: false
+    config.vm.provision :shell, path: 'src/bootstrap.sh', privileged: false
+    config.vm.provision :shell, path: 'src/python.sh', privileged: false
+    config.vm.provision :shell, path: 'src/install.sh', privileged: false
+    config.vm.provision :shell, path: 'src/vagrant.sh', privileged: false
+    # config.vm.provision :shell, path: 'src/run.sh', privileged: false
 end
