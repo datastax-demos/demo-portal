@@ -64,7 +64,13 @@ def provision(config, production, stale)
                                    destination: '~/.ssh/demo-portal.key'
         config.vm.provision :file, source: '../keys/config',
                                    destination: '~/.ssh/config'
+
         config.vm.provision :shell, path: 'src/stale_install.sh', privileged: false
+
+        config.vm.provision :file, source: '../../set_credentials.sh',
+                                   destination: '/portal/demo-portal/'
+        config.vm.provision :file, source: '../../flask2.0/DemoPortalFlask/application.cfg',
+                                   destination: '/portal/demo-portal/flask2.0/DemoPortalFlask/'
     end
 
     config.vm.provision :shell, path: 'src/python.sh', privileged: false
@@ -145,7 +151,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             vb.name = 'DataStax Demo Portal (dev_stale)'
         end
 
-        provision(dev, false, true)
+        provision(dev_stale, false, true)
     end
 
     # configure aws machines

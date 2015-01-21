@@ -6,7 +6,7 @@ if [ ! -f /portal/python/bin/python ]; then
     CACHE=/cache/apt/python
     if [ ! -d ${CACHE} ]; then
         mkdir -p ${CACHE}
-        PACKAGES='libsqlite3-dev libbz2-dev libgdbm-dev libncurses5-dev tk-dev libreadline-dev libdb5.1-dev'
+        PACKAGES='libsqlite3-dev libbz2-dev libgdbm-dev libncurses5-dev tk-dev libreadline-dev libdb5.1-dev libssl-dev'
         apt-get --print-uris --yes install $PACKAGES | grep ^\' | cut -d\' -f2 > ${CACHE}.list
         wget -c -i ${CACHE}.list -P ${CACHE}
     fi
@@ -38,8 +38,6 @@ if [ ! -f /portal/virtualenv/bin/activate ]; then
     if [ ! -f /cache/virtualenv-12.0.5.tar.gz ]; then
         wget -c https://pypi.python.org/packages/source/v/virtualenv/virtualenv-12.0.5.tar.gz#md5=637abbbd04d270ee8c601ab29c4f7561
         cp virtualenv-12.0.5.tar.gz /cache/
-    else
-        cp /cache/virtualenv-12.0.5.tar.gz .
     fi
 
     cd /tmp

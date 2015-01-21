@@ -1,28 +1,15 @@
-*.key
-.automaton.conf
-.dockercfg
-auth.conf
-set_credentials.sh
 application.cfg
-web-gui.cfg
+set_credentials.sh
 
-.idea/
-.vagrant/
-tmp/
-cache/
-
-vagrant*.deb
-bootstrap/
 bootstrap-confirmation/
+bootstrap/
 bootstrapvalidator/
-bower_components/
 jquery/
 pwstrength-bootstrap/
 
-*.pyc
-launch.log
-launch_demo.log
-launched-clusters
-web-gui.py.log
-demo-portal.log
+cache/
+keys/
+tmp/
+
+*.log
 
