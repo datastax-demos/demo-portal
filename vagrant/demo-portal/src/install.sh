@@ -31,13 +31,18 @@ sudo chown $(whoami):$(whoami) /mnt/logs/
 sudo cp /portal/demo-portal/cron/demo-portal.list /etc/cron.d/demoportal
 
 # install automaton
-(
-    cd /portal/
-    sudo chown -R $(whoami):$(whoami) /portal
-    git clone automaton:riptano/automaton.git &&
-    echo "export PYTHONPATH=/portal/automaton:${PYTHONPATH}" >> ~/.profile &&
-    echo "export PATH=/portal/automaton/bin:${PATH}" >> ~/.profile
+CACHE=/cache/automaton
+if [ ! -d ${CACHE} ]; then
+    (
+        cd /cache
+        git clone automaton:riptano/automaton.git
+    )
+fi
+cp -r ${CACHE} /portal
+echo "export PYTHONPATH=/portal/automaton:${PYTHONPATH}" >> .profile
+echo "export PATH=/portal/automaton/bin:${PATH}" >> .profile
 
+(
     cd /portal/automaton
     git pull
 )

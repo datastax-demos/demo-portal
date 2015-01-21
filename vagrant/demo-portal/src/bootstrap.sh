@@ -7,7 +7,7 @@ mkdir -p /cache/apt
 sudo chown -R $(whoami):$(whoami) /portal /cache
 
 # add /sbin to PATH
-echo 'export PATH=/sbin:$PATH' >> ~/.profile
+echo 'export PATH=/sbin:$PATH' >> .profile
 
 # update apt repos
 sudo apt-get update || exit 1
