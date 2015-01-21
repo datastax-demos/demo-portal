@@ -96,11 +96,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
         # set local ip address
         dev.vm.network 'private_network', ip: ENV['DEMO_DEV_IP']
-        dev.vm.post_up_message = "Start the portal using:\n"\
-            "\t vagrant ssh dev \n"\
-            "\t python /portal/demo-portal/flask2.0/run \n"\
-            "then visit the portal at:\n"\
-            "\t http://#{ENV['DEMO_DEV_IP']}:5000"
+        dev.vm.post_up_message = "Gain access to the machine using:\n"\
+                "\t vagrant ssh dev \n"\
+            "Relaunch the process using: \n"\
+                "\t python /portal/demo-portal/flask2.0/run \n"\
+            "Visit the portal at:\n"\
+                "\t http://#{ENV['DEMO_DEV_IP']}:5000"
 
         # set virtualbox size information
         dev.vm.provider 'virtualbox' do |vb|
@@ -126,11 +127,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
         # set local ip address
         dev_stale.vm.network 'private_network', ip: ENV['DEMO_DEV_IP']
-        dev_stale.vm.post_up_message = "Start the portal using:\n"\
-            "\t vagrant ssh dev_stale \n"\
-            "\t python /portal/demo-portal/flask2.0/run \n"\
-            "then visit the portal at:\n"\
-            "\t http://#{ENV['DEMO_DEV_IP']}:5000"
+        dev.vm.post_up_message = "Gain access to the machine using:\n"\
+                "\t vagrant ssh dev-stale \n"\
+            "Relaunch the process using: \n"\
+                "\t python /portal/demo-portal/flask2.0/run \n"\
+            "Visit the portal at:\n"\
+                "\t http://#{ENV['DEMO_DEV_IP']}:5000"
 
         # set virtualbox size information
         dev_stale.vm.provider 'virtualbox' do |vb|
