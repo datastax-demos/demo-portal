@@ -53,8 +53,7 @@ end
 
 def provision(config, production, stale)
     if production
-        # export PRODUCTION=1
-        config.vm.provision :shell, path: 'src/production.sh', privileged: false
+        config.vm.provision :shell, path: 'src/set-production.sh', privileged: false
     end
 
     config.vm.provision :shell, path: 'src/bootstrap.sh', privileged: false
@@ -65,7 +64,7 @@ def provision(config, production, stale)
         config.vm.provision :file, source: '../keys/config',
                                    destination: '~/.ssh/config'
 
-        config.vm.provision :shell, path: 'src/stale_install.sh', privileged: false
+        config.vm.provision :shell, path: 'src/stale-install.sh', privileged: false
 
         config.vm.provision :file, source: '../../set_credentials.sh',
                                    destination: '/portal/demo-portal/'
@@ -78,18 +77,7 @@ def provision(config, production, stale)
     config.vm.provision :shell, path: 'src/vagrant.sh', privileged: false
 
     if !production
-        # start a Dockerized DSE instance
-
-        # use Vagrant to install Docker
-        config.vm.provision 'docker', images: ['scratch']
-
-        # setup Docker authentication
-        config.vm.provision :shell, path: 'src/docker.sh', privileged: false
-
-        # run Docker container
-        config.vm.provision 'docker' do |d|
-            d.run 'datastaxdemos/datastax-enterprise', args: '--net host'
-        end
+        config.vm.provision :shell, path: 'src/datastax-enterprise.sh', privileged: false
     end
 
     config.vm.provision :shell, path: 'src/run.sh', privileged: false
@@ -116,7 +104,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
         # set virtualbox size information
         dev.vm.provider 'virtualbox' do |vb|
-            vb.memory = 1024
+            vb.memory = 2048
             vb.cpus = 2
             vb.name = 'DataStax Demo Portal (dev)'
         end
