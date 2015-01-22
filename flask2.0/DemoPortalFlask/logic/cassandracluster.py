@@ -47,11 +47,14 @@ def _sanatize(input_dict):
     :param input_dict: dictionary
     :return: sanatized dictionary
     """
-    if 'password' in input_dict:
-        output = input_dict.copy()
-        del output['password']
-        return output
-    return input_dict
+    output = input_dict.copy()
+    if 'current-password' in output:
+        output['current-password'] = '******'
+    if 'new-password' in output:
+        output['new-password'] = '******'
+    if 'confirm-password' in output:
+        output['confirm-password'] = '******'
+    return output
 
 
 class CassandraCluster():
