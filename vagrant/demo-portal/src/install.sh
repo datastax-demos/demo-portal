@@ -14,6 +14,7 @@ cp /portal/demo-portal/vagrant/keys/.automaton.conf .
 
 # install demo-portal Python requirements
 pip install --download-cache /cache/pip -r /portal/demo-portal/flask2.0/DemoPortalFlask/requirements.txt
+pip install --download-cache /cache/pip cqlsh
 
 # install demo-portal bower requirements
 (
