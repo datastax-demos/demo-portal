@@ -27,10 +27,8 @@ sudo sed -i -e "s|^#HEAP_NEWSIZE=.*|HEAP_NEWSIZE=\"200M\"|g" /etc/dse/cassandra/
 sudo service dse start
 
 # wait for Cassandra's native transport to start
-if [ -n "$1" ]; then
-    while :
-    do
-        echo "SELECT bootstrapped FROM system.local;" | cqlsh 127.0.0.1 && break
-        sleep 1
-    done
-fi
+while :
+do
+    echo "SELECT bootstrapped FROM system.local;" | cqlsh 127.0.0.1 && break
+    sleep 1
+done
