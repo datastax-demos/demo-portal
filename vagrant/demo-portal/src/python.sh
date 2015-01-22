@@ -36,12 +36,10 @@ fi
 # setup virtualenv
 if [ ! -f /portal/virtualenv/bin/activate ]; then
     wget -c https://pypi.python.org/packages/source/v/virtualenv/virtualenv-12.0.5.tar.gz#md5=637abbbd04d270ee8c601ab29c4f7561 -P /cache
+    tar -zxvf /cache/virtualenv-12.0.5.tar.gz --directory /tmp
 
     (
-        cd /tmp
-        tar -zxvf /cache/virtualenv-12.0.5.tar.gz
-
-        cd virtualenv-12.0.5/
+        cd /tmp/virtualenv-12.0.5/
         /portal/python/bin/python setup.py install
         /portal/python/bin/virtualenv /portal/virtualenv --python /portal/python/bin/python2.7
     )

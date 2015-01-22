@@ -12,8 +12,14 @@ mkdir -p /portal/demo-portal/automaton_logs/joaquindatastaxcom
 # setup automaton.conf
 cp /portal/demo-portal/vagrant/keys/.automaton.conf .
 
-# install demo-portal requirements
+# install demo-portal Python requirements
 pip install --download-cache /cache/pip -r /portal/demo-portal/flask2.0/DemoPortalFlask/requirements.txt
+
+# install demo-portal bower requirements
+(
+    cd /portal/demo-portal/flask2.0/DemoPortalFlask
+    bower install
+)
 
 # set DEBUG mode to False when in ec2
 if [ -n "$PRODUCTION" ]; then
