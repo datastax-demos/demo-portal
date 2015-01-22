@@ -179,7 +179,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         override.ssh.private_key_path = ENV['DEMO_KEYPAIR_LOCATION']
 
         # setup security groups
-        aws.security_groups = ['demo-portal-launcher']
+        aws.security_groups = ['demo-portal-ui']
     end
 
     config.vm.define 'production-A', autostart: false do |production_A|
@@ -189,7 +189,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             # setup AWS Tags
             aws.tags = {
                 'Name' => 'Demos Portal A (Do NOT Terminate)',
-                'Provisioner' => 'demo-portal-launcher',
+                'Provisioner' => 'demo-portal-ui',
                 'Owner' => ENV['DEMO_USER'],
                 'Email' => ENV['DEMO_EMAIL']
             }
@@ -205,7 +205,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             # setup AWS Tags
             aws.tags = {
                 'Name' => 'Demos Portal B (Do NOT Terminate)',
-                'Provisioner' => 'demo-portal-launcher',
+                'Provisioner' => 'demo-portal-ui',
                 'Owner' => ENV['DEMO_USER'],
                 'Email' => ENV['DEMO_EMAIL']
             }
@@ -221,7 +221,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             # setup AWS Tags
             aws.tags = {
                 'Name' => 'Demos Portal Staging (Do NOT Terminate)',
-                'Provisioner' => 'demo-portal-launcher',
+                'Provisioner' => 'demo-portal-ui',
                 'Owner' => ENV['DEMO_USER'],
                 'Email' => ENV['DEMO_EMAIL']
             }
@@ -237,7 +237,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             # setup AWS Tags
             aws.tags = {
                 'Name' => 'Demos Portal Build Test',
-                'Provisioner' => 'demo-portal-launcher',
+                'Provisioner' => 'demo-portal-ui',
                 'Owner' => ENV['DEMO_USER'],
                 'Email' => ENV['DEMO_EMAIL']
             }
@@ -253,7 +253,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
             # setup AWS Tags
             aws.tags = {
                 'Name' => 'Demos Portal Cassandra Build Test',
-                'Provisioner' => 'demo-portal-launcher',
+                'Provisioner' => 'demo-portal-ui',
                 'Owner' => ENV['DEMO_USER'],
                 'Email' => ENV['DEMO_EMAIL']
             }
