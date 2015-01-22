@@ -59,7 +59,11 @@ def check_aws_envars()
     end
 end
 
-def provision(config, production, stale)
+def provision(options = {})
+    config = options[:config]
+    production = options[:production]
+    stale = options[:stale]
+
     if production
         config.vm.provision :shell, path: 'src/set-production.sh', privileged: false
     end
