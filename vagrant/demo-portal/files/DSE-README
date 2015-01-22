@@ -1,0 +1,33 @@
+Setup NTPD:
+    sudo apt-get install -y ntp
+
+Find Docker container ids:
+    sudo docker ps
+
+To update DSE run:
+    sudo docker pull datastaxdemos/datastax-enterprise
+
+To get into running container:
+    sudo docker exec -ti <container_id> bash
+
+To kill current process run:
+    sudo docker rm -f <container_id>
+
+To start new version run:
+    sudo docker run --volume /mnt/cassandra:/var/lib/cassandra \
+                    --volume /mnt/logs:/var/log/cassandra \
+                    --detach \
+                    --net host \
+                    datastaxdemos/datastax-enterprise start-dse --cluster-name "DataStax Services Cluster"
+
+Data, commit logs, and caches are stored at /mnt/cassandra of the host machine.
+
+Logs are only available in a container and lost when the container is killed.
+
+Security group: sg-aa30edce "demo-portal-dse" on AWS account: 701383803275
+
+Type            Protocol    Port Range  Source
+SSH             TCP         22          0.0.0.0/0
+All traffic     All         All         sg-c438caa0 (demo-portal-launcher)
+All traffic     All         All         sg-aa30edce (demo-portal-dse)
+All traffic     All         All         173.174.40.141/32 (Joaquin's IP)

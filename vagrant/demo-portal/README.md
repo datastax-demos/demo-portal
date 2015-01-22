@@ -41,3 +41,7 @@ python /portal/demo-portal/flask2.0/run
 # Build
 
     vagrant up build
+
+# DSE
+
+    vagrant up dse
