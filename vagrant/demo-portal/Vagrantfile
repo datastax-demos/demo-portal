@@ -34,6 +34,10 @@ if !ENV['DEMO_DEV_IP']
     ENV['DEMO_DEV_IP'] = '192.168.133.7'
 end
 
+if !ENV['DEMO_DEV_STALE_IP']
+    ENV['DEMO_DEV_STALE_IP'] = '192.168.133.8'
+end
+
 def check_aws_envars()
     required_envars = ['DEMO_AWS_ACCESS_KEY', 'DEMO_AWS_SECRET_KEY',
                        'DEMO_KEYPAIR_NAME', 'DEMO_KEYPAIR_LOCATION',
@@ -41,11 +45,11 @@ def check_aws_envars()
 
     for envar in required_envars
         if !ENV[envar]
-            print "\n$#{envar} must be set!\n"
-            print "If performing a specific you must specify a "
-            print "machine name. Example:\n"
-            print "\tvagrant ssh dev\n"
-            print "\tvagrant destroy dev\n\n"
+            print "\n$#{envar} must be set! \n"\
+                  "If performing a specific you must specify a "\
+                  "machine name. Example: \n"\
+                    "\t vagrant ssh dev \n"\
+                    "\t vagrant destroy dev \n\n"
             exit
         end
     end
@@ -67,9 +71,11 @@ def provision(config, production, stale)
         config.vm.provision :shell, path: 'src/stale-install.sh', privileged: false
 
         config.vm.provision :file, source: '../../set_credentials.sh',
-                                   destination: '/portal/demo-portal/'
+                                   destination: '/portal/demo-portal/set_credentials.sh'
         config.vm.provision :file, source: '../../flask2.0/DemoPortalFlask/application.cfg',
-                                   destination: '/portal/demo-portal/flask2.0/DemoPortalFlask/'
+                                   destination: '/portal/demo-portal/flask2.0/DemoPortalFlask/application.cfg'
+        config.vm.provision :file, source: '../keys',
+                                   destination: '/portal/demo-portal/vagrant/'
     end
 
     config.vm.provision :shell, path: 'src/python.sh', privileged: false
@@ -126,13 +132,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         dev_stale.vm.box = vmbox
 
         # set local ip address
-        dev_stale.vm.network 'private_network', ip: ENV['DEMO_DEV_IP']
-        dev.vm.post_up_message = "Gain access to the machine using:\n"\
+        dev_stale.vm.network 'private_network', ip: ENV['DEMO_DEV_STALE_IP']
+        dev_stale.vm.post_up_message = "Gain access to the machine using:\n"\
                 "\t vagrant ssh dev-stale \n"\
             "Relaunch the process using: \n"\
                 "\t python /portal/demo-portal/flask2.0/run \n"\
             "Visit the portal at:\n"\
-                "\t http://#{ENV['DEMO_DEV_IP']}:5000"
+                "\t http://#{ENV['DEMO_DEV_STALE_IP']}:5000"
 
         # set virtualbox size information
         dev_stale.vm.provider 'virtualbox' do |vb|

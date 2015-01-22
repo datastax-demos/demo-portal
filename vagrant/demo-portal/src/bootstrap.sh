@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # setup shell cache directory for production servers
-mkdir -p /cache/apt
+sudo mkdir -p /portal /cache
 
 # chown directories accordingly
 sudo chown -R $(whoami):$(whoami) /portal /cache

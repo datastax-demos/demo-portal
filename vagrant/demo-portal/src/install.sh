@@ -2,9 +2,8 @@
 
 # get code!
 
-# setup the ~/ssh keys. ssh-keyscan github.com before cloning. chmod 600 ~/.ssh.
+# setup the ~/ssh keys. chmod 600 ~/.ssh.
 cp /portal/demo-portal/vagrant/keys/* .ssh
-ssh-keyscan github.com >> .ssh/known_hosts
 chmod 600 .ssh/*
 
 # create logging directory
