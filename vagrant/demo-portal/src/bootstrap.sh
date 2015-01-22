@@ -21,3 +21,6 @@ if [ ! -d ${CACHE} ]; then
     wget -c -i ${CACHE}.list -P ${CACHE}
 fi
 sudo dpkg -i ${CACHE}/*
+
+# pre-accept github's RSA key fingerprint
+ssh-keyscan github.com >> .ssh/known_hosts
