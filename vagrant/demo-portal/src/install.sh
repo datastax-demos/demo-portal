@@ -18,7 +18,7 @@ pip install --download-cache /cache/pip -r /portal/demo-portal/flask2.0/DemoPort
 # install demo-portal bower requirements
 (
     cd /portal/demo-portal/flask2.0/DemoPortalFlask
-    bower install
+    bower --config.analytics=false install
 )
 
 # set DEBUG mode to False when in ec2

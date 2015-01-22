@@ -11,8 +11,11 @@ echo "export PATH=/portal/node/bin:${PATH}" >> .profile
 
 # install npmbox
 cp /portal/demo-portal/vagrant/npm/npmbox.npmbox /tmp
-tar -xvfo /tmp/npmbox.npmbox --directory /tmp
+tar -xvf /tmp/npmbox.npmbox --directory /tmp
 npm install --global --cache /tmp/.npmbox-cache --optional --cache-min 999999 --fetch-retries 0 --fetch-retry-factor 0 --fetch-retry-mintimeout 1 --fetch-retry-maxtimeout 2 npmbox
 
 # install bower
-npmunbox -g /portal/demo-portal/vagrant/npm/bower.npmbox
+(
+    cd /portal/demo-portal/vagrant/npm/
+    npmunbox -g bower.npmbox
+)
