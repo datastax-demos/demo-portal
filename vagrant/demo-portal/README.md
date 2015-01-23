@@ -30,7 +30,7 @@ DataStax Enterprise IP.
 
 **Note:** When provisioning with `production=true`, you must grab
 `vagrant awsinfo -m <machine_name> -k public_ip` as the node launches and add
-a new rule to the AWS security group [here]
+a `New Rule` to the AWS security group [here]
 (https://us-3.rightscale.com/acct/73292/network_manager#networks/8JJ1403KL5DHJ/security_groups/F1N2PPFA0IPNE):
 
 * Direction: Inbound
