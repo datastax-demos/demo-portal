@@ -2,17 +2,17 @@ import json
 import re
 import time
 
-from flask import flash
 from tempfile import NamedTemporaryFile
 
 from DemoPortalFlask.logic import execute, ec2
 from DemoPortalFlask.logic.logger import logger
+from DemoPortalFlask.logic.message import msg
 
 whitespace_strip = re.compile('\s')
 alphanumeric_strip = re.compile('\W+')
 
 
-def error_handling(response, postvars, state):
+def error_handling(access_logger, response, postvars, state):
     # tag the instances appropriately
     reservation_id = ec2.find_reservation_id_by_tag('cluster_name',
                                                     postvars['full_name'])
@@ -20,8 +20,9 @@ def error_handling(response, postvars, state):
                         'Failure seen on startup. Discard cluster.')
 
     # alert the user by flash message
-    flash('Error seen on %s: %s' % (state, str(response)), 'error')
+    msg(access_logger, 'Error seen on %s: %s' % (state, str(response)), 'error')
     return 'ctool.jinja2'
+
 
 def process(postvars, session):
     # format the cluster_name and email as ctool will see it
@@ -90,12 +91,12 @@ def process(postvars, session):
     return postvars
 
 
-def launch(postvars):
+def launch(access_logger, postvars):
     # currently chose shell commands to teach presales ctool in a more
     # relatable fashion
     launch_command = 'ctool' \
                      ' --log-dir /portal/demo-portal/automaton_logs/' \
-                        '%(clean_email)s' \
+                     '%(clean_email)s' \
                      ' --log-file %(log_file)s' \
                      ' --provider %(cloud-option)s' \
                      ' launch' \
@@ -105,7 +106,7 @@ def launch(postvars):
                      ' %(full_name)s' \
                      ' %(num_nodes)s'
     launch_command = launch_command % postvars
-    flash(launch_command)
+    msg(access_logger, launch_command)
 
     logger.info('Executing: %s', launch_command)
     response = execute.run(launch_command)
@@ -114,7 +115,7 @@ def launch(postvars):
         return response
 
 
-def install(postvars, reservation_id):
+def install(access_logger, postvars, reservation_id):
     ec2.tag_reservation(reservation_id, 'user', remove=True)
     ec2.tag_reservation(reservation_id, 'status',
                         'Installing %(product-name)s...' % postvars)
@@ -147,7 +148,7 @@ def install(postvars, reservation_id):
 
         logger.info('Executing: %s', install_command)
         response = execute.run(install_command)
-        flash(install_command)
+        msg(access_logger, install_command)
     else:
         with NamedTemporaryFile() as f:
             postvars['config_file'] = f.name
@@ -171,14 +172,15 @@ def install(postvars, reservation_id):
             logger.debug('With config-file: \n%s', f.read())
             response = execute.run(install_command)
 
-        flash(install_command)
-        flash('--config-file: %s' % json.dumps(postvars['advanced_nodes']))
+        msg(access_logger, install_command)
+        msg(access_logger, '--config-file: %s' %
+            json.dumps(postvars['advanced_nodes']))
 
     if response.stderr:
         return response
 
 
-def install_opscenter(postvars, reservation_id):
+def install_opscenter(access_logger, postvars, reservation_id):
     if postvars['opscenter-install'] == 'yes':
         ec2.tag_reservation(reservation_id, 'status', 'Installing opscenter...')
         install_command = 'ctool' \
@@ -189,7 +191,7 @@ def install_opscenter(postvars, reservation_id):
                           ' %(full_name)s' \
                           ' opscenter'
         install_command = install_command % postvars
-        flash(install_command)
+        msg(access_logger, install_command)
 
         logger.info('Executing: %s', install_command)
         response = execute.run(install_command)
@@ -198,7 +200,7 @@ def install_opscenter(postvars, reservation_id):
             return response
 
 
-def start(postvars, reservation_id):
+def start(access_logger, postvars, reservation_id):
     ec2.tag_reservation(reservation_id, 'status',
                         'Starting %(product-name)s...' % postvars)
     start_command = 'ctool' \
@@ -207,7 +209,7 @@ def start(postvars, reservation_id):
                     ' %(full_name)s' \
                     ' %(product-name)s'
     start_command = start_command % postvars
-    flash(start_command)
+    msg(access_logger, start_command)
 
     logger.info('Executing: %s', start_command)
     response = execute.run(start_command)
@@ -216,7 +218,7 @@ def start(postvars, reservation_id):
         return response
 
 
-def start_opscenter(postvars, reservation_id):
+def start_opscenter(access_logger, postvars, reservation_id):
     if postvars['opscenter-install'] == 'yes':
         ec2.tag_reservation(reservation_id, 'status', 'Starting opscenter...')
         start_command = 'ctool' \
@@ -225,7 +227,7 @@ def start_opscenter(postvars, reservation_id):
                         ' %(full_name)s' \
                         ' opscenter'
         start_command = start_command % postvars
-        flash(start_command)
+        msg(access_logger, start_command)
 
         logger.info('Executing: %s', start_command)
         response = execute.run(start_command)
@@ -234,7 +236,7 @@ def start_opscenter(postvars, reservation_id):
             return response
 
 
-def start_agent(postvars, reservation_id):
+def start_agent(access_logger, postvars, reservation_id):
     if postvars['opscenter-install'] == 'yes':
         ec2.tag_reservation(reservation_id, 'status',
                             'Starting DataStax Agents...')
@@ -245,7 +247,7 @@ def start_agent(postvars, reservation_id):
                         ' all' \
                         ' "sudo service datastax-agent start"'
         start_command = start_command % postvars
-        flash(start_command)
+        msg(access_logger, start_command)
 
         logger.info('Executing: %s', start_command)
         response = execute.run(start_command)

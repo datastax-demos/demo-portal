@@ -1,4 +1,5 @@
 import os
+import traceback
 
 from flask import Blueprint, session, render_template, redirect, url_for, \
     request, jsonify, current_app
@@ -116,46 +117,57 @@ def ctool():
             return render_template('ctool.jinja2')
 
         try:
-            response = ctoolutils.launch(postvars)
+            response = ctoolutils.launch(access_logger, postvars)
             if response:
                 return render_template(
-                    ctoolutils.error_handling(response, postvars, 'launch'))
+                    ctoolutils.error_handling(access_logger, response,
+                                              postvars, 'launch'))
 
             reservation_id = ec2.find_reservation_id_by_tag('cluster_name',
                                                             postvars[
                                                                 'full_name'])
 
-            response = ctoolutils.install(postvars, reservation_id)
+            response = ctoolutils.install(access_logger, postvars,
+                                          reservation_id)
             if response:
                 return render_template(
-                    ctoolutils.error_handling(response, postvars, 'install'))
+                    ctoolutils.error_handling(access_logger, response,
+                                              postvars, 'install'))
 
-            response = ctoolutils.install_opscenter(postvars, reservation_id)
+            response = ctoolutils.install_opscenter(access_logger, postvars,
+                                                    reservation_id)
             if response:
                 return render_template(
-                    ctoolutils.error_handling(response, postvars, 'install'))
+                    ctoolutils.error_handling(access_logger, response,
+                                              postvars, 'install'))
 
-            response = ctoolutils.start(postvars, reservation_id)
+            response = ctoolutils.start(access_logger, postvars, reservation_id)
             if response:
                 return render_template(
-                    ctoolutils.error_handling(response, postvars, 'start'))
+                    ctoolutils.error_handling(access_logger, response,
+                                              postvars, 'start'))
 
-            response = ctoolutils.start_opscenter(postvars, reservation_id)
+            response = ctoolutils.start_opscenter(access_logger, postvars,
+                                                  reservation_id)
             if response:
                 return render_template(
-                    ctoolutils.error_handling(response, postvars, 'start'))
+                    ctoolutils.error_handling(access_logger, response,
+                                              postvars, 'start'))
 
-            response = ctoolutils.start_agent(postvars, reservation_id)
+            response = ctoolutils.start_agent(access_logger, postvars,
+                                              reservation_id)
             if response:
                 return render_template(
-                    ctoolutils.error_handling(response, postvars, 'start'))
+                    ctoolutils.error_handling(access_logger, response,
+                                              postvars, 'start'))
 
             ec2.tag_reservation(reservation_id, 'status', 'Complete.')
             return redirect('/')
         except:
             logger.exception('Exception seen on /ctool:')
+            msg(access_logger, traceback.format_exc(), 'debug')
             return render_template(
-                ctoolutils.error_handling('Logic exception.',
+                ctoolutils.error_handling(access_logger,'Logic exception.',
                                           postvars, '/ctool'))
 
     return render_template('ctool.jinja2')
