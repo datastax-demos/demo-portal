@@ -35,32 +35,36 @@ a `New Rule` to the AWS security group [here]
 
 * Direction: Inbound
 * Protocol: All Protocols - IPs
-* IP Range: `vagrant awsinfo -m <machine_name> -k public_ip`
+* IP Range: `vagrant awsinfo -m <machine_name> -k public_ip` output
 
 Permissions to the `IT - Sysadmin` Rightscale account are required.
 
 #### false
 
 * A local DataStax Enterprise debian package install will occur.
-* 127.0.0.1 will be used for the DataStax Enterprise machine.
+* 127.0.0.1 will be used as the IP address for the DataStax Enterprise machine.
 
 ### Stale
 
 #### true
 
-* `../keys/demo-portal.key` will one-way sync to `~/.ssh/demo-portal.key`.
-* `../keys/config` will one-way sync to `~/.ssh/config`.
+All syncs will be one-way syncs to the new machine.
+
+* `../keys/demo-portal.key` ==> `~/.ssh/demo-portal.key`.
+* `../keys/config` ==> `~/.ssh/config`.
 * The `demo-portal` repository will be cloned directly from Github.
-* `../../set_credentials.sh` will one-way sync to
+* `../../set_credentials.sh` ==>
 `/portal/demo-portal/set_credentials.sh`.
-* `../../flask2.0/DemoPortalFlask/application.cfg` will one-way sync to
+* `../../flask2.0/DemoPortalFlask/application.cfg` ==>
 `/portal/demo-portal/flask2.0/DemoPortalFlask/application.cfg`.
-* `../keys` will one-way sync to `/portal/demo-portal/vagrant/`.
+* `../keys` ==> `/portal/demo-portal/vagrant/`.
 
 #### false
 
-* `../..` will two-way sync to `/portal/demo-portal`.
-* `../cache` will two-way sync to `/cache`.
+All syncs will be two-way syncs between the host machine and guest machine.
+
+* `../..` <==> `/portal/demo-portal`.
+* `../cache` <==> `/cache`.
 
 ## Dev
 
