@@ -39,6 +39,12 @@ sudo mkdir -p /mnt/logs
 sudo chown $(whoami):$(whoami) /mnt/logs/
 sudo cp /portal/demo-portal/cron/demo-portal.list /etc/cron.d/demoportal
 
+# setup basic functionality scripts
+(
+    cd /portal/demo-portal/vagrant/demo-portal/files/
+    cp run stop update watch ~
+)
+
 # install automaton
 CACHE=/cache/automaton
 if [ ! -d ${CACHE} ]; then
