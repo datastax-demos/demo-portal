@@ -1,0 +1,7 @@
+#!/bin/sh
+
+cd /portal/demo-portal
+git pull
+
+cd /portal/automaton
+git pull
