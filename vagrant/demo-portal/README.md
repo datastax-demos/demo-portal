@@ -26,13 +26,12 @@ share the same processes. The differences are as follows:
 
 * `$PRODUCTION=1` is set on the provisioned machines
 * `$DEMO_PROD_CASS`, which defaults to 54.164.166.255, will be used for the
-DataStax Enterprise machine.
+DataStax Enterprise IP.
 
-**Note:** When provisioning with production=true, you must grab
+**Note:** When provisioning with `production=true`, you must grab
 `vagrant awsinfo -m <machine_name> -k public_ip` as the node launches and update
-the AWS security group here:
-
-https://us-3.rightscale.com/acct/73292/network_manager#networks/8JJ1403KL5DHJ/security_groups/F1N2PPFA0IPNE
+the AWS security group [here]
+(https://us-3.rightscale.com/acct/73292/network_manager#networks/8JJ1403KL5DHJ/security_groups/F1N2PPFA0IPNE).
 
 Permissions to the `IT - Sysadmin` Rightscale account are required.
 
