@@ -141,5 +141,5 @@ This should be the ideal way to test the build process since it starts
 everything from scratch each time.
 
 If the `dse` machine ever becomes relied on, make sure to update the default value
-of `$DEMO_PROD_CASS` in Vagrantfile to be the public IP address for the new
+of `$DEMO_PROD_CASS` in Vagrantfile to be the public IP address for this new
 DataStax Enterprise node.
