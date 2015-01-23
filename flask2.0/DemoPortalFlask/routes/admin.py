@@ -30,6 +30,49 @@ def toggle_admin():
     return redirect(url_for('dashboard_api.index'))
 
 
+@admin_api.route('/add-admin', methods=['GET', 'POST'])
+def add_admin():
+    if 'email' not in session:
+        return redirect(url_for('authentication_api.login'))
+    access_logger = current_app.cluster.get_access_logger(request)
+
+    if 'admin' not in session:
+        msg(access_logger, 'Enable admin privileges first.', 'error')
+        return redirect(request.referrer)
+
+    if request.method == 'POST':
+        if 'email' in request.form and request.form['email']:
+            current_app.cluster.set_admin(request.form['email'], True)
+        else:
+            msg(access_logger, 'Please specify an email address.', 'warn')
+
+    headings = ['user', 'admin']
+    users = current_app.cluster.get_users()
+    users = [user for user in users if user['admin']]
+    return render_template('users.jinja2',
+                           title='Add Admin User',
+                           headings=headings,
+                           users=users)
+
+
+@admin_api.route('/remove-admin')
+def remove_admin():
+    if 'email' not in session:
+        return redirect(url_for('authentication_api.login'))
+    access_logger = current_app.cluster.get_access_logger(request)
+
+    if 'admin' not in session:
+        msg(access_logger, 'Enable admin privileges first.', 'error')
+        return redirect(request.referrer)
+
+    if 'email' in request.args and request.args['email']:
+        current_app.cluster.set_admin(request.args['email'], False)
+    else:
+        msg(access_logger, 'Please specify an email address.', 'warn')
+
+    return redirect(url_for('admin_api.add_admin'))
+
+
 @admin_api.route('/admin-history')
 @admin_api.route('/admin-history/<int:page>')
 def admin_history(page=0):

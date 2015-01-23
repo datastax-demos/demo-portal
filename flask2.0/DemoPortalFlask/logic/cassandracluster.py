@@ -192,6 +192,13 @@ class CassandraCluster():
                 (?, ?)
         ''')
 
+        self.insert_admin_statement = self.session.prepare('''
+            INSERT INTO demo_portal.users
+                (user, admin)
+            VALUES
+                (?, ?)
+        ''')
+
         self.insert_password_statement = self.session.prepare('''
             INSERT INTO demo_portal.users
                 (user, password_hash)
@@ -226,6 +233,20 @@ class CassandraCluster():
             WHERE user = ?
         ''')
 
+        self.query_users_statement = self.session.prepare('''
+            SELECT * FROM demo_portal.users
+        ''')
+
+    def set_admin(self, user, admin):
+        """
+        Set admin boolean for a given user
+        :param user: email
+        :param admin: boolean
+        :return:
+        """
+        self.session.execute(
+            self.insert_admin_statement.bind((user, admin)))
+
     def set_password(self, user, password):
         """
         Set user password
@@ -243,6 +264,13 @@ class CassandraCluster():
         :return:
         """
         return self.session.execute(self.query_user_statement.bind((user,)))
+
+    def get_users(self):
+        """
+        Return all user records
+        :return:
+        """
+        return self.session.execute(self.query_users_statement)
 
     class AccessLogger():
         def __init__(self, cassandra_cluster, user,
