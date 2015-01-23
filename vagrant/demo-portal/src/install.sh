@@ -24,10 +24,10 @@ pip install --download-cache /cache/pip cqlsh
 
 # set DEBUG mode to False when in ec2
 if [ -n "$PRODUCTION" ]; then
-    sed -i -e "s|DEBUG.*|DEBUG = True|g" /portal/demo-portal/flask2.0/DemoPortalFlask/application.cfg
+    sed -i -e "s|DEBUG.*|DEBUG = False|g" /portal/demo-portal/flask2.0/DemoPortalFlask/application.cfg
     sed -i -e "s|DSE_CLUSTER.*|DSE_CLUSTER = '${1}'|g" /portal/demo-portal/flask2.0/DemoPortalFlask/application.cfg
 else
-    sed -i -e "s|DEBUG.*|DEBUG = False|g" /portal/demo-portal/flask2.0/DemoPortalFlask/application.cfg
+    sed -i -e "s|DEBUG.*|DEBUG = True|g" /portal/demo-portal/flask2.0/DemoPortalFlask/application.cfg
     sed -i -e "s|DSE_CLUSTER.*|DSE_CLUSTER = '127.0.0.1'|g" /portal/demo-portal/flask2.0/DemoPortalFlask/application.cfg
 fi
 
