@@ -28,6 +28,6 @@ Security group: sg-aa30edce "demo-portal-dse" on AWS account: 701383803275
 
 Type            Protocol    Port Range  Source
 SSH             TCP         22          0.0.0.0/0
-All traffic     All         All         sg-c438caa0 (demo-portal-launcher)
+All traffic     All         All         sg-58538e3c (demo-portal-ui)
 All traffic     All         All         sg-aa30edce (demo-portal-dse)
 All traffic     All         All         173.174.40.141/32 (Joaquin's IP)

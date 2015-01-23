@@ -39,7 +39,7 @@ if !ENV['DEMO_DEV_STALE_IP']
 end
 
 if !ENV['DEMO_PROD_CASS']
-    ENV['DEMO_PROD_CASS'] = '172.31.33.250'
+    ENV['DEMO_PROD_CASS'] = '54.164.166.255'
 end
 
 def check_aws_envars()

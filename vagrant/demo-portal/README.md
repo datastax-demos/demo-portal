@@ -1,7 +1,7 @@
 This script should be used to stand up a new DataStax Demo Portal
 if the current one were to fall.
 
-## SSH Access
+### SSH Access
 
 SSH access on each of these machines is slightly different than typical vagrant
 setups since all other machines require AWS credentials. Because of this, you'll
@@ -9,39 +9,121 @@ need to specify the vagrant machine to ssh into. Example:
 
     vagrant ssh dev
 
-# Dev
+## provision(production, stale)
+
+The provision function in Vagrantfile ensures that each defined machine will
+share the same processes. The differences are as follows:
+
+### Production
+
+#### true
+
+* `$PRODUCTION=1` is set on the provisioned machines
+* `$DEMO_PROD_CASS`, which defaults to 54.164.166.255, will be used for the
+DataStax Enterprise machine.
+
+**Note:** When provisioning with production=true, you must grab
+`vagrant awsinfo -m <machine_name> -k public_ip` as the node launches and update
+the AWS security group here:
+
+https://us-3.rightscale.com/acct/73292/network_manager#networks/8JJ1403KL5DHJ/security_groups/F1N2PPFA0IPNE
+
+#### false
+
+* A local DataStax Enterprise debian package install will occur.
+* 127.0.0.1 will be used for the DataStax Enterprise machine.
+
+### Stale
+
+#### true
+
+* `../keys/demo-portal.key` will one-way sync to `~/.ssh/demo-portal.key`.
+* `../keys/config` will one-way sync to `~/.ssh/config`.
+* The `demo-portal` repository will be cloned directly from Github.
+* `../../set_credentials.sh` will one-way sync to
+`/portal/demo-portal/set_credentials.sh`.
+* `../../flask2.0/DemoPortalFlask/application.cfg` will one-way sync to
+`/portal/demo-portal/flask2.0/DemoPortalFlask/application.cfg`.
+* `../keys` will one-way sync to `/portal/demo-portal/vagrant/`.
+
+#### false
+
+* `../..` will two-way sync to `/portal/demo-portal`.
+* `../cache` will two-way sync to `/cache`.
+
+## Dev
 
     vagrant up dev
 
-This machine spins up a local VirtualBox VM with the exact same packages that
-are installed on all other machines, except for a few key differences:
+    provision(production: false, stale: false)
 
-* Vagrant synced folders are used to allow file editing on the host machine to
-instantly be available on the guest machine.
-* Caching is used whenever possible and stored in `vagrant/cache` on the host
-machine and `/cache` on the guest machine to shave build time from 27 minutes
-down to 9 minutes.
-* The VM will always start up with the address: http://192.168.133.7:5000
-* The website is not automatically started, instead you must run:
+This command should be run when developing on the demo-portal. Access to a local
+copy of the site will start automatically at http://192.168.133.7:5000.
 
-```
-vagrant ssh dev
-python /portal/demo-portal/flask2.0/run
-```
+## Dev Stale
 
-# Production A/B
+    vagrant up dev-stale
+
+    provision(production: false, stale: true)
+
+This command should be run when ensuring cloud builds work as intended, without
+hitting the production DataStax Enterprise cluster. Access to a local
+copy of the site will start automatically at http://192.168.133.8:5000.
+
+## Production A/B
 
     vagrant up production-A
     vagrant up production-B
 
-# Staging
+    provision(production: true, stale: true)
+    provision(production: true, stale: true)
+
+This command should be used to launch a new release of the Demo Portal. Two
+commands exist to allow for seamless DNS switching to occur as the machines
+are upgraded through IP rotation.
+
+When performing an IP rotation, ensure helpdesk@datastax.com updates the
+demos.datastax.com DNS.
+
+## Staging
 
     vagrant up staging
 
-# Build
+    provision(production: true, stale: true)
+
+This command should be used for beta-testing the Demo Portal. Access to this
+site will be available at staging.demos.datastax.com, but can be taken offline
+routinely and may experience a high number of bugs due to high code churn.
+
+## Build
 
     vagrant up build
 
-# DSE
+    provision(production: true, stale: true)
+
+This command should be used to beta-test the build process at the same level as
+the Production A/B machine without stressing too much on killing the wrong
+machine.
+
+## DSE
 
     vagrant up dse
+
+This machine is different from the rest and should be included with the build
+machine in the following fashion:
+
+    vagrant up dse
+    DEMO_PROD_CASS=$(vagrant awsinfo -m dse -k public_ip)
+    vagrant up build
+    unset DEMO_PROD_CASS
+
+Then visit port 5000 of the following machine:
+
+    vagrant awsinfo -m build -k public_ip
+
+This should be the ideal way to test the build process since it starts
+everything from scratch each time.
+
+If this machine ever becomes relied on, make sure to update the default value
+of `$DEMO_PROD_CASS` in Vagrantfile to be the public IP address for the new
+DataStax Enterprise node.
