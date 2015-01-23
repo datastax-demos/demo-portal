@@ -8,6 +8,12 @@ setups since all other machines require AWS credentials. Because of this, you'll
 need to specify the vagrant machine to ssh into. Example:
 
     vagrant ssh dev
+    vagrant ssh dev-stale
+    vagrant ssh production-A
+    vagrant ssh production-B
+    vagrant ssh staging
+    vagrant ssh build
+    vagrant ssh dse
 
 ## provision(production, stale)
 
