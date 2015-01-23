@@ -42,7 +42,7 @@ sudo cp /portal/demo-portal/cron/demo-portal.list /etc/cron.d/demoportal
 # setup basic functionality scripts
 (
     cd /portal/demo-portal/vagrant/demo-portal/files/
-    cp run stop update watch ~
+    cp run stop update watch kill-vagrant ~
 )
 
 # install automaton
