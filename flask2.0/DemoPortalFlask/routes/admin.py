@@ -27,7 +27,7 @@ def toggle_admin():
     else:
         del session['admin']
 
-    return redirect(url_for('index'))
+    return redirect(url_for('dashboard_api.index'))
 
 
 @admin_api.route('/admin-history')

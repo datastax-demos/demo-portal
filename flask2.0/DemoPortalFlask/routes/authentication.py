@@ -25,7 +25,7 @@ def login():
             msg(access_logger, 'Login successful.', 'debug')
             session['email'] = request.form['email']
             session['admin'] = user_record[0]['admin']
-            return redirect(url_for('index'))
+            return redirect(url_for('dashboard_api.index'))
         else:
             msg(access_logger, 'Authentication failed.', 'error')
             return render_template('login.jinja2')
@@ -124,4 +124,4 @@ def logout():
                                                           session['email'])
 
     session.pop('email', None)
-    return redirect(url_for('index'))
+    return redirect(url_for('dashboard_api.index'))

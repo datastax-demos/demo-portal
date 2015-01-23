@@ -81,7 +81,7 @@ def launch():
     logger.info('Executing: %s', ' '.join(command))
     os.system(' '.join(command))
 
-    return redirect(url_for('index'))
+    return redirect(url_for('dashboard_api.index'))
 
 
 @dashboard_api.route('/ctool', methods=['GET', 'POST'])
@@ -182,7 +182,7 @@ def kill():
         msg(access_logger, 'Instance termination(s) may not have succeeded.',
             'warn')
 
-    return redirect(url_for('index'))
+    return redirect(url_for('dashboard_api.index'))
 
 
 @dashboard_api.route('/ttl', methods=['POST'])
@@ -199,4 +199,4 @@ def ttl():
         ec2.tag_reservation(reservation_id, 'ttl', request_ttl)
 
     msg(access_logger, 'TTL updated to %s.' % request_ttl)
-    return redirect(url_for('index'))
+    return redirect(url_for('dashboard_api.index'))
