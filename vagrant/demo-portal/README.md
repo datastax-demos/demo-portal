@@ -93,12 +93,13 @@ copy of the site will start automatically at http://192.168.133.8:5000.
     provision(production: true, stale: true)
     provision(production: true, stale: true)
 
-This command should be used to launch a new release of the Demo Portal. Two
+These commands should be used to launch new releases of the Demo Portal. Two
 commands exist to allow for seamless DNS switching to occur as the machines
 are upgraded through IP rotation.
 
 When performing an IP rotation, ensure helpdesk@datastax.com updates the
-demos.datastax.com DNS.
+`demos.datastax.com` DNS to the new IP and `old.demos.datastax.com` to the
+old IP.
 
 ## Staging
 
@@ -107,7 +108,7 @@ demos.datastax.com DNS.
     provision(production: true, stale: true)
 
 This command should be used for beta-testing the Demo Portal. Access to this
-site will be available at staging.demos.datastax.com, but can be taken offline
+site will be available at `staging.demos.datastax.com`, but can be taken offline
 routinely and may experience a high number of bugs due to high code churn.
 
 ## Build
@@ -118,7 +119,7 @@ routinely and may experience a high number of bugs due to high code churn.
 
 This command should be used to beta-test the build process at the same level as
 the Production A/B machine without stressing too much on killing the wrong
-machine.
+machine nor interfering with continuous development.
 
 ## DSE
 
@@ -139,6 +140,6 @@ Then visit port 5000 of the following machine:
 This should be the ideal way to test the build process since it starts
 everything from scratch each time.
 
-If this machine ever becomes relied on, make sure to update the default value
+If the `dse` machine ever becomes relied on, make sure to update the default value
 of `$DEMO_PROD_CASS` in Vagrantfile to be the public IP address for the new
 DataStax Enterprise node.
