@@ -32,9 +32,10 @@ def read_options():
 
     (options, args) = parser.parse_args()
 
-    if not os.environ['AWS_ACCESS_KEY'] or not os.environ['AWS_SECRET_KEY']:
+    if not os.environ['DEMO_AWS_ACCESS_KEY'] or \
+            not os.environ['DEMO_AWS_SECRET_KEY']:
         sys.exit('Environment variables'
-                 ' AWS_ACCESS_KEY and AWS_SECRET_KEY must be set.')
+                 ' DEMO_AWS_ACCESS_KEY and DEMO_AWS_SECRET_KEY must be set.')
 
     return options
 

@@ -38,12 +38,14 @@ def kill_instances(conn, instances):
 def main(region='us-east-1'):
     conn = boto.ec2.connect_to_region(region,
                                       aws_access_key_id=os.environ[
-                                          'AWS_ACCESS_KEY'],
+                                          'DEMO_AWS_ACCESS_KEY'],
                                       aws_secret_access_key=os.environ[
-                                          'AWS_SECRET_KEY'])
+                                          'DEMO_AWS_SECRET_KEY'])
 
-    if not os.environ['AWS_ACCESS_KEY'] or not os.environ['AWS_ACCESS_KEY']:
-        raise Exception('$AWS_ACCESS_KEY and $AWS_ACCESS_KEY must be set')
+    if not os.environ['DEMO_AWS_ACCESS_KEY'] or \
+            not os.environ['DEMO_AWS_ACCESS_KEY']:
+        raise Exception(
+            '$DEMO_AWS_ACCESS_KEY and $DEMO_AWS_ACCESS_KEY must be set')
 
     instances = overdue_instances(conn)
     logger.info('Killing: %s' % instances)

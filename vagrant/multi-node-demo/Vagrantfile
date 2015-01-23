@@ -1,13 +1,13 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-if !ENV['AWS_ACCESS_KEY'] ||
-   !ENV['AWS_SECRET_KEY']
+if !ENV['DEMO_AWS_ACCESS_KEY'] ||
+   !ENV['DEMO_AWS_SECRET_KEY']
 
     print 'The following environment variables must be set'
     print " before running this script:\n"
-    print "\tAWS_ACCESS_KEY\n"
-    print "\tAWS_SECRET_KEY\n"
+    print "\tDEMO_AWS_ACCESS_KEY\n"
+    print "\tDEMO_AWS_SECRET_KEY\n"
     exit
 end
 
@@ -70,8 +70,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
                                   '/home/ubuntu/webapps/demo-portal',
                                   type: 'rsync'
 
-        aws.access_key_id = ENV['AWS_ACCESS_KEY']
-        aws.secret_access_key = ENV['AWS_SECRET_KEY']
+        aws.access_key_id = ENV['DEMO_AWS_ACCESS_KEY']
+        aws.secret_access_key = ENV['DEMO_AWS_SECRET_KEY']
         aws.region = 'us-east-1'
         aws.availability_zone = ENV['AWS_AZ']
         aws.keypair_name = 'joaquin.rightscale.sales'

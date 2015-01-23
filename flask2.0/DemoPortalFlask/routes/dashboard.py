@@ -16,6 +16,11 @@ APP_PORTS = {
     'weather-sensors': 3000,
 }
 
+# set this for ctool
+os.environ['AWS_ACCESS_KEY'] = os.environ['DEMO_AWS_ACCESS_KEY']
+os.environ['AWS_SECRET_KEY'] = os.environ['DEMO_AWS_SECRET_KEY']
+
+
 
 @dashboard_api.route('/')
 def index():
@@ -64,8 +69,8 @@ def launch():
 
     demo = request.form['demoChoice'].lower().replace(' ', '-')
     command = [
-        'AWS_ACCESS_KEY=%s' % os.environ['AWS_ACCESS_KEY'],
-        'AWS_SECRET_KEY=%s' % os.environ['AWS_SECRET_KEY'],
+        'DEMO_AWS_ACCESS_KEY=%s' % os.environ['DEMO_AWS_ACCESS_KEY'],
+        'DEMO_AWS_SECRET_KEY=%s' % os.environ['DEMO_AWS_SECRET_KEY'],
         'USER_EMAIL=%s' % session['email'],
         'DEMO=%s' % demo,
         'TTL=%s' % request.form['ttl'],
