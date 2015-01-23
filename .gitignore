@@ -11,5 +11,7 @@ cache/
 keys/
 tmp/
 
+launched-clusters/
+
 *.log
 
