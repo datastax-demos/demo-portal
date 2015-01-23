@@ -55,7 +55,7 @@ All syncs will be one-way syncs to the new machine.
 * The `demo-portal` repository will be cloned directly from Github.
 * `../../set_credentials.sh` ==>
 `/portal/demo-portal/set_credentials.sh`.
-* `../../flask2.0/DemoPortalFlask/application.cfg` ==>
+* `../../flask2.0/DemoPortalFlask/application.cfg` ==>  
 `/portal/demo-portal/flask2.0/DemoPortalFlask/application.cfg`.
 * `../keys` ==> `/portal/demo-portal/vagrant/`.
 
