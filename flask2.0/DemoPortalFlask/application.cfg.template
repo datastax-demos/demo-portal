@@ -1,0 +1,14 @@
+DEBUG = False
+SECRET_KEY =
+PERMANENT_SESSION_LIFETIME = 604800
+PROPAGATE_EXCEPTIONS = True
+
+MAIL_SERVER = 'smtp.gmail.com'
+MAIL_PORT = 587
+MAIL_USE_SSL = False
+MAIL_USE_TLS = True
+MAIL_USERNAME = 'donotreply-demos@datastax.com'
+MAIL_PASSWORD =
+MAIL_DEFAULT_SENDER = 'donotreply-demos@datastax.com'
+
+DSE_CLUSTER = '127.0.0.1'
