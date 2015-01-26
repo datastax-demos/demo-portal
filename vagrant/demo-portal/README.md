@@ -35,7 +35,7 @@ a `New Rule` to the AWS security group [here]
 
 * Direction: Inbound
 * Protocol: All Protocols - IPs
-* IP Range: `vagrant awsinfo -m <machine_name> -k public_ip` output
+* IP Range: `vagrant awsinfo -m <machine_name> -k public_ip`/32
 
 Permissions to the `IT - Sysadmin` Rightscale account and previous
 authentication into Rightscale is required. If asked to authenticate, you'll
