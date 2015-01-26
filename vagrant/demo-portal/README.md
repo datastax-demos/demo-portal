@@ -54,7 +54,8 @@ All syncs will be one-way syncs to the new machine.
 
 * `../keys/demo-portal.key` ==> `~/.ssh/demo-portal.key`.
 * `../keys/config` ==> `~/.ssh/config`.
-* The `demo-portal` repository will be cloned directly from Github.
+* The `demo-portal` repository's `production` branch will be cloned directly
+from Github.
 * `../../set_credentials.sh` ==>
 `/portal/demo-portal/set_credentials.sh`.
 * `../../flask2.0/DemoPortalFlask/application.cfg` ==>  
@@ -112,6 +113,9 @@ old IP.
 This command should be used for beta-testing the Demo Portal. Access to this
 site will be available at `staging.demos.datastax.com`, but can be taken offline
 routinely and may experience a high number of bugs due to high code churn.
+
+An additional command is run on the staging cluster that checks out the
+`master` branch of the `demo-portal` repository, instead of `production`.
 
 ## Build
 

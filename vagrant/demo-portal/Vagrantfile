@@ -228,6 +228,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         end
 
         provision(config: staging, production: true, stale: true)
+
+        config.vm.provision 'shell',
+            inline: 'cd /portal/demo-portal; git checkout master',
+            privileged: false
     end
 
     config.vm.define 'build', autostart: false do |build|

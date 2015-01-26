@@ -2,4 +2,4 @@
 
 chmod 600 .ssh/*
 
-git clone git@demo-portal:datastax-demos/demo-portal.git /portal/demo-portal
+git clone --branch production git@demo-portal:datastax-demos/demo-portal.git /portal/demo-portal
