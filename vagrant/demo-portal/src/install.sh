@@ -48,7 +48,7 @@ sudo cp /portal/demo-portal/cron/demo-portal.list /etc/cron.d/demoportal
 # install automaton
 CACHE=/cache/automaton
 if [ ! -d ${CACHE} ]; then
-    git clone automaton:riptano/automaton.git /cache
+    git clone automaton:riptano/automaton.git /cache/automaton
 fi
 cp -r ${CACHE} /portal
 echo "export PYTHONPATH=/portal/automaton:${PYTHONPATH}" >> .profile
