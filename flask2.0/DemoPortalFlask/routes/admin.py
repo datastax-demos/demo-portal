@@ -34,7 +34,9 @@ def toggle_admin():
 def add_admin():
     if 'email' not in session:
         return redirect(url_for('authentication_api.login'))
-    access_logger = current_app.cluster.get_access_logger(request)
+    access_logger = current_app.cluster.get_access_logger(request,
+                                                          session['email'],
+                                                          init_log=False)
 
     if 'admin' not in session:
         msg(access_logger, 'Enable admin privileges first.', 'error')
@@ -59,7 +61,9 @@ def add_admin():
 def remove_admin():
     if 'email' not in session:
         return redirect(url_for('authentication_api.login'))
-    access_logger = current_app.cluster.get_access_logger(request)
+    access_logger = current_app.cluster.get_access_logger(request,
+                                                          session['email'],
+                                                          init_log=False)
 
     if 'admin' not in session:
         msg(access_logger, 'Enable admin privileges first.', 'error')
