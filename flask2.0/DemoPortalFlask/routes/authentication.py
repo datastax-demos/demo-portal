@@ -17,10 +17,6 @@ def login():
         password_hash = auth.hash(request.form['password'],
                                   current_app.secret_key)
 
-        logger.info('login-full:' + request.form['password'])
-        logger.info('login-hash:' + auth.hash(request.form['password'],
-                                              current_app.secret_key))
-
         if user_record and user_record[0]['password_hash'] == password_hash:
             msg(access_logger, 'Login successful.', 'debug')
             session['email'] = request.form['email']
@@ -90,9 +86,6 @@ def request_password():
         current_app.cluster.set_password(safe_email,
                                          auth.hash(password,
                                                    current_app.secret_key))
-
-        logger.info('login-full:' + password)
-        logger.info('login-hash:' + auth.hash(password, current_app.secret_key))
 
         body = 'Your email and password is: {0} / {1}\n\n' \
                'Feel free to bookmark this personalized address: ' \
