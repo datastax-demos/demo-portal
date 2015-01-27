@@ -48,6 +48,8 @@ def _sanatize(input_dict):
     :return: sanatized dictionary
     """
     output = input_dict.copy()
+    if 'password' in output:
+        output['password'] = '******'
     if 'current-password' in output:
         output['current-password'] = '******'
     if 'new-password' in output:
