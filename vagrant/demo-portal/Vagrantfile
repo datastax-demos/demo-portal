@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-# Debian 7.7 Wheezy
+# Ubuntu 14.04 LTS
 # http://cloud-images.ubuntu.com/locator/ec2/
 # "trusty instance-store amd64 aki"
 ami_list = {
