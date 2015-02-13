@@ -196,6 +196,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         end
 
         provision(config: production_A, production: true, stale: true)
+        production_A.vm.post_up_message = "Don't forget to apt-get upgrade!"
     end
 
     config.vm.define 'production-B', autostart: false do |production_B|
@@ -212,6 +213,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         end
 
         provision(config: production_B, production: true, stale: true)
+        production_B.vm.post_up_message = "Don't forget to apt-get upgrade!"
     end
 
     config.vm.define 'staging', autostart: false do |staging|
@@ -232,6 +234,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         config.vm.provision 'shell',
             inline: 'cd /portal/demo-portal; git checkout master',
             privileged: false
+        staging.vm.post_up_message = "Don't forget to apt-get upgrade!"
     end
 
     config.vm.define 'build', autostart: false do |build|
@@ -248,6 +251,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         end
 
         provision(config: build, production: true, stale: true)
+        build.vm.post_up_message = "Don't forget to apt-get upgrade!"
     end
 
     config.vm.define 'dse', autostart: false do |dse|
@@ -275,6 +279,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
                       '--volume /mnt/logs:/var/log/cassandra'\
                       '--net host'
         end
+        dse.vm.post_up_message = "Don't forget to apt-get upgrade!"
     end
 
     config.ssh.username = 'vagrant'
