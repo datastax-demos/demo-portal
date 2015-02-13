@@ -123,6 +123,9 @@ def install(access_logger, postvars, reservation_id):
     postvars['spark_hadoop'] = '--spark-hadoop' \
         if 'spark-and-hadoop' in postvars else ''
 
+    postvars['tarball'] = '--install_type tar' \
+        if not postvars['dse-version'].endswith('-1') else ''
+
     if len(postvars['advanced_nodes']['cluster']['nodes']) == 0:
         # calculate install values
         postvars['percent_analytics'] = float(postvars['hadoop-nodes']) / \
@@ -140,6 +143,7 @@ def install(access_logger, postvars, reservation_id):
                           ' --percent-search %(percent_search)s' \
                           ' --percent-spark %(percent_spark)s' \
                           ' %(spark_hadoop)s' \
+                          ' %(tarball)s' \
                           ' --version_or_branch %(dse-version)s' \
                           ' --num-tokens %(num-of-tokens)s' \
                           ' %(full_name)s' \
