@@ -272,7 +272,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         config.vm.provision 'shell', inline: 'sudo apt-get install -y ntp'
         config.vm.provision :file, source: 'files/DSE-README', destination: 'DSE-README'
 
-        coffice.vm.provision 'docker' do |d|
+        dse.vm.provision 'docker' do |d|
             d.run 'datastaxdemos/datastax-enterprise',
                 cmd: 'start-dse --cluster-name "DataStax Services Cluster"',
                 args: '--volume /mnt/cassandra:/var/lib/cassandra'\
