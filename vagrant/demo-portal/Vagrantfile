@@ -44,7 +44,7 @@ end
 
 def check_aws_envars()
     required_envars = ['DEMO_AWS_ACCESS_KEY', 'DEMO_AWS_SECRET_KEY',
-                       'DEMO_KEYPAIR_NAME', 'DEMO_KEYPAIR_LOCATION',
+                       'DEMO_AWS_KEYPAIR_NAME', 'DEMO_AWS_KEYPAIR_LOCATION',
                        'DEMO_USER', 'DEMO_EMAIL']
 
     for envar in required_envars
@@ -175,8 +175,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         aws.instance_type = 'm3.medium'
 
         # setup keypair configuration
-        aws.keypair_name = ENV['DEMO_KEYPAIR_NAME']
-        override.ssh.private_key_path = ENV['DEMO_KEYPAIR_LOCATION']
+        aws.keypair_name = ENV['DEMO_AWS_KEYPAIR_NAME']
+        override.ssh.private_key_path = ENV['DEMO_AWS_KEYPAIR_LOCATION']
 
         # setup security groups
         aws.security_groups = ['demo-portal-ui']
