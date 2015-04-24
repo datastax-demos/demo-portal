@@ -138,7 +138,7 @@ def install(access_logger, postvars, reservation_id):
         install_command = 'ctool ' \
                           ' --provider %(cloud-option)s' \
                           ' install' \
-                          ' --repo staging' \
+                          ' --repo qa' \
                           ' --percent-analytics %(percent_analytics)s' \
                           ' --percent-search %(percent_search)s' \
                           ' --percent-spark %(percent_spark)s' \
@@ -163,7 +163,7 @@ def install(access_logger, postvars, reservation_id):
             install_command = 'ctool' \
                               ' --provider %(cloud-option)s' \
                               ' install' \
-                              ' --repo staging' \
+                              ' --repo qa' \
                               ' --config-file %(config_file)s' \
                               ' %(spark_hadoop)s' \
                               ' --version_or_branch %(dse-version)s' \
@@ -190,7 +190,7 @@ def install_opscenter(access_logger, postvars, reservation_id):
         install_command = 'ctool' \
                           ' --provider %(cloud-option)s' \
                           ' install' \
-                          ' --repo staging' \
+                          ' --repo qa' \
                           ' --version_or_branch %(opscenter-version)s' \
                           ' %(full_name)s' \
                           ' opscenter'
